@@ -17,7 +17,6 @@ struct SettingsView: View {
     @AppStorage("work_onset") var work_onset: Date = Date.now
     @AppStorage("work_offset") var work_offset: Date = Date.now
     @AppStorage("alarm") var alarm: Date = Date.now
-
     
     let now = Date.now
     let oneweekafter = Date.now.addingTimeInterval(60*60*24*7*1.0)

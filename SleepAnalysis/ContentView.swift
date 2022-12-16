@@ -11,31 +11,29 @@ import Charts
 struct LineData: Encodable, Identifiable{
     let id = UUID()
     var Category: String
-    var x: Double
+    var x: Date
     var y: Double
     
-    init(Category:String, x: Double, y: Double){
+    init(Category:String, x: Date, y: Double){
         self.Category = Category
         self.x = x
         self.y = y
     }
 }
 
-
-var SleepSuggestionData: [LineData] = [
-    LineData(Category: "Main Sleep",x: 5, y: 1),
-    LineData(Category: "Main Sleep",x: 6, y: 1),
-    LineData(Category: "Main Sleep",x: 7, y: 1),
-    LineData(Category: "Nap",x: 11, y: 1),
-    LineData(Category: "Nap",x: 12, y: 1)
-]
+public func formatDate(offset: Double)->Date{
+    let date = Date.now.addingTimeInterval(offset)
+//    let dateFormatter = DateFormatter()
+//    let stringVal = dateFormatter.string(from: date)
+    return date
+}
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) var managedObjectContext
     
-    @State var AwarenessData = [LineData](repeating: LineData(Category: "Awareness", x: 0.0, y: 0.0), count: 12*24*2)
-    @State var SleepData = [LineData](repeating: LineData(Category: "Sleep", x: 0.0, y: 0.0), count: 12*24*2)
-    @State var SleepSuggestionData = [LineData](repeating: LineData(Category: "Sleep Suggestion", x: 0.0, y: 0.0), count: 12*24*2)
+    @State var AwarenessData = [LineData](repeating: LineData(Category: "Awareness", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
+    @State var SleepData = [LineData](repeating: LineData(Category: "Sleep", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
+    @State var SleepSuggestionData = [LineData](repeating: LineData(Category: "Sleep Suggestion", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
     
     @AppStorage("sleep_onset") var sleep_onset: Date = Date.now
     @AppStorage("work_onset") var work_onset: Date = Date.now
@@ -47,6 +45,8 @@ struct ContentView: View {
     @AppStorage("V0_H") var V0_H: Double = 13.3336
     
     @FetchRequest(sortDescriptors: []) var entries: FetchedResults<Entry>
+    @FetchRequest(sortDescriptors: []) var V0_cores: FetchedResults<V0_main>
+    
     
     var body: some View {
         GeometryReader{ geometry in
@@ -116,12 +116,31 @@ struct ContentView: View {
                     }
                 }
                 let y_data = pcr_simulation(V0: V0, sleep_pattern: sleep_pattern, step: 5/60.0)
+//                let start = DispatchTime.now()
+                var now = Date.now
+                for x in 0...575{
+                    let V0_core = V0_main(context: managedObjectContext)
+                    V0_core.time = now.addingTimeInterval(Double(x)*5.0*60.0)
+                    V0_core.y = y_data[x][0]
+                    V0_core.x = y_data[x][1]
+                    V0_core.n = y_data[x][2]
+                    V0_core.h = y_data[x][3]
+                    do {
+                        try managedObjectContext.save()
+                    } catch {
+                        // handle the Core Data error
+                    }
+                }
+//                let end = DispatchTime.now()
+//                let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds
+//                let timeInterval = Double(nanoTime) / 1_000_000_000
+//                print("NANO TIME", timeInterval)
                 for x in 0...575{
                     let C = 3.37*0.5*(1+coef_y*y_data[x][1] + coef_x * y_data[x][0])
                     let D_up = (2.46+10.2+C) //sleep thres
                     let awareness = D_up - y_data[x][3]
-                    AwarenessData[x] = LineData(Category:"Alertness",x:Double(x), y:Double(awareness))
-                    SleepData[x] = LineData(Category:"Sleep",x:Double(x), y:Double(sleep_pattern[x]))
+                    AwarenessData[x] = LineData(Category:"Alertness",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*2), y:Double(awareness))
+                    SleepData[x] = LineData(Category:"Sleep",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*2), y:Double(sleep_pattern[x]))
                 }
                 //Sleep Suggestion
                 var suggestion_pattern = [(Double, String)](repeating: (0.0, "Main Sleep"), count: 12*24*2)
@@ -130,27 +149,31 @@ struct ContentView: View {
                 let suggest = Sleep_pattern_suggestion(V0: V0_suggest, sleep_onset: Int(sleep_onset.timeIntervalSince(Date.now)/60/5), work_onset: Int(work_onset.timeIntervalSince(Date.now)/60/5), work_offset: Int(work_offset.timeIntervalSince(Date.now)/60/5), step: step)
                 let MainSleep = suggest.CSS
                 let NapSleep = suggest.Nap
-                print("Main sleep: ", MainSleep[0])
-                print("Main sleep: ", MainSleep[1])
-                print("Nap sleep: ", NapSleep[0])
-                print("Nap sleep: ", NapSleep[1])
+
+                //debug
+                print("Main sleep: ", Date.now.addingTimeInterval(Double(MainSleep[0])*5.0*60.0).formatted(date: .numeric, time: .shortened))
+                print("Main sleep: ", Date.now.addingTimeInterval(Double(MainSleep[1])*5.0*60.0).formatted(date: .numeric, time: .shortened))
+                print("Nap sleep: ", Date.now.addingTimeInterval(Double(NapSleep[0])*5.0*60.0).formatted(date: .numeric, time: .shortened))
+                print("Nap sleep: ", Date.now.addingTimeInterval(Double(NapSleep[1])*5.0*60.0).formatted(date: .numeric, time: .shortened))
+
+
                 var idx = Int(MainSleep[0])
                 var offset = Int(MainSleep[1])
                 for i in 0..<offset{
                     suggestion_pattern[idx+i] = (1.0, "Main Sleep")
                 }
-                
+
                 idx = Int(NapSleep[0])
                 offset = Int(NapSleep[1])
                 for i in 0..<offset{
                     suggestion_pattern[idx+i] = (1.0, "Nap")
                 }
-                
+
                 for x in 0...575{
-                    SleepSuggestionData[x] = LineData(Category: suggestion_pattern[x].1, x: Double(x), y: Double(suggestion_pattern[x].0))
+                    SleepSuggestionData[x] = LineData(Category: suggestion_pattern[x].1, x: formatDate(offset: Double(x)*5.0*60.0), y: Double(suggestion_pattern[x].0))
                 }
-                
-                
+
+
             }
         }
     }

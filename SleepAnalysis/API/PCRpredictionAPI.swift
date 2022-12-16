@@ -212,6 +212,7 @@ func Sleep_pattern_suggestion(V0: [Double], sleep_onset: Int, work_onset: Int, w
 
     // find minimal nap sleep
     sleep_pattern = [Double](repeating:0.0, count: work_offset-CSS_end+1);
+    print(work_offset, CSS)
     var y_temp = pcr_simulation(V0: V_tmp, sleep_pattern: sleep_pattern, step: step)
 
     var H1, H2, C1, C2, D_up1, D_up2: Double

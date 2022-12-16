@@ -4,4 +4,11 @@
         <attribute name="sleepEnd" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="sleepStart" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
+    <entity name="V0_main" representedClassName="V0_main" syncable="YES" codeGenerationType="class">
+        <attribute name="h" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="n" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="x" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="y" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+    </entity>
 </model>
