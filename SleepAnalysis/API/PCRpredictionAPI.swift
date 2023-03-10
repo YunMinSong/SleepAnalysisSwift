@@ -129,8 +129,8 @@ func pcr_simulation(V0: [Double], sleep_pattern: [Double], step: Double) -> [[Do
 // if nap sleep is impossible, Nap = [0,0];
 func Sleep_pattern_suggestion(V0: [Double], sleep_onset: Int, work_onset: Int, work_offset: Int, step: Double)->(CSS: [Int], Nap: [Int]){
     let unit = Int(0.5/step) // Time between nap offset and work onset
-    var len0 = work_onset - sleep_onset - unit // length between work onset and work onset
-    var len1 = work_offset - work_onset
+    let len0 = work_onset - sleep_onset - unit // length between work onset and work onset
+    let len1 = work_offset - work_onset
     var i: Int // iterator
     let rk = RungeKutta() // R-K class
     var CSS = [0, 0] //Output 1
@@ -213,7 +213,7 @@ func Sleep_pattern_suggestion(V0: [Double], sleep_onset: Int, work_onset: Int, w
     // find minimal nap sleep
     sleep_pattern = [Double](repeating:0.0, count: work_offset-CSS_end+1);
     print(work_offset, CSS)
-    var y_temp = pcr_simulation(V0: V_tmp, sleep_pattern: sleep_pattern, step: step)
+    let y_temp = pcr_simulation(V0: V_tmp, sleep_pattern: sleep_pattern, step: step)
 
     var H1, H2, C1, C2, D_up1, D_up2: Double
     H1 = y_temp[work_onset-CSS_end][3] // sleep pressure start
@@ -224,7 +224,7 @@ func Sleep_pattern_suggestion(V0: [Double], sleep_onset: Int, work_onset: Int, w
     D_up2 = (2.46 + 10.2 + C2)/v_vh // sleep threshold start
 
     if D_up1 + D_up2 - H1 - H2 > 0{ //AL condition is satisfied
-        return (CSS, Nap)
+        return (CSS, Nap)	
     }
 
     i = 1

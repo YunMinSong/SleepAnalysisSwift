@@ -7,10 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		404A6C0429AC7BC700DDE5B6 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404A6C0329AC7BC700DDE5B6 /* Theme.swift */; };
+		404A6C0929B605B300DDE5B6 /* ContentUtilsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404A6C0829B605B200DDE5B6 /* ContentUtilsView.swift */; };
 		409F4E49291176F30065BC3F /* SleepAnalysisApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4E48291176F30065BC3F /* SleepAnalysisApp.swift */; };
 		409F4E4B291176F30065BC3F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4E4A291176F30065BC3F /* ContentView.swift */; };
 		409F4E4D291176F50065BC3F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 409F4E4C291176F50065BC3F /* Assets.xcassets */; };
-		409F4E50291176F50065BC3F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 409F4E4F291176F50065BC3F /* Preview Assets.xcassets */; };
 		409F4E5A291176F50065BC3F /* SleepAnalysisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4E59291176F50065BC3F /* SleepAnalysisTests.swift */; };
 		409F4E64291176F50065BC3F /* SleepAnalysisUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4E63291176F50065BC3F /* SleepAnalysisUITests.swift */; };
 		409F4E66291176F50065BC3F /* SleepAnalysisUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4E65291176F50065BC3F /* SleepAnalysisUITestsLaunchTests.swift */; };
@@ -43,11 +44,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		404A6C0329AC7BC700DDE5B6 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		404A6C0829B605B200DDE5B6 /* ContentUtilsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentUtilsView.swift; sourceTree = "<group>"; };
 		409F4E45291176F30065BC3F /* SleepAnalysis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SleepAnalysis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		409F4E48291176F30065BC3F /* SleepAnalysisApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepAnalysisApp.swift; sourceTree = "<group>"; };
 		409F4E4A291176F30065BC3F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		409F4E4C291176F50065BC3F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		409F4E4F291176F50065BC3F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		409F4E55291176F50065BC3F /* SleepAnalysisTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SleepAnalysisTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		409F4E59291176F50065BC3F /* SleepAnalysisTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepAnalysisTests.swift; sourceTree = "<group>"; };
 		409F4E5F291176F50065BC3F /* SleepAnalysisUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SleepAnalysisUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -91,6 +93,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		404A6C0229AC7BB500DDE5B6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				404A6C0329AC7BC700DDE5B6 /* Theme.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		404A6C0729B1DF5400DDE5B6 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 		409F4E3C291176F30065BC3F = {
 			isa = PBXGroup;
 			children = (
@@ -114,28 +131,22 @@
 		409F4E47291176F30065BC3F /* SleepAnalysis */ = {
 			isa = PBXGroup;
 			children = (
+				404A6C0729B1DF5400DDE5B6 /* Preview Content */,
+				404A6C0229AC7BB500DDE5B6 /* Models */,
 				40B3ECA7291DECEB001C4C4B /* Info.plist */,
 				40B3ECA4291DE958001C4C4B /* SleepAnalysis.entitlements */,
 				409F4E48291176F30065BC3F /* SleepAnalysisApp.swift */,
 				409F4E4A291176F30065BC3F /* ContentView.swift */,
 				409F4E4C291176F50065BC3F /* Assets.xcassets */,
-				409F4E4E291176F50065BC3F /* Preview Content */,
 				40A350A72917D78000D3E80C /* MainView.swift */,
 				40A350A92917D88600D3E80C /* ScheduleView.swift */,
 				40A350AB2917DBAF00D3E80C /* SettingsView.swift */,
 				40C1A59C291CE155002EFFBB /* API */,
 				40C619A7291D6738009369BE /* PersistanceController.swift */,
 				40C619A9291D6979009369BE /* Main.xcdatamodeld */,
+				404A6C0829B605B200DDE5B6 /* ContentUtilsView.swift */,
 			);
 			path = SleepAnalysis;
-			sourceTree = "<group>";
-		};
-		409F4E4E291176F50065BC3F /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				409F4E4F291176F50065BC3F /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		409F4E58291176F50065BC3F /* SleepAnalysisTests */ = {
@@ -275,7 +286,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				409F4E50291176F50065BC3F /* Preview Assets.xcassets in Resources */,
 				409F4E4D291176F50065BC3F /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -301,10 +311,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				404A6C0929B605B300DDE5B6 /* ContentUtilsView.swift in Sources */,
 				40C619AB291D6979009369BE /* Main.xcdatamodeld in Sources */,
 				40C619A6291D5D66009369BE /* PCRpredictionAPI.swift in Sources */,
 				40A350AC2917DBAF00D3E80C /* SettingsView.swift in Sources */,
 				40B3ECA6291DEAE4001C4C4B /* HealthKitAPI.swift in Sources */,
+				404A6C0429AC7BC700DDE5B6 /* Theme.swift in Sources */,
 				409F4E4B291176F30065BC3F /* ContentView.swift in Sources */,
 				40C619A8291D6738009369BE /* PersistanceController.swift in Sources */,
 				40A350AA2917D88600D3E80C /* ScheduleView.swift in Sources */,
@@ -501,6 +513,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SleepAnalysis/SleepAnalysis.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SleepAnalysis/Preview Content\"";
@@ -523,6 +536,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = IBS.SleepAnalysis;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
