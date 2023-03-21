@@ -23,7 +23,7 @@ struct RegisterView: View {
                 .padding(.top, 50.0)
             Spacer()
             if isValidEmail(testStr: email) {
-                Button(action: {}) {
+                NavigationLink(destination: CheckView(email: email)) {
                     Rectangle()
                         .foregroundColor(.blue)
                         .frame(width: 358, height: 56)
