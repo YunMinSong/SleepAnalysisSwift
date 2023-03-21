@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C3DA74929C9317C001E92A7 /* BeforeRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3DA74829C9317C001E92A7 /* BeforeRegisterView.swift */; };
+		3C3DA74B29C93684001E92A7 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3DA74A29C93684001E92A7 /* RegisterView.swift */; };
 		3C858FCA29C01450003A7704 /* RecommendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C858FC929C01450003A7704 /* RecommendView.swift */; };
 		3C858FCC29C03529003A7704 /* WhenSleepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C858FCB29C03529003A7704 /* WhenSleepView.swift */; };
 		3CFE4CF729C5A28A00BDDAF9 /* WhenStartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CFE4CF629C5A28A00BDDAF9 /* WhenStartView.swift */; };
@@ -48,6 +50,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3C3DA74829C9317C001E92A7 /* BeforeRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeforeRegisterView.swift; sourceTree = "<group>"; };
+		3C3DA74A29C93684001E92A7 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 		3C858FC929C01450003A7704 /* RecommendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendView.swift; sourceTree = "<group>"; };
 		3C858FCB29C03529003A7704 /* WhenSleepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhenSleepView.swift; sourceTree = "<group>"; };
 		3CFE4CF629C5A28A00BDDAF9 /* WhenStartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhenStartView.swift; sourceTree = "<group>"; };
@@ -146,6 +150,8 @@
 				409F4E48291176F30065BC3F /* SleepAnalysisApp.swift */,
 				409F4E4A291176F30065BC3F /* ContentView.swift */,
 				409F4E4C291176F50065BC3F /* Assets.xcassets */,
+				3C3DA74829C9317C001E92A7 /* BeforeRegisterView.swift */,
+				3C3DA74A29C93684001E92A7 /* RegisterView.swift */,
 				40A350A72917D78000D3E80C /* MainView.swift */,
 				40A350A92917D88600D3E80C /* ScheduleView.swift */,
 				3C858FC929C01450003A7704 /* RecommendView.swift */,
@@ -332,6 +338,7 @@
 				40B3ECA6291DEAE4001C4C4B /* HealthKitAPI.swift in Sources */,
 				404A6C0429AC7BC700DDE5B6 /* Theme.swift in Sources */,
 				409F4E4B291176F30065BC3F /* ContentView.swift in Sources */,
+				3C3DA74B29C93684001E92A7 /* RegisterView.swift in Sources */,
 				40C619A8291D6738009369BE /* PersistanceController.swift in Sources */,
 				40A350AA2917D88600D3E80C /* ScheduleView.swift in Sources */,
 				40A350A82917D78000D3E80C /* MainView.swift in Sources */,
@@ -339,6 +346,7 @@
 				3CFE4CF929C5AA4800BDDAF9 /* WhenFinishView.swift in Sources */,
 				40C1A59B291CE093002EFFBB /* FakeAPI.swift in Sources */,
 				3C858FCA29C01450003A7704 /* RecommendView.swift in Sources */,
+				3C3DA74929C9317C001E92A7 /* BeforeRegisterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
