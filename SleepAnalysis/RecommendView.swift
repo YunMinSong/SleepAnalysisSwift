@@ -12,12 +12,9 @@
 import SwiftUI
 
 struct RecommendView: View {
-    
-    let whenSleep: String
-    let whenStart: String
-    let whenFinish: String
-    
-    @State var firstNaviLinkActive = false
+    @AppStorage("whenSleep") private var sleepTime: String = ""
+    @AppStorage("whenStart") private var startTime: String = ""
+    @AppStorage("whenFinish") private var finishTime: String = ""
     
     @State private var userName: String = "홍길동"
     //Put calculated one
@@ -31,20 +28,19 @@ struct RecommendView: View {
             ZStack {
                 Rectangle()
                     .foregroundColor(Color(red: 0.948, green: 0.953, blue: 0.962))
-                if whenSleep=="" || whenStart=="" || whenFinish=="" {
-                    BeforeTimeGet(userName: $userName, firstNaviLinkActive: $firstNaviLinkActive)
+                if sleepTime == "" || startTime == "" || finishTime == "" {
+                    BeforeTimeGet(userName: $userName)
                 } else {
-                    AfterTimeGet(userName: $userName, from1: $from1, to1: $to1, from2: $from2, to2: $to2, whenSleep: whenSleep, whenStart: whenStart, whenFinish: whenFinish)
+                    AfterTimeGet(userName: $userName, from1: $from1, to1: $to1, from2: $from2, to2: $to2, whenSleep: sleepTime, whenStart: startTime, whenFinish: finishTime)
                 }
             }.navigationTitle("추천 수면")
-        }
+        }.navigationBarBackButtonHidden()
         
     }
 }
 
 struct BeforeTimeGet: View {
     @Binding var userName: String
-    @Binding var firstNaviLinkActive: Bool
     
     var body: some View {
         ZStack {
@@ -63,7 +59,7 @@ struct BeforeTimeGet: View {
                 Image("sskoo")
                     .padding(.vertical, 50.0)
                     .alignmentGuide(.leading, computeValue: { d in -100.0})
-                NavigationLink(destination: WhenSleepView(firstNaviLinkActive: $firstNaviLinkActive), isActive: $firstNaviLinkActive) {
+                NavigationLink(destination: WhenSleepView()) {
                     Rectangle()
                         .foregroundColor(.blue)
                         .cornerRadius(28)
@@ -127,7 +123,7 @@ struct AfterTimeGet: View {
                                 .cornerRadius(28)
                                 .overlay(Text("알람 맞추기")
                                     .foregroundColor(.white))
-                        }
+                        }.padding(.bottom)
                     }
                 }.padding()
                 Rectangle()
@@ -343,6 +339,6 @@ func timeInterval(original: String) -> String {
 
 struct RecommendView_Previews: PreviewProvider {
     static var previews: some View {
-        RecommendView(whenSleep: "", whenStart: "", whenFinish: "")
+        RecommendView()
     }
 }

@@ -23,7 +23,7 @@ struct MainView: View {
                 .tabItem {
                     Label("Schedule", systemImage: "calendar.badge.clock")
                 }
-            RecommendView(whenSleep: "", whenStart: "", whenFinish: "")
+            RecommendView()
                 .tabItem {
                     Label("Recommend", systemImage: "moon.fill")
                         .environment(\.managedObjectContext, persistenceController.container.viewContext)

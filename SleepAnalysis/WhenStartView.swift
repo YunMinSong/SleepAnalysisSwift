@@ -17,7 +17,7 @@ struct WhenStartView: View {
     
     let whenSleep: String
     
-    @Binding var firstNaviLinkActive: Bool
+    @AppStorage("whenStart") private var startTime: String = ""
     
     @State var isValid: Bool = true
     @State var userName: String = "홍길동"
@@ -55,11 +55,14 @@ struct WhenStartView: View {
             .alignmentGuide(.leading, computeValue: {d in -20.0})
             .padding(.top, 80.0)
             
-            NavigationLink(destination: WhenFinishView(whenSleep: whenSleep, whenStart: saveTime(), firstNaviLinkActive: $firstNaviLinkActive)) {
+            NavigationLink(destination: WhenFinishView(whenSleep: whenSleep, whenStart: saveTime())) {
                 Rectangle().foregroundColor(.blue).frame(width: 390, height: 56).cornerRadius(8)
                     .overlay(Text("다음").foregroundColor(.white))
             }.padding(.top, 100.0)
                 .opacity(textIsAppropriate()&&timeIsAppropriate() ? 1 : 0)
+                .simultaneousGesture(TapGesture().onEnded({
+                    self.startTime = saveTime()
+                }))
         }
     }
     
@@ -99,6 +102,6 @@ struct WhenStartView: View {
 
 struct WhenStartView_Previews: PreviewProvider {
     static var previews: some View {
-        WhenStartView(whenSleep: "", firstNaviLinkActive: .constant(true))
+        WhenStartView(whenSleep: "")
     }
 }

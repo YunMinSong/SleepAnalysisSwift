@@ -19,7 +19,7 @@ struct WhenFinishView: View {
     let whenSleep: String
     let whenStart: String
     
-    @Binding var firstNaviLinkActive: Bool
+    @AppStorage("whenFinish") private var finishTime: String = ""
     
     @State var userName: String = "홍길동"
     @State var whenFinishHour_1: String = ""
@@ -56,13 +56,13 @@ struct WhenFinishView: View {
             .alignmentGuide(.leading, computeValue: {d in -20.0})
             .padding(.top, 80.0)
             
-            NavigationLink(destination: RecommendView(whenSleep: whenSleep, whenStart: whenStart, whenFinish: saveTime())) {
+            NavigationLink(destination: RecommendView()) {
                 Rectangle().foregroundColor(.blue).frame(width: 390, height: 56).cornerRadius(8)
                     .overlay(Text("다음").foregroundColor(.white))
             }.padding(.top, 100.0)
                 .opacity(textIsAppropriate() ? 1 : 0)
                 .simultaneousGesture(TapGesture().onEnded({
-                    firstNaviLinkActive = false
+                    self.finishTime = saveTime()
                 }))
         }
     }
@@ -75,6 +75,7 @@ struct WhenFinishView: View {
             return true
         }
     func isSame() -> Bool {
+        
         let whenFinish: String = whenFinishHour_1+whenFinishHour_2+":"+whenFinishMinute_1+whenFinishMinute_2
         if whenFinish == whenStart {
             return false
@@ -102,6 +103,6 @@ struct WhenFinishView: View {
 
 struct WhenFinishView_Previews: PreviewProvider {
     static var previews: some View {
-        WhenFinishView(whenSleep: "", whenStart: "", firstNaviLinkActive: .constant(true))
+        WhenFinishView(whenSleep: "", whenStart: "")
     }
 }
