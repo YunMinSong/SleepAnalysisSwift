@@ -18,6 +18,7 @@ struct WhenStartView: View {
     let whenSleep: String
     
     @AppStorage("whenStart") private var startTime: String = ""
+    @AppStorage("UserId") private var userId: String = "-"
     
     @State var isValid: Bool = true
     @State var userName: String = "홍길동"
@@ -33,7 +34,7 @@ struct WhenStartView: View {
                 .font(.title)
                 .bold()
                 .alignmentGuide(.leading, computeValue: {d in -20.0})
-            Text("\(userName)님의 근무 시작 시간을 알려주세요")
+            Text("\(userId)님의 근무 시작 시간을 알려주세요")
                 .font(.custom("descript", size: 14))
                 .padding(.vertical, 2)
                 .alignmentGuide(.leading, computeValue: {d in -20.0})

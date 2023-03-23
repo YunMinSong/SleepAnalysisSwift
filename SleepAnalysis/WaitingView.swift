@@ -9,7 +9,8 @@ import SwiftUI
 
 struct WaitingView: View {
     
-    @AppStorage("UserEmail") var userEmail: String = ""
+    @AppStorage("UserEmail") private var userEmail: String = ""
+    @AppStorage("UserId") private var userId: String = "-"
     let email: String
     
     var body: some View {
@@ -28,6 +29,7 @@ Calm을 구성중이에요
         }.navigationBarBackButtonHidden()
             .onAppear {
                 self.userEmail = email
+                self.userId = extractId(email: email)
             }
     }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CheckView: View {
     
-    @AppStorage("UserEmail") var userEmail: String = ""
+    @AppStorage("UserEmail") private var userEmail: String = ""
     
     let email: String
     

@@ -18,6 +18,7 @@ let maxLength: Int = 1
 struct WhenSleepView: View {
     
     @AppStorage("whenSleep") private var sleepTime: String = ""
+    @AppStorage("UserId") private var userId: String = "-"
     
     @State var isValid: Bool = true
     @State var userName: String = "홍길동"
@@ -32,7 +33,7 @@ struct WhenSleepView: View {
                 .font(.title)
                 .bold()
                 .alignmentGuide(.leading, computeValue: {d in -20.0})
-            Text("\(userName)님이 희망하시는 취침시간을 알려주세요")
+            Text("\(userId)님이 희망하시는 취침시간을 알려주세요")
                 .font(.custom("descript", size: 14))
                 .padding(.vertical, 2)
                 .alignmentGuide(.leading, computeValue: {d in -20.0})

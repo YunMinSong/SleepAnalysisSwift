@@ -6,7 +6,7 @@
 //
 /*
  To do
- 1. Load user name
+1. Add calculated recommend time
  */
 
 import SwiftUI
@@ -15,6 +15,7 @@ struct RecommendView: View {
     @AppStorage("whenSleep") private var sleepTime: String = ""
     @AppStorage("whenStart") private var startTime: String = ""
     @AppStorage("whenFinish") private var finishTime: String = ""
+    @AppStorage("UserId") private var userId: String = "-"
     
     @State private var userName: String = "홍길동"
     //Put calculated one
@@ -29,9 +30,9 @@ struct RecommendView: View {
                 Rectangle()
                     .foregroundColor(Color(red: 0.948, green: 0.953, blue: 0.962))
                 if sleepTime == "" || startTime == "" || finishTime == "" {
-                    BeforeTimeGet(userName: $userName)
+                    BeforeTimeGet(userName: userId)
                 } else {
-                    AfterTimeGet(userName: $userName, from1: $from1, to1: $to1, from2: $from2, to2: $to2, whenSleep: sleepTime, whenStart: startTime, whenFinish: finishTime)
+                    AfterTimeGet(userName: userId, from1: $from1, to1: $to1, from2: $from2, to2: $to2, whenSleep: sleepTime, whenStart: startTime, whenFinish: finishTime)
                 }
             }.navigationTitle("추천 수면")
         }.navigationBarBackButtonHidden()
@@ -40,7 +41,8 @@ struct RecommendView: View {
 }
 
 struct BeforeTimeGet: View {
-    @Binding var userName: String
+    //@Binding var userName: String
+    let userName: String
     
     var body: some View {
         ZStack {
@@ -75,7 +77,8 @@ struct BeforeTimeGet: View {
 
 struct AfterTimeGet: View {
     
-    @Binding var userName: String
+    //@Binding var userName: String
+    let userName: String
     @Binding var from1: String
     @Binding var to1: String
     @Binding var from2: String
