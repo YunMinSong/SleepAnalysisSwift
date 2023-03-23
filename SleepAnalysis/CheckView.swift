@@ -8,21 +8,24 @@
 import SwiftUI
 
 struct CheckView: View {
+    
+    @AppStorage("UserEmail") var userEmail: String = ""
+    
     let email: String
     
     var body: some View {
         VStack(alignment: .center) {
             Image("tangle")
                 .padding(.top, 200.0)
-            //Classification should be added
-            if true {
-                FirstUser(email: email)
-            } else {
+            if email == self.userEmail {
                 RegisteredUser(email: email)
+            } else {
+                FirstUser(email: email)
             }
         }
     }
 }
+
 // If there is no sleep data already registered
 struct FirstUser: View {
     

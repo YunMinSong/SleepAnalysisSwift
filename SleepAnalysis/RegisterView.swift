@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct RegisterView: View {
     
@@ -19,7 +20,7 @@ struct RegisterView: View {
                 .padding(.top, 100.0)
             Text("Calm이 수면 정보를 기억해둘게요")
                 .foregroundColor(Color(red: 0.481, green: 0.511, blue: 0.57))
-            EmailField(email: $email)
+            CustomField(text: $email, title: "이메일", example: "example@example.com")
                 .padding(.top, 50.0)
             Spacer()
             if isValidEmail(testStr: email) {
@@ -41,31 +42,54 @@ struct RegisterView: View {
     }
 }
 
-struct EmailField: View {
+class CustomTextField: UITextField {
+
+    private func getKeyboardLanguage() -> String? {
+        return "ko-KR"
+    }
+
+    override var textInputMode: UITextInputMode? {
+        if let language = getKeyboardLanguage() {
+            for inputMode in UITextInputMode.activeInputModes {
+                if inputMode.primaryLanguage! == language {
+                    return inputMode
+                }
+            }
+        }
+        return super.textInputMode
+    }
+
+}
+
+struct CustomField: View {
     
-    @Binding var email: String
+    @Binding var text: String
+    let title: String
+    let example: String
     
     var body: some View {
         Rectangle()
             .foregroundColor(Color(red: 0.956, green: 0.961, blue: 0.965))
             .frame(width: 358, height: 56)
             .cornerRadius(8)
-            .overlay(inField(email: $email))
+            .overlay(inField(text: $text, title: title, example: example))
         }
     }
 
-
 struct inField: View {
     
-    @Binding var email: String
+    @Binding var text: String
+    
+    let title: String
+    let example: String
     
     var body: some View {
         HStack {
-            Text("이메일")
+            Text(title)
                 .bold()
                 .foregroundColor(Color(red: 0.655, green: 0.675, blue: 0.713))
                 .padding(.leading, 25.0)
-            TextField("example@example.com", text: $email)
+            TextField(example, text: $text)
                 .foregroundColor(.black)
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
