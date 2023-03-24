@@ -61,6 +61,12 @@ struct ScheduleView: View {
         self.fullFormatter = DateFormatter(dateFormat: "dd MMMM yyyy", calendar: calendar)
         
         requestSleepAuthorization()
+        
+        _entries = FetchRequest<Entry>(sortDescriptors: [NSSortDescriptor(key: "sleepStart", ascending: false)],
+                                       predicate: NSPredicate(
+                                        format: "sleepStart >= %@ && sleepEnd <= %@",
+                                        Calendar.current.startOfDay(for: $selectedDate.wrappedValue) as CVarArg,
+                                        Calendar.current.startOfDay(for: $selectedDate.wrappedValue + 86400) as CVarArg))
     }
     
     var body: some View {
@@ -183,27 +189,39 @@ struct ScheduleView: View {
                 }
             )
             .equatable()
-            .cornerRadius(15, corners: [.bottomLeft, .bottomRight])
+            .background(Color.white)
+            .cornerRadius(20, corners: [.bottomLeft, .bottomRight])
             
             VStack{
-                VStack{
-                    AlertView()
-                        .padding()
-                        .background(.white)
-                        .previewLayout(.fixed(width: 400, height: 60))
-                        .cornerRadius(15)
-                        .onTapGesture{print("you clicked alertView")}
-                }.padding(.bottom, 20)
-                
-                AlertView()
-                    .padding()
-                    .background(.white)
-                    .previewLayout(.fixed(width: 400, height: 60))
-                    .cornerRadius(15)
-                    .onTapGesture{print("you clicked alertView")}
-            }.padding(20)
-                .background(Color.gray.brightness(0.35))
-        }
+                List(entries) { entry in
+                    NavigationLink {
+                        CalendarDetailView(entry: entry)
+                    } label: {
+                        //                    CalendarCardView(entry: entry)
+                        Text("Start of sleep: \(entry.sleepStart!.formatted(date: .omitted ,time: .shortened))")
+                        Text("End of sleep: \(entry.sleepEnd!.formatted(date: .omitted, time: .shortened))")
+                        Text("Duration of sleep: \(entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)/60.0/60.0) hours")
+                    }
+                }.listStyle(.plain)
+//                VStack{
+//                    AlertView()
+//                        .padding()
+//                        .background(.white)
+//                        .previewLayout(.fixed(width: 400, height: 60))
+//                        .cornerRadius(15)
+//                        .onTapGesture{print("you clicked alertView")}
+//                }.padding(.bottom, 20)
+//
+//                AlertView()
+//                    .padding()
+//                    .background(.white)
+//                    .previewLayout(.fixed(width: 400, height: 60))
+//                    .cornerRadius(15)
+//                    .onTapGesture{print("you clicked alertView")}
+            }.cornerRadius(20)
+                .padding([.bottom, .leading, .trailing], 15)
+                .padding([.top], 8)
+        }.background(Color.gray.brightness(0.35))
     }
     
     func dateHasEvents(date: Date) -> Bool {
@@ -320,7 +338,6 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
             }
             .frame(height: days.count == 42 ? 300 : 270)
             .shadow(color: colorScheme == .dark ? .white.opacity(0.4) : .black.opacity(0.35), radius: 5)
-            
 //            List(entries) { entry in
 //                NavigationLink {
 //                    CalendarDetailView(entry: entry)
@@ -334,7 +351,6 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
         }.onAppear{
             requestSleepAuthorization()
         }
-        .cornerRadius(15, corners: [.bottomLeft, .bottomRight])
     }
 }
 
