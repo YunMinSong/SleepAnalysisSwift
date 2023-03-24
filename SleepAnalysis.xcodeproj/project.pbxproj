@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C3DA74929C9317C001E92A7 /* BeforeRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3DA74829C9317C001E92A7 /* BeforeRegisterView.swift */; };
+		3C3DA74B29C93684001E92A7 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3DA74A29C93684001E92A7 /* RegisterView.swift */; };
+		3C3DA74D29C93F9A001E92A7 /* CheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3DA74C29C93F9A001E92A7 /* CheckView.swift */; };
+		3C3DA74F29C9452D001E92A7 /* WaitingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3DA74E29C9452D001E92A7 /* WaitingView.swift */; };
+		3C3DA75129C94985001E92A7 /* FinishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3DA75029C94985001E92A7 /* FinishView.swift */; };
+		3C858FCA29C01450003A7704 /* RecommendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C858FC929C01450003A7704 /* RecommendView.swift */; };
+		3C858FCC29C03529003A7704 /* WhenSleepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C858FCB29C03529003A7704 /* WhenSleepView.swift */; };
+		3CFE4CF729C5A28A00BDDAF9 /* WhenStartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CFE4CF629C5A28A00BDDAF9 /* WhenStartView.swift */; };
+		3CFE4CF929C5AA4800BDDAF9 /* WhenFinishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CFE4CF829C5AA4800BDDAF9 /* WhenFinishView.swift */; };
 		404A6C0429AC7BC700DDE5B6 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404A6C0329AC7BC700DDE5B6 /* Theme.swift */; };
 		404A6C0929B605B300DDE5B6 /* ContentUtilsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404A6C0829B605B200DDE5B6 /* ContentUtilsView.swift */; };
 		404A6C0B29C2A20500DDE5B6 /* ScheduleUtilsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404A6C0A29C2A20500DDE5B6 /* ScheduleUtilsView.swift */; };
@@ -45,6 +54,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3C3DA74829C9317C001E92A7 /* BeforeRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeforeRegisterView.swift; sourceTree = "<group>"; };
+		3C3DA74A29C93684001E92A7 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
+		3C3DA74C29C93F9A001E92A7 /* CheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckView.swift; sourceTree = "<group>"; };
+		3C3DA74E29C9452D001E92A7 /* WaitingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitingView.swift; sourceTree = "<group>"; };
+		3C3DA75029C94985001E92A7 /* FinishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishView.swift; sourceTree = "<group>"; };
+		3C858FC929C01450003A7704 /* RecommendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendView.swift; sourceTree = "<group>"; };
+		3C858FCB29C03529003A7704 /* WhenSleepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhenSleepView.swift; sourceTree = "<group>"; };
+		3CFE4CF629C5A28A00BDDAF9 /* WhenStartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhenStartView.swift; sourceTree = "<group>"; };
+		3CFE4CF829C5AA4800BDDAF9 /* WhenFinishView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhenFinishView.swift; sourceTree = "<group>"; };
 		404A6C0329AC7BC700DDE5B6 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		404A6C0829B605B200DDE5B6 /* ContentUtilsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentUtilsView.swift; sourceTree = "<group>"; };
 		404A6C0A29C2A20500DDE5B6 /* ScheduleUtilsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleUtilsView.swift; sourceTree = "<group>"; };
@@ -142,8 +160,19 @@
 				40A350A72917D78000D3E80C /* MainView.swift */,
 				409F4E4A291176F30065BC3F /* ContentView.swift */,
 				404A6C0829B605B200DDE5B6 /* ContentUtilsView.swift */,
+				409F4E4C291176F50065BC3F /* Assets.xcassets */,
+				3C3DA74829C9317C001E92A7 /* BeforeRegisterView.swift */,
+				3C3DA74A29C93684001E92A7 /* RegisterView.swift */,
+				3C3DA74C29C93F9A001E92A7 /* CheckView.swift */,
+				3C3DA74E29C9452D001E92A7 /* WaitingView.swift */,
+				3C3DA75029C94985001E92A7 /* FinishView.swift */,
+				40A350A72917D78000D3E80C /* MainView.swift */,
 				40A350A92917D88600D3E80C /* ScheduleView.swift */,
 				404A6C0A29C2A20500DDE5B6 /* ScheduleUtilsView.swift */,
+				3C858FC929C01450003A7704 /* RecommendView.swift */,
+				3C858FCB29C03529003A7704 /* WhenSleepView.swift */,
+				3CFE4CF629C5A28A00BDDAF9 /* WhenStartView.swift */,
+				3CFE4CF829C5AA4800BDDAF9 /* WhenFinishView.swift */,
 				40A350AB2917DBAF00D3E80C /* SettingsView.swift */,
 				40C1A59C291CE155002EFFBB /* API */,
 				40C619A7291D6738009369BE /* PersistanceController.swift */,
@@ -314,19 +343,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C858FCC29C03529003A7704 /* WhenSleepView.swift in Sources */,
 				404A6C0929B605B300DDE5B6 /* ContentUtilsView.swift in Sources */,
 				40C619AB291D6979009369BE /* Main.xcdatamodeld in Sources */,
 				40C619A6291D5D66009369BE /* PCRpredictionAPI.swift in Sources */,
+				3CFE4CF729C5A28A00BDDAF9 /* WhenStartView.swift in Sources */,
 				40A350AC2917DBAF00D3E80C /* SettingsView.swift in Sources */,
+				3C3DA74F29C9452D001E92A7 /* WaitingView.swift in Sources */,
 				40B3ECA6291DEAE4001C4C4B /* HealthKitAPI.swift in Sources */,
 				404A6C0429AC7BC700DDE5B6 /* Theme.swift in Sources */,
 				404A6C0B29C2A20500DDE5B6 /* ScheduleUtilsView.swift in Sources */,
 				409F4E4B291176F30065BC3F /* ContentView.swift in Sources */,
+				3C3DA74B29C93684001E92A7 /* RegisterView.swift in Sources */,
 				40C619A8291D6738009369BE /* PersistanceController.swift in Sources */,
 				40A350AA2917D88600D3E80C /* ScheduleView.swift in Sources */,
 				40A350A82917D78000D3E80C /* MainView.swift in Sources */,
+				3C3DA75129C94985001E92A7 /* FinishView.swift in Sources */,
 				409F4E49291176F30065BC3F /* SleepAnalysisApp.swift in Sources */,
+				3CFE4CF929C5AA4800BDDAF9 /* WhenFinishView.swift in Sources */,
 				40C1A59B291CE093002EFFBB /* FakeAPI.swift in Sources */,
+				3C3DA74D29C93F9A001E92A7 /* CheckView.swift in Sources */,
+				3C858FCA29C01450003A7704 /* RecommendView.swift in Sources */,
+				3C3DA74929C9317C001E92A7 /* BeforeRegisterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
