@@ -9,30 +9,6 @@ import SwiftUI
 import CoreData
 import HealthKit
 
-//struct ScheduleView: View {
-//    @AppStorage("clickCount") var clickCount: Int = 0
-//    @State private var toggleOn: Bool = false
-//
-//    var body: some View {
-//        VStack {
-//            HStack{
-//                Text("Schedule App")
-//                Button(
-//                    action: {clickCount = clickCount + 1},
-//                    label: {Text("Click Count\(clickCount)")}
-//                )
-//                Spacer() //fill the space
-//            }
-//            Toggle(isOn: $toggleOn, label: {Text(toggleOn ? "Toggle" : "Not toggled")})
-//        }
-//        .padding()
-//        .onAppear{
-//            let FakeAPI = FakeAPI()
-//            clickCount = FakeAPI.giveNumber()
-//        }
-//    }
-//}
-
 extension Date: RawRepresentable {
     private static let formatter = ISO8601DateFormatter()
     
@@ -42,6 +18,23 @@ extension Date: RawRepresentable {
     
     public init?(rawValue: String) {
         self = Date.formatter.date(from: rawValue) ?? Date()
+    }
+}
+
+extension View {
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(RoundedCorner(radius: radius, corners: corners) )
+    }
+}
+
+struct RoundedCorner: Shape {
+
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        return Path(path.cgPath)
     }
 }
 
@@ -190,6 +183,26 @@ struct ScheduleView: View {
                 }
             )
             .equatable()
+            .cornerRadius(15, corners: [.bottomLeft, .bottomRight])
+            
+            VStack{
+                VStack{
+                    AlertView()
+                        .padding()
+                        .background(.white)
+                        .previewLayout(.fixed(width: 400, height: 60))
+                        .cornerRadius(15)
+                        .onTapGesture{print("you clicked alertView")}
+                }.padding(.bottom, 20)
+                
+                AlertView()
+                    .padding()
+                    .background(.white)
+                    .previewLayout(.fixed(width: 400, height: 60))
+                    .cornerRadius(15)
+                    .onTapGesture{print("you clicked alertView")}
+            }.padding(20)
+                .background(Color.gray.brightness(0.35))
         }
     }
     
@@ -291,11 +304,15 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                     }
                 }
                 
-                Button(action: {
-                    print(lastSleep.description)
-                    readSleep(from: lastSleep, to: Date.now)
-                    lastSleep = Date.now
-                }, label: {Text("Sync with Healthkit")})
+                Capsule()
+                    .fill(Color.secondary)
+                    .frame(width: 30, height: 3)
+                
+//                Button(action: {
+//                    print(lastSleep.description)
+//                    readSleep(from: lastSleep, to: Date.now)
+//                    lastSleep = Date.now
+//                }, label: {Text("Sync with Healthkit")})
                 
 //                Button(action: {
 //                    
@@ -304,20 +321,20 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
             .frame(height: days.count == 42 ? 300 : 270)
             .shadow(color: colorScheme == .dark ? .white.opacity(0.4) : .black.opacity(0.35), radius: 5)
             
-            List(entries) { entry in
-                NavigationLink {
-                    CalendarDetailView(entry: entry)
-                } label: {
-                    //                    CalendarCardView(entry: entry)
-                    Text("Start of sleep: \(entry.sleepStart!.formatted(date: .omitted ,time: .shortened))")
-                    Text("End of sleep: \(entry.sleepEnd!.formatted(date: .omitted, time: .shortened))")
-                    Text("Duration of sleep: \(entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)/60.0/60.0) hours")
-                }
-            }.listStyle(.plain)
+//            List(entries) { entry in
+//                NavigationLink {
+//                    CalendarDetailView(entry: entry)
+//                } label: {
+//                    //                    CalendarCardView(entry: entry)
+//                    Text("Start of sleep: \(entry.sleepStart!.formatted(date: .omitted ,time: .shortened))")
+//                    Text("End of sleep: \(entry.sleepEnd!.formatted(date: .omitted, time: .shortened))")
+//                    Text("Duration of sleep: \(entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)/60.0/60.0) hours")
+//                }
+//            }.listStyle(.plain)
         }.onAppear{
             requestSleepAuthorization()
         }
-        
+        .cornerRadius(15, corners: [.bottomLeft, .bottomRight])
     }
 }
 
