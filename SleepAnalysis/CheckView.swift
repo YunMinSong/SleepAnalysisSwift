@@ -30,7 +30,7 @@ struct CheckView: View {
 struct FirstUser: View {
     
     let title: String = """
-Calm을
+2Sleep을
 처음 사용하시나요?
 """
     let description: String = """

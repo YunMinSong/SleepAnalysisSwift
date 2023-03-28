@@ -14,6 +14,7 @@ struct WaitingView: View {
     let email: String
     
     var body: some View {
+        var count = 0
         VStack(alignment: .center) {
             Image("Circle1")
                 .padding(.top, 300.0)
@@ -21,15 +22,23 @@ struct WaitingView: View {
             Text("""
 \(extractId(email:email))님의
 수면 기록을 바탕으로
-Calm을 구성중이에요
+2Sleep을 구성중이에요
 """)
             .font(.title2)
             .bold()
             .padding(.bottom, 150.0)
+            //Put calculating in here
+            NavigationLink(destination: FinishView()) {
+                Text("다음")
+                    .foregroundColor(.blue)
+            }
         }.navigationBarBackButtonHidden()
             .onAppear {
                 self.userEmail = email
                 self.userId = extractId(email: email)
+                for _ in 0...11 {
+                    count += 1
+                }
             }
     }
 }
