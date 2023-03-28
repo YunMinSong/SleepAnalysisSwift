@@ -48,8 +48,8 @@ struct BeforeTimeGet: View {
         ZStack {
             Rectangle()
                 .foregroundColor(.white)
-                .frame(height: 400)
                 .cornerRadius(16.0)
+                .frame(height: 400)
             VStack(alignment: .leading) {
                 Text("수면 추천 받기")
                     .font(.title)
@@ -58,9 +58,13 @@ struct BeforeTimeGet: View {
                 Text("\(userName)님에게 딱 맞는 수면 패턴을 추천해 드릴게요")
                     .font(.custom("Small", size: 15))
                     .padding(.top, 5.0)
-                Image("sskoo")
+                GifImage("notFound")
+                    .frame(width: 200, height: 200)
+                    .padding(.horizontal, 50)
+                /*Image("sskoo")
                     .padding(.vertical, 50.0)
                     .alignmentGuide(.leading, computeValue: { d in -100.0})
+                 */
                 NavigationLink(destination: WhenSleepView()) {
                     Rectangle()
                         .foregroundColor(.blue)
@@ -68,8 +72,7 @@ struct BeforeTimeGet: View {
                         .frame(width: 310, height: 48)
                         .overlay(Text("시작하기")
                             .foregroundColor(.white))
-                }
-            }
+                }            }
         }.padding(.horizontal)
             .padding(.bottom, 150.0)
     }
