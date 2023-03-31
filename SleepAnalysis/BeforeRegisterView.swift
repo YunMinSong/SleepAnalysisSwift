@@ -6,8 +6,16 @@
 //
 
 import SwiftUI
+import HealthKit
 
 struct BeforeRegisterView: View {
+    
+    //To load sleep data from HealthKit
+    @State var healthStore = HKHealthStore()
+    
+    let typeToShare = Set([HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!])
+    
+    let typeToRead = Set([HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!])
     
     let title: String = """
 자도자도 피곤하다면?
@@ -28,26 +36,51 @@ struct BeforeRegisterView: View {
                         .font(.title2)
                         .bold()
                         .padding(.top, 60.0)
-                        
+                    
                     Text(description)
                         .foregroundColor(Color(red: 0.481, green: 0.511, blue: 0.57))
                         .padding(.top, 3.0)
                     Spacer()
-                    NavigationLink(destination: RegisterView()) {
+                    NavigationLink(destination: RegisterView(healthStore: healthStore)) {
                         Rectangle()
                             .foregroundColor(.blue)
                             .frame(width: 358, height: 56)
                             .cornerRadius(28)
                             .overlay(Text("시작하기").foregroundColor(.white))
-                    }
+                    }.simultaneousGesture(TapGesture().onEnded({
+                        requestAuthorization()
+                    }))
+                    
                 }
             }
         }
     }
-}
-
-struct BeforeRegisterView_Previews: PreviewProvider {
-    static var previews: some View {
-        BeforeRegisterView()
+    func configure() {
+            if !HKHealthStore.isHealthDataAvailable() {
+                requestAuthorization()
+            }else {
+                //retrieveSleepData()
+            }
+        }
+        
+        func requestAuthorization() {
+            
+            self.healthStore.requestAuthorization(toShare: typeToShare, read: typeToRead) { success, error in
+                if error != nil {
+                    print(error.debugDescription)
+                }else{
+                    if success {
+                        print("권한이 허락되었습니다.")
+                    }else{
+                        print("권한이 아직 없어요.")
+                    }
+                }
+            }
+        }
+    
+    struct BeforeRegisterView_Previews: PreviewProvider {
+        static var previews: some View {
+            BeforeRegisterView()
+        }
     }
 }

@@ -10,6 +10,7 @@
  */
 
 import SwiftUI
+import EventKit
 
 struct RecommendView: View {
     @AppStorage("whenSleep") private var sleepTime: String = ""
@@ -122,7 +123,9 @@ struct AfterTimeGet: View {
                             .bold()
                             .padding(.top)
                         BoxWithRecommend(from1: $from1, to1: $to1, from2: $from2, to2: $to2)
-                        Button(action: {}) {
+                        Button(action: {
+                            
+                        }) {
                             Rectangle()
                                 .foregroundColor(.blue)
                                 .frame(width: 310, height: 48)

@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import HealthKit
 
 struct WaitingView: View {
     
     @AppStorage("UserEmail") private var userEmail: String = ""
     @AppStorage("UserId") private var userId: String = "-"
+    let healthStore: HKHealthStore
     let email: String
+    @State var sleepForWeek: [HKCategorySample] = []
     
     var body: some View {
         var count = 0
@@ -43,6 +46,27 @@ struct WaitingView: View {
     }
 }
 
+//Get sleep data for a week
+
+//String -> Date
+func makeStringToDate(str:String) -> Date {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.timeZone = TimeZone(abbreviation: "KST")
+
+        return dateFormatter.date(from: str)!
+}
+
+//Date -> String
+func dateToString(date:Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+
+       return dateFormatter.string(from: date)
+}
+
+
 func extractId(email: String) -> String {
     let firstSpace = email.firstIndex(of: "@") ?? email.endIndex
     let id = email[..<firstSpace]
@@ -51,6 +75,6 @@ func extractId(email: String) -> String {
 
 struct WaitingView_Previews: PreviewProvider {
     static var previews: some View {
-        WaitingView(email: "")
+        WaitingView(healthStore: HKHealthStore(), email: "")
     }
 }

@@ -7,10 +7,12 @@
 
 import SwiftUI
 import UIKit
+import HealthKit
 
 struct RegisterView: View {
     
     @State var email: String = ""
+    let healthStore: HKHealthStore
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -24,7 +26,7 @@ struct RegisterView: View {
                 .padding(.top, 50.0)
             Spacer()
             if isValidEmail(testStr: email) {
-                NavigationLink(destination: CheckView(email: email)) {
+                NavigationLink(destination: CheckView(healthStore: healthStore, email: email)) {
                     Rectangle()
                         .foregroundColor(.blue)
                         .frame(width: 358, height: 56)
@@ -105,6 +107,6 @@ func isValidEmail(testStr:String) -> Bool {
 
 struct RegisterView_Previews: PreviewProvider {
     static var previews: some View {
-        RegisterView()
+        RegisterView(healthStore: HKHealthStore())
     }
 }
