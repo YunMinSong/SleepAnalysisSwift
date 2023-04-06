@@ -13,9 +13,10 @@ import SwiftUI
 import EventKit
 
 struct RecommendView: View {
-    @AppStorage("whenSleep") private var sleepTime: String = ""
-    @AppStorage("whenStart") private var startTime: String = ""
-    @AppStorage("whenFinish") private var finishTime: String = ""
+    @AppStorage("sleep_onset") var sleep_onset: Date = Date.now
+    @AppStorage("work_onset") var work_onset: Date = Date.now
+    @AppStorage("work_offset") var work_offset: Date = Date.now
+    @AppStorage("Registered") var isRegistered: Bool = false
     @AppStorage("UserId") private var userId: String = "-"
     
     @State private var userName: String = "홍길동"
@@ -30,10 +31,10 @@ struct RecommendView: View {
             ZStack {
                 Rectangle()
                     .foregroundColor(Color(red: 0.948, green: 0.953, blue: 0.962))
-                if sleepTime == "" || startTime == "" || finishTime == "" {
+                if sleep_onset == Date.now || work_onset == Date.now || work_offset == Date.now || !isRegistered {
                     BeforeTimeGet(userName: userId)
                 } else {
-                    AfterTimeGet(userName: userId, from1: $from1, to1: $to1, from2: $from2, to2: $to2, whenSleep: sleepTime, whenStart: startTime, whenFinish: finishTime)
+                    AfterTimeGet(userName: userId, from1: $from1, to1: $to1, from2: $from2, to2: $to2, sleep_onset: sleep_onset, work_onset: work_onset, work_offset: work_offset)
                 }
             }.navigationTitle("추천 수면")
         }.navigationBarBackButtonHidden()
@@ -88,9 +89,9 @@ struct AfterTimeGet: View {
     @Binding var from2: String
     @Binding var to2: String
     
-    let whenSleep: String
-    let whenStart: String
-    let whenFinish: String
+    let sleep_onset: Date
+    let work_onset: Date
+    let work_offset: Date
     
     var body: some View {
         ScrollView() {
@@ -108,7 +109,7 @@ struct AfterTimeGet: View {
                             .padding(.top)
                         Text("말씀하신 내용을 바탕으로 추천해드려요")
                             .font(.custom("Small", size: 15))
-                        BoxWithTwoCaption(whenSleep: whenSleep, whenStart: whenStart, whenFinish: whenFinish)
+                        BoxWithTwoCaption(sleep_onset: sleep_onset, work_onset: work_onset, work_offset: work_offset)
                     }
                 }.padding()
                 //Lower one
@@ -145,9 +146,9 @@ struct AfterTimeGet: View {
 
 struct BoxWithTwoCaption: View {
     
-    let whenSleep: String
-    let whenStart: String
-    let whenFinish: String
+    let sleep_onset: Date
+    let work_onset: Date
+    let work_offset: Date
     
     var body: some View {
         ZStack {
@@ -157,8 +158,8 @@ struct BoxWithTwoCaption: View {
                 .cornerRadius(16)
                 .padding(.vertical, 15)
             VStack(alignment: .center) {
-                SmallCaptionWithSleep(whenSleep: whenSleep)
-                SmallCaptionWithWork(whenStart: whenStart, whenFinish: whenFinish)
+                SmallCaptionWithSleep(sleep_onset: sleep_onset)
+                SmallCaptionWithWork(work_onset: work_onset, work_offset: work_offset)
             }
         }
     }
@@ -235,7 +236,7 @@ struct RecommendContent: View {
 
 struct SmallCaptionWithSleep: View {
     
-    let whenSleep: String
+    let sleep_onset: Date
     
     var body: some View {
         ZStack {
@@ -243,15 +244,15 @@ struct SmallCaptionWithSleep: View {
                 .foregroundColor(.white)
                 .frame(width: 278, height: 95)
                 .cornerRadius(8)
-            HopeSleepContent(whenSleep: whenSleep)
+            HopeSleepContent(sleep_onset: sleep_onset)
         }
     }
 }
 
 struct SmallCaptionWithWork: View {
     
-    let whenStart: String
-    let whenFinish: String
+    let work_onset: Date
+    let work_offset: Date
     
     var body: some View {
         ZStack {
@@ -259,14 +260,14 @@ struct SmallCaptionWithWork: View {
                 .foregroundColor(.white)
                 .frame(width: 278, height: 95)
                 .cornerRadius(8)
-            WorkContent(whenStart: whenStart, whenFinish: whenFinish)
+            WorkContent(work_onset: work_onset, work_offset: work_offset)
         }
     }
 }
 
 struct HopeSleepContent: View {
     
-    let whenSleep: String
+    let sleep_onset: Date
     
     var body: some View {
         VStack(alignment: .trailing, spacing: 30) {
@@ -276,9 +277,9 @@ struct HopeSleepContent: View {
                 Image("Subtract")
             }
             HStack(alignment: .bottom) {
-                Text(specificTime(original: whenSleep).former)
+                Text(specificTime(original: dateToString(date: sleep_onset)).former)
                     .font(.custom("Small", size: 15))
-                Text(specificTime(original:whenSleep).backward)
+                Text(specificTime(original:dateToString(date: sleep_onset)).backward)
                     .font(.headline)
             }
         }
@@ -287,8 +288,8 @@ struct HopeSleepContent: View {
 
 struct WorkContent: View {
     
-    let whenStart: String
-    let whenFinish: String
+    let work_onset: Date
+    let work_offset: Date
     
     var body: some View {
         VStack(alignment: .trailing, spacing: 30) {
@@ -299,15 +300,15 @@ struct WorkContent: View {
             }
             HStack(spacing: 40) {
                 HStack(alignment: .bottom) {
-                    Text(specificTime(original: whenStart).former)
+                    Text(specificTime(original: dateToString(date: work_onset)).former)
                         .font(.custom("Small", size: 15))
-                    Text(specificTime(original: whenStart).backward)
+                    Text(specificTime(original: dateToString(date: work_onset)).backward)
                         .font(.headline)
                 }
                 HStack(alignment: .bottom) {
-                    Text(specificTime(original: whenFinish).former)
+                    Text(specificTime(original: dateToString(date: work_offset)).former)
                         .font(.custom("Small", size: 15))
-                    Text(specificTime(original:whenFinish).backward)
+                    Text(specificTime(original:dateToString(date: work_offset)).backward)
                         .font(.headline)
                 }
             }

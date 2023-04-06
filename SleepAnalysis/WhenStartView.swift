@@ -15,9 +15,9 @@ import Combine
 
 struct WhenStartView: View {
     
-    let whenSleep: String
+    let sleep_onset: Date
     
-    @AppStorage("whenStart") private var startTime: String = ""
+    @AppStorage("work_onset") var work_onset: Date = Date.now
     @AppStorage("UserId") private var userId: String = "-"
     
     @State var isValid: Bool = true
@@ -56,13 +56,13 @@ struct WhenStartView: View {
             .alignmentGuide(.leading, computeValue: {d in -20.0})
             .padding(.top, 80.0)
             
-            NavigationLink(destination: WhenFinishView(whenSleep: whenSleep, whenStart: saveTime())) {
+            NavigationLink(destination: WhenFinishView(sleep_onset: sleep_onset, work_onset: saveTime())) {
                 Rectangle().foregroundColor(.blue).frame(width: 390, height: 56).cornerRadius(8)
                     .overlay(Text("다음").foregroundColor(.white))
             }.padding(.top, 100.0)
                 .opacity(textIsAppropriate()&&timeIsAppropriate() ? 1 : 0)
                 .simultaneousGesture(TapGesture().onEnded({
-                    self.startTime = saveTime()
+                    self.work_onset = saveTime()
                 }))
         }
     }
@@ -76,8 +76,11 @@ struct WhenStartView: View {
         }
     
     func isSame() -> Bool {
-        let whenStart: String = whenStartHour_1+whenStartHour_2+":"+whenStartMinute_1+whenStartMinute_2
-        if whenStart == whenSleep {
+        let startHour = Int(whenStartHour_1+whenStartHour_2)
+        let startMinute = Int(whenStartMinute_1+whenStartMinute_2)
+        let dateComponents = DateComponents(year: todayYear.year, month: todayMonth.month, day: todayDay.day, hour: startHour, minute: startMinute)
+        let startDate = Calendar.current.date(from: dateComponents)
+        if startDate == sleep_onset {
             return false
         }
         return true
@@ -91,18 +94,21 @@ struct WhenStartView: View {
         }
         return true
     }
-    
-    func saveTime() -> String {
+    //Add checking whethere work_onset is already passed!
+    func saveTime() -> Date {
         if textIsAppropriate() && timeIsAppropriate() {
-            let whenStart: String = whenStartHour_1+whenStartHour_2+":"+whenStartMinute_1+whenStartMinute_2
-            return whenStart
+            let startHour = Int(whenStartHour_1+whenStartHour_2)
+            let startMinute = Int(whenStartMinute_1+whenStartMinute_2)
+            let dateComponents = DateComponents(year: todayYear.year, month: todayMonth.month, day: todayDay.day, hour: startHour, minute: startMinute)
+            let work_onset = Calendar.current.date(from: dateComponents) ?? Date()
+            return work_onset
         }
-        return ""
+        return Date()
     }
 }
 
 struct WhenStartView_Previews: PreviewProvider {
     static var previews: some View {
-        WhenStartView(whenSleep: "")
+        WhenStartView(sleep_onset: Date())
     }
 }

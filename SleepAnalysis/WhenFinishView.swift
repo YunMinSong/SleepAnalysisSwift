@@ -16,11 +16,12 @@ import Combine
 
 struct WhenFinishView: View {
     
-    let whenSleep: String
-    let whenStart: String
+    let sleep_onset: Date
+    let work_onset: Date
     
-    @AppStorage("whenFinish") private var finishTime: String = ""
+    @AppStorage("work_offset") var work_offset: Date = Date.now
     @AppStorage("UserId") private var userId: String = "-"
+    @AppStorage("Registered") var isRegistered: Bool = false
     
     @State var userName: String = "홍길동"
     @State var whenFinishHour_1: String = ""
@@ -63,7 +64,8 @@ struct WhenFinishView: View {
             }.padding(.top, 100.0)
                 .opacity(textIsAppropriate() ? 1 : 0)
                 .simultaneousGesture(TapGesture().onEnded({
-                    self.finishTime = saveTime()
+                    self.work_offset = saveTime()
+                    self.isRegistered = true
                 }))
         }
     }
@@ -76,9 +78,11 @@ struct WhenFinishView: View {
             return true
         }
     func isSame() -> Bool {
-        
-        let whenFinish: String = whenFinishHour_1+whenFinishHour_2+":"+whenFinishMinute_1+whenFinishMinute_2
-        if whenFinish == whenStart {
+        let finishHour = Int(whenFinishHour_1+whenFinishHour_2)
+        let finishMinute = Int(whenFinishMinute_1+whenFinishMinute_2)
+        let dateComponents = DateComponents(year: todayYear.year, month: todayMonth.month, day: todayDay.day, hour: finishHour, minute: finishMinute)
+        let finishDate = Calendar.current.date(from: dateComponents)
+        if finishDate == work_onset {
             return false
         }
         return true
@@ -92,18 +96,22 @@ struct WhenFinishView: View {
         }
         return true
     }
-    
-    func saveTime() -> String {
+    //Add checking whethere work_offset is already passed!
+    func saveTime() -> Date {
         if textIsAppropriate() && timeIsAppropriate() {
-            let whenFinish: String = whenFinishHour_1+whenFinishHour_2+":"+whenFinishMinute_1+whenFinishMinute_2
-            return whenFinish
+            //let whenFinish: String = whenFinishHour_1+whenFinishHour_2+":"+whenFinishMinute_1+whenFinishMinute_2
+            let finishHour = Int(whenFinishHour_1+whenFinishHour_2)
+            let finishMinute = Int(whenFinishMinute_1+whenFinishMinute_2)
+            let dateComponents = DateComponents(year: todayYear.year, month: todayMonth.month, day: todayDay.day, hour: finishHour, minute: finishMinute)
+            let work_offset = Calendar.current.date(from: dateComponents) ?? Date()
+            return work_offset
         }
-        return ""
+        return Date()
     }
 }
 
 struct WhenFinishView_Previews: PreviewProvider {
     static var previews: some View {
-        WhenFinishView(whenSleep: "", whenStart: "")
+        WhenFinishView(sleep_onset: Date(), work_onset: Date())
     }
 }

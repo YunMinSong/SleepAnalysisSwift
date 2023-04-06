@@ -11,8 +11,6 @@ import HealthKit
 struct CheckView: View {
     
     @AppStorage("UserEmail") private var userEmail: String = ""
-    let healthStore: HKHealthStore
-    
     let email: String
     
     var body: some View {
@@ -20,9 +18,9 @@ struct CheckView: View {
             Image("tangle")
                 .padding(.top, 200.0)
             if email == self.userEmail {
-                RegisteredUser(email: email, healthStore: healthStore)
+                RegisteredUser(email: email)
             } else {
-                FirstUser(email: email, healthStore: healthStore)
+                FirstUser(email: email)
             }
         }
     }
@@ -40,7 +38,6 @@ struct FirstUser: View {
 일주일간의 수면 기록을 수집할게요
 """
     let email: String
-    let healthStore: HKHealthStore
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -53,7 +50,7 @@ struct FirstUser: View {
                 .foregroundColor(Color(red: 0.481, green: 0.511, blue: 0.57))
                 .padding(.top, 3.0)
             Spacer()
-            NavigationLink(destination: WaitingView(healthStore: healthStore, email: email)) {
+            NavigationLink(destination: WaitingView(email: email)) {
                 Rectangle()
                     .foregroundColor(.blue)
                     .frame(width: 358, height: 56)
@@ -68,7 +65,6 @@ struct FirstUser: View {
 struct RegisteredUser: View {
     
     let email: String
-    let healthStore: HKHealthStore
     
     let description: String = """
 사용자를 위한 맞춤 수면을 위해서
@@ -89,7 +85,7 @@ struct RegisteredUser: View {
                 .foregroundColor(Color(red: 0.481, green: 0.511, blue: 0.57))
                 .padding(.top, 3.0)
             Spacer()
-            NavigationLink(destination: WaitingView(healthStore: healthStore, email: email)) {
+            NavigationLink(destination: WaitingView(email: email)) {
                 Rectangle()
                     .foregroundColor(.blue)
                     .frame(width: 358, height: 56)
@@ -103,6 +99,6 @@ struct RegisteredUser: View {
 
 struct CheckView_Previews: PreviewProvider {
     static var previews: some View {
-        CheckView(healthStore: HKHealthStore(), email: "")
+        CheckView(email: "")
     }
 }

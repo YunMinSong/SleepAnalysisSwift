@@ -12,12 +12,11 @@ struct WaitingView: View {
     
     @AppStorage("UserEmail") private var userEmail: String = ""
     @AppStorage("UserId") private var userId: String = "-"
-    let healthStore: HKHealthStore
+    let currentDate = Date()
     let email: String
     @State var sleepForWeek: [HKCategorySample] = []
     
     var body: some View {
-        var count = 0
         VStack(alignment: .center) {
             Image("Circle1")
                 .padding(.top, 300.0)
@@ -39,9 +38,8 @@ struct WaitingView: View {
             .onAppear {
                 self.userEmail = email
                 self.userId = extractId(email: email)
-                for _ in 0...11 {
-                    count += 1
-                }
+                //Collect sleep data during last 7 days
+                readSleep(from: Date(timeInterval: -604800, since: currentDate), to: currentDate)
             }
     }
 }
@@ -75,6 +73,6 @@ func extractId(email: String) -> String {
 
 struct WaitingView_Previews: PreviewProvider {
     static var previews: some View {
-        WaitingView(healthStore: HKHealthStore(), email: "")
+        WaitingView(email: "")
     }
 }

@@ -14,10 +14,13 @@ import SwiftUI
 import Combine
 
 let maxLength: Int = 1
+let todayYear = Calendar.current.dateComponents([.year], from: Date())
+let todayMonth = Calendar.current.dateComponents([.month], from: Date())
+let todayDay = Calendar.current.dateComponents([.day], from: Date())
 
 struct WhenSleepView: View {
     
-    @AppStorage("whenSleep") private var sleepTime: String = ""
+    @AppStorage("sleep_onset") var sleep_onset: Date = Date.now
     @AppStorage("UserId") private var userId: String = "-"
     
     @State var isValid: Bool = true
@@ -48,13 +51,13 @@ struct WhenSleepView: View {
             .alignmentGuide(.leading, computeValue: {d in -20.0})
             .padding(.top, 80.0)
             
-            NavigationLink(destination: WhenStartView(whenSleep: saveTime())) {
+            NavigationLink(destination: WhenStartView(sleep_onset: saveTime())) {
                 Rectangle().foregroundColor(.blue).frame(width: 390, height: 56).cornerRadius(8)
                     .overlay(Text("다음").foregroundColor(.white))
             }.padding(.top, 100.0)
                 .opacity(textIsAppropriate() && timeIsAppropriate() ? 1 : 0)
                 .simultaneousGesture(TapGesture().onEnded({
-                    self.sleepTime = saveTime()
+                    self.sleep_onset = saveTime()
                 }))
         }
     }
@@ -75,13 +78,17 @@ struct WhenSleepView: View {
         }
         return true
     }
-    
-    func saveTime() -> String {
+    //Add checking whethere sleep_onset is already passed!
+    func saveTime() -> Date {
         if textIsAppropriate() && timeIsAppropriate() {
-            let whenSleep: String = whenSleepHour_1+whenSleepHour_2+":"+whenSleepMinute_1+whenSleepMinute_2
-            return whenSleep
+            //let whenSleep: String = whenSleepHour_1+whenSleepHour_2+":"+whenSleepMinute_1+whenSleepMinute_2
+            let sleepHour = Int(whenSleepHour_1+whenSleepHour_2)
+            let sleepMinute = Int(whenSleepMinute_1+whenSleepMinute_2)
+            let dateComponents = DateComponents(year: todayYear.year, month: todayMonth.month, day: todayDay.day, hour: sleepHour, minute: sleepMinute)
+            sleep_onset = Calendar.current.date(from: dateComponents) ?? Date()
+            return sleep_onset
         }
-        return ""
+        return Date()
     }
 }
 
