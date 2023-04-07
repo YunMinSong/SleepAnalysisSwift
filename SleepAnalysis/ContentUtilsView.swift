@@ -51,18 +51,24 @@ struct SleepTimeView: View {
                 Spacer()
                 Text("logo")
             }
-            HStack {
-                Spacer()
-                Text(mainSleepStart.formatted(date: .numeric, time: .shortened))
-                Spacer()
-                Text("Duration: \(mainSleepEnd.timeIntervalSince(mainSleepStart)/3600, specifier: "%.0f") hours")
-            }
-            HStack {
-                Spacer()
-                Text(napSleepStart.formatted(date: .numeric, time: .shortened))
-                Spacer()
-                Text("Duration: \(napSleepEnd.timeIntervalSince(napSleepStart)/3600, specifier: "%.0f") hours")
-            }
+            VStack{
+                HStack {
+                    Spacer()
+                    Text(mainSleepStart.formatted(date: .numeric, time: .shortened))
+                    Text(mainSleepEnd.formatted(date: .numeric, time: .shortened))
+                    Spacer()
+                    Text("Duration: \(mainSleepEnd.timeIntervalSince(mainSleepStart)/3600, specifier: "%.0f") hours")
+                }
+                HStack {
+                    Spacer()
+                    Text(napSleepStart.formatted(date: .numeric, time: .shortened))
+                    Text(napSleepEnd.formatted(date: .numeric, time: .shortened))
+                    Spacer()
+                    Text("Duration: \(napSleepEnd.timeIntervalSince(napSleepStart)/3600, specifier: "%.0f") hours")
+                }
+            }.padding(15)
+                .background(Color.gray.brightness(0.35))
+                .cornerRadius(20)
         }
     }
 }

@@ -46,9 +46,7 @@ extension Date: RawRepresentable {
 }
 
 struct ScheduleView: View {
-    
-    @AppStorage("lastSleep") var lastSleep: Date = Date.now.addingTimeInterval(-1*60.0*60.0*24.0*14.0)
-    
+        
     private let calendar: Calendar
     private let monthFormatter: DateFormatter
     private let dayFormatter: DateFormatter
@@ -190,7 +188,41 @@ struct ScheduleView: View {
                 }
             )
             .equatable()
-        }
+            .background(Color.white)
+            .cornerRadius(20, corners: [.bottomLeft, .bottomRight])
+            
+//            VStack{
+//                NavigationView{
+//                    List(entries) { entry in
+//                        NavigationLink {
+//                            CalendarDetailView(entry: entry)
+//                        } label: {
+//                            CalendarCardView(entry: entry)
+//                            //                        Text("Start of sleep: \(entry.sleepStart!.formatted(date: .omitted ,time: .shortened))")
+//                            //                        Text("End of sleep: \(entry.sleepEnd!.formatted(date: .omitted, time: .shortened))")
+//                            //                        Text("Duration of sleep: \(entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)/60.0/60.0) hours")
+//                        }
+//                    }.listStyle(.plain)
+//                }
+//                VStack{
+//                    AlertView()
+//                        .padding()
+//                        .background(.white)
+//                        .previewLayout(.fixed(width: 400, height: 60))
+//                        .cornerRadius(15)
+//                        .onTapGesture{print("you clicked alertView")}
+//                }.padding(.bottom, 20)
+//
+//                AlertView()
+//                    .padding()
+//                    .background(.white)
+//                    .previewLayout(.fixed(width: 400, height: 60))
+//                    .cornerRadius(15)
+//                    .onTapGesture{print("you clicked alertView")}
+//            }.cornerRadius(20)
+//                .padding([.bottom, .leading, .trailing], 15)
+//                .padding([.top], 8)
+        }.background(Color.gray.brightness(0.35))
     }
     
     func dateHasEvents(date: Date) -> Bool {
@@ -217,13 +249,6 @@ struct ScheduleView: View {
 
 // MARK: - Component
 
-public struct CalendarDetailView: View{
-    var entry : Entry
-    public var body: some View{
-        Text("Hi")
-    }
-}
-
 public struct CalendarViewComponent<Day: View, Header: View, Title: View, Trailing: View>: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.managedObjectContext) var managedObjectContext
@@ -241,6 +266,7 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
     
     // Constants
     private let daysInWeek = 7
+    var isLoading = false
     
     @FetchRequest var entries: FetchedResults<Entry>
     
@@ -269,53 +295,83 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
     public var body: some View {
         let month = date.startOfMonth(using: calendar)
         let days = makeDays()
-        VStack {
-            
-            Section(header: title(month)) { }
-            
+        if isLoading{
+            LoadingView()
+        }else{
             VStack {
                 
-                LazyVGrid(columns: Array(repeating: GridItem(), count: daysInWeek)) {
-                    ForEach(days.prefix(daysInWeek), id: \.self, content: header)
-                }
+                Section(header: title(month)) { }
                 
-                Divider()
-                
-                LazyVGrid(columns: Array(repeating: GridItem(), count: daysInWeek)) {
-                    ForEach(days, id: \.self) { date in
-                        if calendar.isDate(date, equalTo: month, toGranularity: .month) {
-                            content(date)
-                        } else {
-                            trailing(date)
+                VStack {
+                    VStack{
+                        LazyVGrid(columns: Array(repeating: GridItem(), count: daysInWeek)) {
+                            ForEach(days.prefix(daysInWeek), id: \.self, content: header)
                         }
-                    }
-                }
-                
-                Button(action: {
-                    print(lastSleep.description)
-                    readSleep(from: lastSleep, to: Date.now)
-                    lastSleep = Date.now
-                }, label: {Text("Sync with Healthkit")})
-                
-//                Button(action: {
-//                    
-//                })
+                        
+                        Divider()
+                        
+                        LazyVGrid(columns: Array(repeating: GridItem(), count: daysInWeek)) {
+                            ForEach(days, id: \.self) { date in
+                                if calendar.isDate(date, equalTo: month, toGranularity: .month) {
+                                    content(date)
+                                } else {
+                                    trailing(date)
+                                }
+                            }
+                        }
+                        
+                        
+                        Capsule()
+                            .fill(Color.secondary)
+                            .frame(width: 30, height: 3)
+                        
+                        Button(action: {
+                            print(lastSleep.description)
+                            readSleep(from: lastSleep, to: Date.now)
+                            lastSleep = Date.now
+                        }, label: {Text("Sync with Healthkit")})
+                    }.background(Color.white)
+                        .cornerRadius(20)
+                    
+                    VStack{
+                        NavigationView{
+                            List(entries) { entry in
+                                NavigationLink {
+                                    CalendarDetailView(entry: entry)
+                                } label: {
+                                    CalendarCardView(entry: entry)
+                                    //                        Text("Start of sleep: \(entry.sleepStart!.formatted(date: .omitted ,time: .shortened))")
+                                    //                        Text("End of sleep: \(entry.sleepEnd!.formatted(date: .omitted, time: .shortened))")
+                                    //                        Text("Duration of sleep: \(entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)/60.0/60.0) hours")
+                                }
+                            }.listStyle(.plain)
+                        }
+                        //                VStack{
+                        //                    AlertView()
+                        //                        .padding()
+                        //                        .background(.white)
+                        //                        .previewLayout(.fixed(width: 400, height: 60))
+                        //                        .cornerRadius(15)
+                        //                        .onTapGesture{print("you clicked alertView")}
+                        //                }.padding(.bottom, 20)
+                        //
+                        //                AlertView()
+                        //                    .padding()
+                        //                    .background(.white)
+                        //                    .previewLayout(.fixed(width: 400, height: 60))
+                        //                    .cornerRadius(15)
+                        //                    .onTapGesture{print("you clicked alertView")}
+                    }.cornerRadius(20)
+                        .padding([.bottom, .leading, .trailing], 15)
+                        .padding([.top], 8)
+                }.background(Color.gray.brightness(0.35))
             }
-            .frame(height: days.count == 42 ? 300 : 270)
-            .shadow(color: colorScheme == .dark ? .white.opacity(0.4) : .black.opacity(0.35), radius: 5)
-            
-            List(entries) { entry in
-                NavigationLink {
-                    CalendarDetailView(entry: entry)
-                } label: {
-                    //                    CalendarCardView(entry: entry)
-                    Text("Start of sleep: \(entry.sleepStart!.formatted(date: .omitted ,time: .shortened))")
-                    Text("End of sleep: \(entry.sleepEnd!.formatted(date: .omitted, time: .shortened))")
-                    Text("Duration of sleep: \(entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)/60.0/60.0) hours")
-                }
-            }.listStyle(.plain)
-        }.onAppear{
-            requestSleepAuthorization()
+            .onAppear{
+//                requestSleepAuthorization()
+                print("WHAT")
+                readSleep(from: lastSleep, to: Date.now)
+                lastSleep = Date.now
+            }
         }
         
     }

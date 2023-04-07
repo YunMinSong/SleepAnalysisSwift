@@ -17,6 +17,7 @@ struct SettingsView: View {
     @AppStorage("work_onset") var work_onset: Date = Date.now
     @AppStorage("work_offset") var work_offset: Date = Date.now
     @AppStorage("alarm") var alarm: Date = Date.now
+    @AppStorage("needUpdate") var needUpdate:Bool = false
     
     let now = Date.now
     let oneweekafter = Date.now.addingTimeInterval(60*60*24*7*1.0)
@@ -34,7 +35,9 @@ struct SettingsView: View {
                     selection: $sleep_onset,
                     in: now...oneweekafter,
                     displayedComponents: [.date, .hourAndMinute]
-                )
+                ).onChange(of: sleep_onset, perform: { _ in
+                    needUpdate = true
+                })
                 Spacer()
             }
             HStack{
@@ -47,13 +50,17 @@ struct SettingsView: View {
                     selection: $work_onset,
                     in: now...oneweekafter,
                     displayedComponents: [.date, .hourAndMinute]
-                )
+                ).onChange(of: work_onset, perform: { _ in
+                    needUpdate = true
+                })
                 DatePicker(
                     "",
                     selection: $work_offset,
                     in: now...oneweekafter,
                     displayedComponents: [.date, .hourAndMinute]
-                )
+                ).onChange(of: work_offset, perform: { _ in
+                    needUpdate = true
+                })
             }.padding(EdgeInsets(top: 0.0, leading: 0.0, bottom: 10.0, trailing: 0.0))
             HStack{
                 Text("Alarm Setting : ")

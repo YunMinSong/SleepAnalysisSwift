@@ -27,7 +27,7 @@ func requestSleepAuthorization() {
     }
 }
 
-func readSleep(from startDate: Date?, to endDate: Date?) {
+func readSleep(from startDateQ: Date?, to endDateQ: Date?) {
     
     let persistenceController = PersistenceController.shared
     let context = persistenceController.container.viewContext
@@ -41,36 +41,70 @@ func readSleep(from startDate: Date?, to endDate: Date?) {
         }
         
         // we create a predicate to filter our data
-        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
+        let predicate = HKQuery.predicateForSamples(withStart: startDateQ!, end: endDateQ!, options: .strictStartDate)
         
         // I had a sortDescriptor to get the recent data first
-        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: true)
         
         // we create our query with a block completion to execute
-        let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: 30, sortDescriptors: [sortDescriptor]) { (query, result, error) in
+        let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: 500, sortDescriptors: [sortDescriptor]) { (query, result, error) in
             if error != nil {
                 // handle error
                 return
             }
             if let result = result {
                 // do something with those data
+                var gSleepStart : Date = Date(timeIntervalSince1970: 0)
+                var gSleepEnd : Date = Date(timeIntervalSince1970: 0)
                 for item in result {
                     if let sample = item as? HKCategorySample {
+                        
+                        //init
                         let startDate = sample.startDate
                         let endDate = sample.endDate
-                        let sleepTimeForOneDay = sample.endDate.timeIntervalSince(sample.startDate)/60.0/60.0
-                        print("Start: ", startDate.formatted(date: .numeric, time: .shortened))
-                        print("End: ", endDate.formatted(date: .numeric, time: .shortened))
-                        print("Sleep Time: ", sleepTimeForOneDay)
+//                        let sleepTimeForOneDay = sample.endDate.timeIntervalSince(sample.startDate)/60.0/60.0
+                        
+                        //print
+//                        print("Start: ", startDate.formatted(date: .numeric, time: .shortened))
+//                        print("End: ", endDate.formatted(date: .numeric, time: .shortened))
+//                        print("Sleep Time: ", sleepTimeForOneDay)
+                        
+                        if gSleepStart == Date(timeIntervalSince1970: 0){
+                            gSleepStart = startDate
+                            gSleepEnd = endDate
+                            continue
+                        }
+                        
+                        //check with g values
+                        let distanceWithG = startDate.timeIntervalSince(gSleepEnd)
+//                        print("DISTANCE: ", distanceWithG)
+                        //if the distance is less than half an hour, update the end date
+                        if distanceWithG <= 1800.0{
+                            gSleepEnd = endDate
+                            continue
+                        }
+                        
+                        //if it is not, then save g balues and set g values to the next startDate
                         let entry = Entry(context: context)
-                        entry.sleepStart = startDate
-                        entry.sleepEnd = endDate
+                        entry.sleepStart = gSleepStart
+                        entry.sleepEnd = gSleepEnd
                         do {
                             try context.save()
                         } catch {
                             // handle the Core Data error
                         }
+                        
+                        gSleepStart = startDate
+                        gSleepEnd = endDate
                     }
+                }
+                let entry = Entry(context: context)
+                entry.sleepStart = gSleepStart
+                entry.sleepEnd = gSleepEnd
+                do {
+                    try context.save()
+                } catch {
+                    // handle the Core Data error
                 }
             }
         }

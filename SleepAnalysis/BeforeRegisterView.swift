@@ -42,6 +42,8 @@ struct BeforeRegisterView: View {
                     }
                 }
             }
+        }.onAppear(){
+            requestSleepAuthorization()
         }
     }
 }
