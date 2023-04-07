@@ -17,6 +17,13 @@ let maxLength: Int = 1
 let todayYear = Calendar.current.dateComponents([.year], from: Date())
 let todayMonth = Calendar.current.dateComponents([.month], from: Date())
 let todayDay = Calendar.current.dateComponents([.day], from: Date())
+let todayTimeZone = TimeZone(identifier: TimeZone.current.identifier)!
+var dateFormatter: DateFormatter = {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "YYYY-MM-dd HH:mm"
+    
+    return dateFormatter
+}()
 
 struct WhenSleepView: View {
     
@@ -78,15 +85,36 @@ struct WhenSleepView: View {
         }
         return true
     }
-    //Add checking whethere sleep_onset is already passed!
+    
+    func isTimePassed() -> Bool {
+        let currentTime = dateFormatter.string(from: Date())
+        let currentHour1 = currentTime[currentTime.index(after: currentTime.firstIndex(of: " ")!)]
+        let currentHour2 = currentTime[currentTime.index(currentTime.index(after: currentTime.firstIndex(of: " ")!), offsetBy: 1)]
+        let currentMinute1 = currentTime[currentTime.index(after: currentTime.firstIndex(of: ":")!)]
+        let currentMinute2 = currentTime[currentTime.index(currentTime.index(after: currentTime.firstIndex(of: ":")!), offsetBy: 1)]
+        let currentHour = String(currentHour1) + String(currentHour2)
+        let currentMinute = String(currentMinute1) + String(currentMinute2)
+        let sleepHour = Int(whenSleepHour_1+whenSleepHour_2)!
+        let sleepMinute = Int(whenSleepMinute_1+whenSleepMinute_2)!
+        if Int(currentHour)! >= sleepHour && Int(currentMinute)! >= sleepMinute {
+            return true
+        }
+        return false
+    }
+    
     func saveTime() -> Date {
         if textIsAppropriate() && timeIsAppropriate() {
-            //let whenSleep: String = whenSleepHour_1+whenSleepHour_2+":"+whenSleepMinute_1+whenSleepMinute_2
             let sleepHour = Int(whenSleepHour_1+whenSleepHour_2)
             let sleepMinute = Int(whenSleepMinute_1+whenSleepMinute_2)
-            let dateComponents = DateComponents(year: todayYear.year, month: todayMonth.month, day: todayDay.day, hour: sleepHour, minute: sleepMinute)
-            sleep_onset = Calendar.current.date(from: dateComponents) ?? Date()
-            return sleep_onset
+            if isTimePassed() {
+                let dateComponents = DateComponents(timeZone: todayTimeZone, year: todayYear.year, month: todayMonth.month, day: todayDay.day!+1, hour: sleepHour, minute: sleepMinute)
+                sleep_onset = Calendar.current.date(from: dateComponents) ?? Date()
+                return sleep_onset
+            } else {
+                let dateComponents = DateComponents(timeZone: todayTimeZone, year: todayYear.year, month: todayMonth.month, day: todayDay.day, hour: sleepHour, minute: sleepMinute)
+                sleep_onset = Calendar.current.date(from: dateComponents) ?? Date()
+                return sleep_onset
+            }
         }
         return Date()
     }

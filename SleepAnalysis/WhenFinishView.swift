@@ -80,7 +80,7 @@ struct WhenFinishView: View {
     func isSame() -> Bool {
         let finishHour = Int(whenFinishHour_1+whenFinishHour_2)
         let finishMinute = Int(whenFinishMinute_1+whenFinishMinute_2)
-        let dateComponents = DateComponents(year: todayYear.year, month: todayMonth.month, day: todayDay.day, hour: finishHour, minute: finishMinute)
+        let dateComponents = DateComponents(timeZone: todayTimeZone, year: todayYear.year, month: todayMonth.month, day: todayDay.day, hour: finishHour, minute: finishMinute)
         let finishDate = Calendar.current.date(from: dateComponents)
         if finishDate == work_onset {
             return false
@@ -96,15 +96,36 @@ struct WhenFinishView: View {
         }
         return true
     }
-    //Add checking whethere work_offset is already passed!
+    
+    func isTimePassed() -> Bool {
+        let currentTime = dateFormatter.string(from: Date())
+        let currentHour1 = currentTime[currentTime.index(after: currentTime.firstIndex(of: " ")!)]
+        let currentHour2 = currentTime[currentTime.index(currentTime.index(after: currentTime.firstIndex(of: " ")!), offsetBy: 1)]
+        let currentMinute1 = currentTime[currentTime.index(after: currentTime.firstIndex(of: ":")!)]
+        let currentMinute2 = currentTime[currentTime.index(currentTime.index(after: currentTime.firstIndex(of: ":")!), offsetBy: 1)]
+        let currentHour = String(currentHour1) + String(currentHour2)
+        let currentMinute = String(currentMinute1) + String(currentMinute2)
+        let finishHour = Int(whenFinishHour_1+whenFinishHour_2)!
+        let finishMinute = Int(whenFinishMinute_1+whenFinishMinute_2)!
+        if Int(currentHour)! >= finishHour && Int(currentMinute)! >= finishMinute {
+            return true
+        }
+        return false
+    }
+    
     func saveTime() -> Date {
         if textIsAppropriate() && timeIsAppropriate() {
-            //let whenFinish: String = whenFinishHour_1+whenFinishHour_2+":"+whenFinishMinute_1+whenFinishMinute_2
             let finishHour = Int(whenFinishHour_1+whenFinishHour_2)
             let finishMinute = Int(whenFinishMinute_1+whenFinishMinute_2)
-            let dateComponents = DateComponents(year: todayYear.year, month: todayMonth.month, day: todayDay.day, hour: finishHour, minute: finishMinute)
-            let work_offset = Calendar.current.date(from: dateComponents) ?? Date()
-            return work_offset
+            if isTimePassed() {
+                let dateComponents = DateComponents(timeZone: todayTimeZone, year: todayYear.year, month: todayMonth.month, day: todayDay.day!+1, hour: finishHour, minute: finishMinute)
+                let work_offset = Calendar.current.date(from: dateComponents) ?? Date()
+                return work_offset
+            } else {
+                let dateComponents = DateComponents(timeZone: todayTimeZone, year: todayYear.year, month: todayMonth.month, day: todayDay.day, hour: finishHour, minute: finishMinute)
+                let work_offset = Calendar.current.date(from: dateComponents) ?? Date()
+                return work_offset
+            }
         }
         return Date()
     }

@@ -78,7 +78,7 @@ struct WhenStartView: View {
     func isSame() -> Bool {
         let startHour = Int(whenStartHour_1+whenStartHour_2)
         let startMinute = Int(whenStartMinute_1+whenStartMinute_2)
-        let dateComponents = DateComponents(year: todayYear.year, month: todayMonth.month, day: todayDay.day, hour: startHour, minute: startMinute)
+        let dateComponents = DateComponents(timeZone: todayTimeZone, year: todayYear.year, month: todayMonth.month, day: todayDay.day, hour: startHour, minute: startMinute)
         let startDate = Calendar.current.date(from: dateComponents)
         if startDate == sleep_onset {
             return false
@@ -94,14 +94,36 @@ struct WhenStartView: View {
         }
         return true
     }
-    //Add checking whethere work_onset is already passed!
+    
+    func isTimePassed() -> Bool {
+        let currentTime = dateFormatter.string(from: Date())
+        let currentHour1 = currentTime[currentTime.index(after: currentTime.firstIndex(of: " ")!)]
+        let currentHour2 = currentTime[currentTime.index(currentTime.index(after: currentTime.firstIndex(of: " ")!), offsetBy: 1)]
+        let currentMinute1 = currentTime[currentTime.index(after: currentTime.firstIndex(of: ":")!)]
+        let currentMinute2 = currentTime[currentTime.index(currentTime.index(after: currentTime.firstIndex(of: ":")!), offsetBy: 1)]
+        let currentHour = String(currentHour1) + String(currentHour2)
+        let currentMinute = String(currentMinute1) + String(currentMinute2)
+        let startHour = Int(whenStartHour_1+whenStartHour_2)!
+        let startMinute = Int(whenStartMinute_1+whenStartMinute_2)!
+        if Int(currentHour)! >= startHour && Int(currentMinute)! >= startMinute {
+            return true
+        }
+        return false
+    }
+    
     func saveTime() -> Date {
         if textIsAppropriate() && timeIsAppropriate() {
             let startHour = Int(whenStartHour_1+whenStartHour_2)
             let startMinute = Int(whenStartMinute_1+whenStartMinute_2)
-            let dateComponents = DateComponents(year: todayYear.year, month: todayMonth.month, day: todayDay.day, hour: startHour, minute: startMinute)
-            let work_onset = Calendar.current.date(from: dateComponents) ?? Date()
-            return work_onset
+            if isTimePassed() {
+                let dateComponents = DateComponents(timeZone: todayTimeZone, year: todayYear.year, month: todayMonth.month, day: todayDay.day!+1, hour: startHour, minute: startMinute)
+                let work_onset = Calendar.current.date(from: dateComponents) ?? Date()
+                return work_onset
+            } else {
+                let dateComponents = DateComponents(timeZone: todayTimeZone, year: todayYear.year, month: todayMonth.month, day: todayDay.day, hour: startHour, minute: startMinute)
+                let work_onset = Calendar.current.date(from: dateComponents) ?? Date()
+                return work_onset
+            }
         }
         return Date()
     }
