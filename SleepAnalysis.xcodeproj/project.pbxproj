@@ -176,7 +176,6 @@
 				40C1A59C291CE155002EFFBB /* API */,
 				40C619A7291D6738009369BE /* PersistanceController.swift */,
 				40C619A9291D6979009369BE /* Main.xcdatamodeld */,
-				404A6C0829B605B200DDE5B6 /* ContentUtilsView.swift */,
 				40D271B029D5DA500065BC39 /* LoadingView.swift */,
 			);
 			path = SleepAnalysis;

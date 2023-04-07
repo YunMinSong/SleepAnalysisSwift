@@ -66,6 +66,8 @@ struct ScheduleView: View {
         self.fullFormatter = DateFormatter(dateFormat: "dd MMMM yyyy", calendar: calendar)
         
         requestSleepAuthorization()
+
+        
     }
     
     var body: some View {
