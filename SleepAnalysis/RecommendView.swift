@@ -125,7 +125,6 @@ struct AfterTimeGet: View {
                             .padding(.top)
                         BoxWithRecommend(from1: $from1, to1: $to1, from2: $from2, to2: $to2)
                         Button(action: {
-                            
                         }) {
                             Rectangle()
                                 .foregroundColor(.blue)
@@ -277,9 +276,9 @@ struct HopeSleepContent: View {
                 Image("Subtract")
             }
             HStack(alignment: .bottom) {
-                Text(specificTime(original: dateToString(date: sleep_onset)).former)
+                Text(specificTime(original: induceHourMinute(original: sleep_onset)).former)
                     .font(.custom("Small", size: 15))
-                Text(specificTime(original:dateToString(date: sleep_onset)).backward)
+                Text(specificTime(original: induceHourMinute(original: sleep_onset)).backward)
                     .font(.headline)
             }
         }
@@ -300,15 +299,15 @@ struct WorkContent: View {
             }
             HStack(spacing: 40) {
                 HStack(alignment: .bottom) {
-                    Text(specificTime(original: dateToString(date: work_onset)).former)
+                    Text(specificTime(original: induceHourMinute(original: work_onset)).former)
                         .font(.custom("Small", size: 15))
-                    Text(specificTime(original: dateToString(date: work_onset)).backward)
+                    Text(specificTime(original: induceHourMinute(original: work_onset)).backward)
                         .font(.headline)
                 }
                 HStack(alignment: .bottom) {
-                    Text(specificTime(original: dateToString(date: work_offset)).former)
+                    Text(specificTime(original: induceHourMinute(original: work_offset)).former)
                         .font(.custom("Small", size: 15))
-                    Text(specificTime(original:dateToString(date: work_offset)).backward)
+                    Text(specificTime(original: induceHourMinute(original: work_offset)).backward)
                         .font(.headline)
                 }
             }
@@ -327,7 +326,7 @@ func specificTime(original: String) -> (former: String, backward: String) {
     let minute = String(original[3]) + String(original[4])
     var former: String
     var backward: String
-    if intHour < 11 {
+    if intHour <= 11 {
         former = "오전"
     } else {
         former = "오후"
@@ -345,6 +344,15 @@ func timeInterval(original: String) -> String {
 
     let result = "\(intHour)" + "시간 " + minute + "분"
     return result
+}
+
+func induceHourMinute(original: Date?) -> String {
+    let time = dateFormatter.string(from: original!)
+    let hour1 = time[time.index(after: time.firstIndex(of: " ")!)]
+    let hour2 = time[time.index(time.index(after: time.firstIndex(of: " ")!), offsetBy: 1)]
+    let minute1 = time[time.index(after: time.firstIndex(of: ":")!)]
+    let minute2 = time[time.index(time.index(after: time.firstIndex(of: ":")!), offsetBy: 1)]
+    return String(hour1) + String(hour2) + ":" + String(minute1) + String(minute2)
 }
 
 struct RecommendView_Previews: PreviewProvider {
