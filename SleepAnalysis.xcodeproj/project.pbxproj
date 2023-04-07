@@ -12,10 +12,7 @@
 		3C3DA74D29C93F9A001E92A7 /* CheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3DA74C29C93F9A001E92A7 /* CheckView.swift */; };
 		3C3DA74F29C9452D001E92A7 /* WaitingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3DA74E29C9452D001E92A7 /* WaitingView.swift */; };
 		3C3DA75129C94985001E92A7 /* FinishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3DA75029C94985001E92A7 /* FinishView.swift */; };
-<<<<<<< Updated upstream
-=======
 		3C72124529D279C3000D74FF /* GIFImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C72124429D279C3000D74FF /* GIFImage.swift */; };
->>>>>>> Stashed changes
 		3C858FCA29C01450003A7704 /* RecommendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C858FC929C01450003A7704 /* RecommendView.swift */; };
 		3C858FCC29C03529003A7704 /* WhenSleepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C858FCB29C03529003A7704 /* WhenSleepView.swift */; };
 		3CFE4CF729C5A28A00BDDAF9 /* WhenStartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CFE4CF629C5A28A00BDDAF9 /* WhenStartView.swift */; };
@@ -63,10 +60,7 @@
 		3C3DA74C29C93F9A001E92A7 /* CheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckView.swift; sourceTree = "<group>"; };
 		3C3DA74E29C9452D001E92A7 /* WaitingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitingView.swift; sourceTree = "<group>"; };
 		3C3DA75029C94985001E92A7 /* FinishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishView.swift; sourceTree = "<group>"; };
-<<<<<<< Updated upstream
-=======
 		3C72124429D279C3000D74FF /* GIFImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIFImage.swift; sourceTree = "<group>"; };
->>>>>>> Stashed changes
 		3C858FC929C01450003A7704 /* RecommendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendView.swift; sourceTree = "<group>"; };
 		3C858FCB29C03529003A7704 /* WhenSleepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhenSleepView.swift; sourceTree = "<group>"; };
 		3CFE4CF629C5A28A00BDDAF9 /* WhenStartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhenStartView.swift; sourceTree = "<group>"; };
@@ -165,10 +159,7 @@
 				40B3ECA4291DE958001C4C4B /* SleepAnalysis.entitlements */,
 				409F4E48291176F30065BC3F /* SleepAnalysisApp.swift */,
 				409F4E4A291176F30065BC3F /* ContentView.swift */,
-<<<<<<< Updated upstream
-=======
 				404A6C0829B605B200DDE5B6 /* ContentUtilsView.swift */,
->>>>>>> Stashed changes
 				409F4E4C291176F50065BC3F /* Assets.xcassets */,
 				3C3DA74829C9317C001E92A7 /* BeforeRegisterView.swift */,
 				3C3DA74A29C93684001E92A7 /* RegisterView.swift */,
@@ -185,11 +176,8 @@
 				40C1A59C291CE155002EFFBB /* API */,
 				40C619A7291D6738009369BE /* PersistanceController.swift */,
 				40C619A9291D6979009369BE /* Main.xcdatamodeld */,
-<<<<<<< Updated upstream
 				404A6C0829B605B200DDE5B6 /* ContentUtilsView.swift */,
-=======
 				40D271B029D5DA500065BC39 /* LoadingView.swift */,
->>>>>>> Stashed changes
 			);
 			path = SleepAnalysis;
 			sourceTree = "<group>";
