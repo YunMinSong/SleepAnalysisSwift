@@ -11,6 +11,7 @@ import CoreData
 struct MainView: View {
     
     @AppStorage("UserEmail") private var userEmail: String = ""
+    
     let persistenceController = PersistenceController.shared
     
     var body: some View {
@@ -37,7 +38,7 @@ struct MainView: View {
                 SettingsView()
                     .tabItem {
                         Label("Settings", systemImage: "gearshape.fill")
-                            .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                        .environment(\.managedObjectContext, persistenceController.container.viewContext)
                     }
             }.navigationBarBackButtonHidden()
         }

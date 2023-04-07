@@ -7,6 +7,7 @@
 
 import SwiftUI
 import UIKit
+import HealthKit
 
 struct RegisterView: View {
     
@@ -18,7 +19,7 @@ struct RegisterView: View {
                 .font(.title)
                 .bold()
                 .padding(.top, 100.0)
-            Text("Calm이 수면 정보를 기억해둘게요")
+            Text("2Sleep이 수면 정보를 기억해둘게요")
                 .foregroundColor(Color(red: 0.481, green: 0.511, blue: 0.57))
             CustomField(text: $email, title: "이메일", example: "example@example.com")
                 .padding(.top, 50.0)

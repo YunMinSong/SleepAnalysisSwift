@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import HealthKit
 
 struct BeforeRegisterView: View {
     
+    //To load sleep data from HealthKit
     let title: String = """
 자도자도 피곤하다면?
 """
@@ -28,7 +30,7 @@ struct BeforeRegisterView: View {
                         .font(.title2)
                         .bold()
                         .padding(.top, 60.0)
-                        
+                    
                     Text(description)
                         .foregroundColor(Color(red: 0.481, green: 0.511, blue: 0.57))
                         .padding(.top, 3.0)
@@ -42,14 +44,14 @@ struct BeforeRegisterView: View {
                     }
                 }
             }
-        }.onAppear(){
+        }.onAppear {
             requestSleepAuthorization()
         }
     }
-}
-
-struct BeforeRegisterView_Previews: PreviewProvider {
-    static var previews: some View {
-        BeforeRegisterView()
+    
+    struct BeforeRegisterView_Previews: PreviewProvider {
+        static var previews: some View {
+            BeforeRegisterView()
+        }
     }
 }

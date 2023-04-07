@@ -9,30 +9,6 @@ import SwiftUI
 import CoreData
 import HealthKit
 
-//struct ScheduleView: View {
-//    @AppStorage("clickCount") var clickCount: Int = 0
-//    @State private var toggleOn: Bool = false
-//
-//    var body: some View {
-//        VStack {
-//            HStack{
-//                Text("Schedule App")
-//                Button(
-//                    action: {clickCount = clickCount + 1},
-//                    label: {Text("Click Count\(clickCount)")}
-//                )
-//                Spacer() //fill the space
-//            }
-//            Toggle(isOn: $toggleOn, label: {Text(toggleOn ? "Toggle" : "Not toggled")})
-//        }
-//        .padding()
-//        .onAppear{
-//            let FakeAPI = FakeAPI()
-//            clickCount = FakeAPI.giveNumber()
-//        }
-//    }
-//}
-
 extension Date: RawRepresentable {
     private static let formatter = ISO8601DateFormatter()
     
@@ -42,6 +18,23 @@ extension Date: RawRepresentable {
     
     public init?(rawValue: String) {
         self = Date.formatter.date(from: rawValue) ?? Date()
+    }
+}
+
+extension View {
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(RoundedCorner(radius: radius, corners: corners) )
+    }
+}
+
+struct RoundedCorner: Shape {
+
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        return Path(path.cgPath)
     }
 }
 
@@ -66,8 +59,6 @@ struct ScheduleView: View {
         self.fullFormatter = DateFormatter(dateFormat: "dd MMMM yyyy", calendar: calendar)
         
         requestSleepAuthorization()
-
-        
     }
     
     var body: some View {
@@ -375,7 +366,6 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                 lastSleep = Date.now
             }
         }
-        
     }
 }
 

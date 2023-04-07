@@ -12,6 +12,7 @@
 		3C3DA74D29C93F9A001E92A7 /* CheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3DA74C29C93F9A001E92A7 /* CheckView.swift */; };
 		3C3DA74F29C9452D001E92A7 /* WaitingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3DA74E29C9452D001E92A7 /* WaitingView.swift */; };
 		3C3DA75129C94985001E92A7 /* FinishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3DA75029C94985001E92A7 /* FinishView.swift */; };
+		3C72124329D27699000D74FF /* notFound.gif in Resources */ = {isa = PBXBuildFile; fileRef = 3C72124229D27699000D74FF /* notFound.gif */; };
 		3C72124529D279C3000D74FF /* GIFImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C72124429D279C3000D74FF /* GIFImage.swift */; };
 		3C858FCA29C01450003A7704 /* RecommendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C858FC929C01450003A7704 /* RecommendView.swift */; };
 		3C858FCC29C03529003A7704 /* WhenSleepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C858FCB29C03529003A7704 /* WhenSleepView.swift */; };
@@ -19,6 +20,7 @@
 		3CFE4CF929C5AA4800BDDAF9 /* WhenFinishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CFE4CF829C5AA4800BDDAF9 /* WhenFinishView.swift */; };
 		404A6C0429AC7BC700DDE5B6 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404A6C0329AC7BC700DDE5B6 /* Theme.swift */; };
 		404A6C0929B605B300DDE5B6 /* ContentUtilsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404A6C0829B605B200DDE5B6 /* ContentUtilsView.swift */; };
+		404A6C0B29C2A20500DDE5B6 /* ScheduleUtilsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404A6C0A29C2A20500DDE5B6 /* ScheduleUtilsView.swift */; };
 		409F4E49291176F30065BC3F /* SleepAnalysisApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4E48291176F30065BC3F /* SleepAnalysisApp.swift */; };
 		409F4E4B291176F30065BC3F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4E4A291176F30065BC3F /* ContentView.swift */; };
 		409F4E4D291176F50065BC3F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 409F4E4C291176F50065BC3F /* Assets.xcassets */; };
@@ -60,6 +62,7 @@
 		3C3DA74C29C93F9A001E92A7 /* CheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckView.swift; sourceTree = "<group>"; };
 		3C3DA74E29C9452D001E92A7 /* WaitingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitingView.swift; sourceTree = "<group>"; };
 		3C3DA75029C94985001E92A7 /* FinishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishView.swift; sourceTree = "<group>"; };
+		3C72124229D27699000D74FF /* notFound.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = notFound.gif; path = ../../../../Downloads/notFound.gif; sourceTree = "<group>"; };
 		3C72124429D279C3000D74FF /* GIFImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIFImage.swift; sourceTree = "<group>"; };
 		3C858FC929C01450003A7704 /* RecommendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendView.swift; sourceTree = "<group>"; };
 		3C858FCB29C03529003A7704 /* WhenSleepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhenSleepView.swift; sourceTree = "<group>"; };
@@ -67,6 +70,7 @@
 		3CFE4CF829C5AA4800BDDAF9 /* WhenFinishView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhenFinishView.swift; sourceTree = "<group>"; };
 		404A6C0329AC7BC700DDE5B6 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		404A6C0829B605B200DDE5B6 /* ContentUtilsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentUtilsView.swift; sourceTree = "<group>"; };
+		404A6C0A29C2A20500DDE5B6 /* ScheduleUtilsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleUtilsView.swift; sourceTree = "<group>"; };
 		409F4E45291176F30065BC3F /* SleepAnalysis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SleepAnalysis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		409F4E48291176F30065BC3F /* SleepAnalysisApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepAnalysisApp.swift; sourceTree = "<group>"; };
 		409F4E4A291176F30065BC3F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -160,6 +164,7 @@
 				409F4E48291176F30065BC3F /* SleepAnalysisApp.swift */,
 				409F4E4A291176F30065BC3F /* ContentView.swift */,
 				404A6C0829B605B200DDE5B6 /* ContentUtilsView.swift */,
+				3C72124229D27699000D74FF /* notFound.gif */,
 				409F4E4C291176F50065BC3F /* Assets.xcassets */,
 				3C3DA74829C9317C001E92A7 /* BeforeRegisterView.swift */,
 				3C3DA74A29C93684001E92A7 /* RegisterView.swift */,
@@ -168,7 +173,9 @@
 				3C3DA75029C94985001E92A7 /* FinishView.swift */,
 				40A350A72917D78000D3E80C /* MainView.swift */,
 				40A350A92917D88600D3E80C /* ScheduleView.swift */,
+				404A6C0A29C2A20500DDE5B6 /* ScheduleUtilsView.swift */,
 				3C858FC929C01450003A7704 /* RecommendView.swift */,
+				3C72124429D279C3000D74FF /* GIFImage.swift */,
 				3C858FCB29C03529003A7704 /* WhenSleepView.swift */,
 				3CFE4CF629C5A28A00BDDAF9 /* WhenStartView.swift */,
 				3CFE4CF829C5AA4800BDDAF9 /* WhenFinishView.swift */,
@@ -301,6 +308,7 @@
 			mainGroup = 409F4E3C291176F30065BC3F;
 			packageReferences = (
 				40A350AD2917E2E200D3E80C /* XCRemoteSwiftPackageReference "CalendarKit" */,
+				3C72123F29D275EA000D74FF /* XCRemoteSwiftPackageReference "Gifu" */,
 			);
 			productRefGroup = 409F4E46291176F30065BC3F /* Products */;
 			projectDirPath = "";
@@ -318,6 +326,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C72124329D27699000D74FF /* notFound.gif in Resources */,
 				409F4E4D291176F50065BC3F /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -353,12 +362,14 @@
 				3C3DA74F29C9452D001E92A7 /* WaitingView.swift in Sources */,
 				40B3ECA6291DEAE4001C4C4B /* HealthKitAPI.swift in Sources */,
 				404A6C0429AC7BC700DDE5B6 /* Theme.swift in Sources */,
+				404A6C0B29C2A20500DDE5B6 /* ScheduleUtilsView.swift in Sources */,
 				409F4E4B291176F30065BC3F /* ContentView.swift in Sources */,
 				3C3DA74B29C93684001E92A7 /* RegisterView.swift in Sources */,
 				40C619A8291D6738009369BE /* PersistanceController.swift in Sources */,
 				40A350AA2917D88600D3E80C /* ScheduleView.swift in Sources */,
 				40A350A82917D78000D3E80C /* MainView.swift in Sources */,
 				3C3DA75129C94985001E92A7 /* FinishView.swift in Sources */,
+				3C72124529D279C3000D74FF /* GIFImage.swift in Sources */,
 				409F4E49291176F30065BC3F /* SleepAnalysisApp.swift in Sources */,
 				3CFE4CF929C5AA4800BDDAF9 /* WhenFinishView.swift in Sources */,
 				40C1A59B291CE093002EFFBB /* FakeAPI.swift in Sources */,
@@ -703,6 +714,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		3C72123F29D275EA000D74FF /* XCRemoteSwiftPackageReference "Gifu" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kaishin/Gifu.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		40A350AD2917E2E200D3E80C /* XCRemoteSwiftPackageReference "CalendarKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/richardtop/CalendarKit.git";

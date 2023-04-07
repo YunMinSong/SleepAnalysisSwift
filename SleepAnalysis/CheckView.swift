@@ -6,11 +6,11 @@
 //
 
 import SwiftUI
+import HealthKit
 
 struct CheckView: View {
     
     @AppStorage("UserEmail") private var userEmail: String = ""
-    
     let email: String
     
     var body: some View {
@@ -30,7 +30,7 @@ struct CheckView: View {
 struct FirstUser: View {
     
     let title: String = """
-Calm을
+2Sleep을
 처음 사용하시나요?
 """
     let description: String = """

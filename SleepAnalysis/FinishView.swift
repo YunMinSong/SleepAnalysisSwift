@@ -10,7 +10,7 @@ import SwiftUI
 struct FinishView: View {
     
     let title = "준비가 완료되었어요"
-    let description = "이제 Calm과 함께 잘 자요 :)"
+    let description = "이제 2Sleep과 함께 잘 자요 :)"
     
     var body: some View {
         VStack(alignment: .center) {
@@ -34,7 +34,7 @@ struct FinishView: View {
                         .overlay(Text("시작하기").foregroundColor(.white))
                 }
             }
-        }
+        }.navigationBarBackButtonHidden()
     }
 }
 
