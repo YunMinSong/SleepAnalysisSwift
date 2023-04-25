@@ -116,7 +116,7 @@ struct AfterTimeGet: View {
                 ZStack {
                     Rectangle()
                         .foregroundColor(.white)
-                        .frame(height: 424)
+                        .frame(height: 460)
                         .cornerRadius(16.0)
                     VStack(alignment: .leading) {
                         Text("\(userName)님을 위한 추천 수면")

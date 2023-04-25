@@ -23,12 +23,12 @@ struct AlertView: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack{
-                Text("수면 데이터 업데이트하기")
+                Text("내 수면")
+                    .bold()
                 Spacer()
-            }
-            HStack {
-                Text("더 정확한 추천을 해드릴게요")
-                Spacer()
+                NavigationLink(destination: Text("Schedule View")){
+                Image(systemName: "chevron.right")
+                    }
             }
         }
     }
