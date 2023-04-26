@@ -69,7 +69,7 @@ struct ContentView: View {
                     VStack{
                         HeaderView()
                             .padding()
-                            .background(Color.gray.brightness(0.35))
+                            
                         VStack {
                             AlertView(tabSelection: $tabSelection)
                                 .padding()
@@ -128,7 +128,6 @@ struct ContentView: View {
                             //                    ).foregroundStyle(by: .value("Category", $0.Category))
                             //                }.frame(height: geometry.size.height/3)
                         }.padding()
-                        
                     }
                     .onAppear(){
                         if needUpdate || Date.now.timeIntervalSince(lastUpdated) > 60.0*60.0*2{
@@ -238,14 +237,15 @@ struct ContentView: View {
                                 isLoading=false
                             }
                         }
-                    }.background(Color.gray.brightness(0.35))
-                }
+                    }
+                }.background(Color.gray.brightness(0.35))
             }
         }
     }
 }
+
 //struct ContentView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        ContentView(tabSelection: 1)
+//        ContentView()
 //    }
 //}
