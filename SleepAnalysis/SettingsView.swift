@@ -21,14 +21,19 @@ struct SettingsView: View {
     
     let now = Date.now
     let oneweekafter = Date.now.addingTimeInterval(60*60*24*7*1.0)
-    
+    let top_pad = 3.0, bottom_pad = 3.0, leading_pad = 10.0, trailing_pad = 10.0
     var body: some View {
         VStack {
             Text("Settings")
+                .font(.title)
+                .bold()
+            Text("")
+                .font(.title)
             HStack{
                 Text("Sleep Onset : ")
+                    .bold()
                 Spacer()
-            }
+            }.padding(EdgeInsets(top: top_pad, leading: leading_pad, bottom: bottom_pad, trailing: trailing_pad))
             HStack{
                 DatePicker(
                     "",
@@ -39,12 +44,16 @@ struct SettingsView: View {
                     needUpdate = true
                 })
                 Spacer()
-            }
+            }.padding(EdgeInsets(top: top_pad, leading: leading_pad, bottom: bottom_pad, trailing: trailing_pad))
             HStack{
-                Text("Work Onset : ")
+                Text("Work Period : ")
+                    .bold()
                 Spacer()
-            }
+            }.padding(EdgeInsets(top: top_pad, leading: leading_pad, bottom: bottom_pad, trailing: trailing_pad))
             HStack{
+                Spacer(minLength: 65)
+                Text("Start")
+                Spacer()
                 DatePicker(
                     "",
                     selection: $work_onset,
@@ -53,6 +62,12 @@ struct SettingsView: View {
                 ).onChange(of: work_onset, perform: { _ in
                     needUpdate = true
                 })
+                Spacer()
+            }.padding(EdgeInsets(top: top_pad, leading: leading_pad, bottom: bottom_pad, trailing: trailing_pad))
+            HStack{
+                Spacer(minLength: 70)
+                Text("End")
+                Spacer()
                 DatePicker(
                     "",
                     selection: $work_offset,
@@ -61,11 +76,13 @@ struct SettingsView: View {
                 ).onChange(of: work_offset, perform: { _ in
                     needUpdate = true
                 })
-            }.padding(EdgeInsets(top: 0.0, leading: 0.0, bottom: 10.0, trailing: 0.0))
+                Spacer()
+            }.padding(EdgeInsets(top: top_pad, leading: leading_pad, bottom: bottom_pad, trailing: trailing_pad))
             HStack{
                 Text("Alarm Setting : ")
+                    .bold()
                 Spacer()
-            }
+            }.padding(EdgeInsets(top: top_pad, leading: leading_pad, bottom: bottom_pad, trailing: trailing_pad))
             HStack{
                 DatePicker(
                     "",
@@ -74,9 +91,9 @@ struct SettingsView: View {
                     displayedComponents: [.hourAndMinute]
                 )
                 Spacer()
-            }
+            }.padding(EdgeInsets(top: top_pad, leading: leading_pad, bottom: bottom_pad, trailing: trailing_pad))
         }
-        .padding()
+        .padding(EdgeInsets(top: top_pad, leading: leading_pad, bottom: bottom_pad, trailing: trailing_pad))
     }
 }
 

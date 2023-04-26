@@ -9,7 +9,7 @@ import SwiftUI
 import CoreData
 
 struct MainView: View {
-    
+    @State private var tabSelection = 1
     @AppStorage("UserEmail") private var userEmail: String = ""
     
     let persistenceController = PersistenceController.shared
@@ -18,28 +18,30 @@ struct MainView: View {
         if self.userEmail == "" {
             BeforeRegisterView()
         } else {
-            TabView {
-                
-                ContentView()
+            TabView(selection: $tabSelection) {
+                ContentView(tabSelection: $tabSelection)
                     .tabItem {
                         Label("Home", systemImage: "house.fill")
                     }.environment(\.managedObjectContext, persistenceController.container.viewContext)
-                
+                    .tag(1)
                 ScheduleView(calendar: Calendar(identifier: .gregorian))
                     .environment(\.managedObjectContext, persistenceController.container.viewContext)
                     .tabItem {
                         Label("Schedule", systemImage: "calendar.badge.clock")
                     }
+                    .tag(2)
                 RecommendView()
                     .tabItem {
                         Label("Recommend", systemImage: "moon.fill")
                             .environment(\.managedObjectContext, persistenceController.container.viewContext)
                     }
+                    .tag(3)
                 SettingsView()
                     .tabItem {
                         Label("Settings", systemImage: "gearshape.fill")
                         .environment(\.managedObjectContext, persistenceController.container.viewContext)
                     }
+                    .tag(4)
             }.navigationBarBackButtonHidden()
         }
     }
