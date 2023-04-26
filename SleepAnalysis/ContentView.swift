@@ -30,7 +30,7 @@ public func formatDate(offset: Double)->Date{
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) var managedObjectContext
-    
+    @Binding var tabSelection: Int
     @State var AwarenessData = [LineData](repeating: LineData(Category: "Awareness", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
     @State var SleepData = [LineData](repeating: LineData(Category: "Sleep", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
     @State var SleepSuggestionData = [LineData](repeating: LineData(Category: "Sleep Suggestion", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
@@ -42,7 +42,6 @@ struct ContentView: View {
     @AppStorage("work_offset") var work_offset: Date = Date.now
     @AppStorage("lastSleep") var lastSleep:Date = Date.now.addingTimeInterval(-1*60.0*60.0*24.0*14.0)
     @AppStorage("needUpdate") var needUpdate:Bool = false
-
     
     @AppStorage("V0_x") var V0_x: Double = -0.8283
     @AppStorage("V0_y") var V0_y: Double = 0.8413
@@ -61,75 +60,76 @@ struct ContentView: View {
     @State var napSleepEnd = Date.now
     
     var body: some View {
-        GeometryReader{ geometry in
-            if isLoading{
-                LoadingView()
-            }else{
-                VStack{
+        
+            GeometryReader{ geometry in
+                if isLoading{
+                    LoadingView()
+                }else{
+                    ScrollView(){
                     VStack{
                         HeaderView()
                             .padding()
-                    }.background(.white)
-                    VStack {
-                        AlertView()
-                            .padding()
-                            .background(.white)
-                            .previewLayout(.fixed(width: 400, height: 60))
-                            .cornerRadius(15)
-                            .onTapGesture{print("you clicked alertView")}
-                        SleepTimeView(mainSleepStart: $mainSleepStart, mainSleepEnd: $mainSleepEnd, napSleepStart: $napSleepStart, napSleepEnd: $napSleepEnd)
-                            .padding()
-                            .background(.white)
-                            .previewLayout(.fixed(width: 400, height: 60))
-                            .cornerRadius(15)
-                            .onTapGesture{print("you clicked sleeptimeView")}
-                        GraphView(AwarenessData: $AwarenessData)
-                            .padding()
-                            .background(.white)
-                            .previewLayout(.fixed(width: 400, height: 60))
-                            .cornerRadius(15)
-                            .frame(height: geometry.size.height/3)
-                            .onTapGesture{print("you clicked graphView")}
-                        Spacer()
-                        //                List{
-                        //                Chart {
-                        //                    ForEach(SleepData){
-                        //                        LineMark(
-                        //                            x: .value("x1", $0.x),
-                        //                            y: .value("y1", $0.y),
-                        //                            series: .value("sleep", "s")
-                        //                        ).foregroundStyle(by: .value("Category", $0.Category))
-                        //                        AreaMark(
-                        //                            x: .value("x1", $0.x),
-                        //                            y: .value("y1", $0.y)
-                        //                        ).foregroundStyle(.blue)
-                        //                    }
-                        //                    ForEach(AwarenessData){
-                        //                        LineMark(
-                        //                            x: .value("x", $0.x),
-                        //                            y: .value("y", $0.y),
-                        //                            series: .value("awareness", "a")
-                        //                        ).interpolationMethod(.catmullRom)
-                        //                            .foregroundStyle(by: .value("Category", $0.Category))
-                        //                    }
-                        //
-                        //                }.frame(height: geometry.size.height/3)
-                        //                //                }.refreshable {
-                        //                //                    print("something")
-                        //                //                }
-                        //                Chart(SleepSuggestionData) {
-                        //                    LineMark(
-                        //                        x: .value("x", $0.x),
-                        //                        y: .value("y", $0.y)
-                        //                    ).foregroundStyle(by: .value("Category", $0.Category))
-                        //                    AreaMark(
-                        //                        x: .value("x", $0.x),
-                        //                        y: .value("y", $0.y)
-                        //                    ).foregroundStyle(by: .value("Category", $0.Category))
-                        //                }.frame(height: geometry.size.height/3)
-                    }.padding()
-                    
-                }
+                            .background(Color.gray.brightness(0.35))
+                        VStack {
+                            AlertView(tabSelection: $tabSelection)
+                                .padding()
+                                .background(.white)
+                                .previewLayout(.fixed(width: 400, height: 60))
+                                .cornerRadius(15)
+                                .onTapGesture{print("you clicked alertView")}
+                            SleepTimeView(tabSelection: $tabSelection, mainSleepStart: $mainSleepStart, mainSleepEnd: $mainSleepEnd, napSleepStart: $napSleepStart, napSleepEnd: $napSleepEnd)
+                                .padding()
+                                .background(.white)
+                                .previewLayout(.fixed(width: 400, height: 120))
+                                .cornerRadius(15)
+                                .onTapGesture{print("you clicked sleeptimeView")}
+                            GraphView(AwarenessData: $AwarenessData, tabSelection: $tabSelection)
+                                .padding()
+                                .background(.white)
+                                .previewLayout(.fixed(width: 400, height: 60))
+                                .cornerRadius(15)
+                                .frame(height: geometry.size.height/3)
+                                .onTapGesture{print("you clicked graphView")}
+                            Spacer()
+                            //                List{
+                            //                Chart {
+                            //                    ForEach(SleepData){
+                            //                        LineMark(
+                            //                            x: .value("x1", $0.x),
+                            //                            y: .value("y1", $0.y),
+                            //                            series: .value("sleep", "s")
+                            //                        ).foregroundStyle(by: .value("Category", $0.Category))
+                            //                        AreaMark(
+                            //                            x: .value("x1", $0.x),
+                            //                            y: .value("y1", $0.y)
+                            //                        ).foregroundStyle(.blue)
+                            //                    }
+                            //                    ForEach(AwarenessData){
+                            //                        LineMark(
+                            //                            x: .value("x", $0.x),
+                            //                            y: .value("y", $0.y),
+                            //                            series: .value("awareness", "a")
+                            //                        ).interpolationMethod(.catmullRom)
+                            //                            .foregroundStyle(by: .value("Category", $0.Category))
+                            //                    }
+                            //
+                            //                }.frame(height: geometry.size.height/3)
+                            //                //                }.refreshable {
+                            //                //                    print("something")
+                            //                //                }
+                            //                Chart(SleepSuggestionData) {
+                            //                    LineMark(
+                            //                        x: .value("x", $0.x),
+                            //                        y: .value("y", $0.y)
+                            //                    ).foregroundStyle(by: .value("Category", $0.Category))
+                            //                    AreaMark(
+                            //                        x: .value("x", $0.x),
+                            //                        y: .value("y", $0.y)
+                            //                    ).foregroundStyle(by: .value("Category", $0.Category))
+                            //                }.frame(height: geometry.size.height/3)
+                        }.padding()
+                        
+                    }
                     .onAppear(){
                         if needUpdate || Date.now.timeIntervalSince(lastUpdated) > 60.0*60.0*2{
                             isLoading = true
@@ -239,13 +239,13 @@ struct ContentView: View {
                             }
                         }
                     }.background(Color.gray.brightness(0.35))
+                }
             }
         }
     }
 }
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ContentView(tabSelection: 1)
+//    }
+//}

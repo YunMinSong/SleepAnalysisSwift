@@ -39,7 +39,7 @@ struct RoundedCorner: Shape {
 }
 
 struct ScheduleView: View {
-        
+    
     private let calendar: Calendar
     private let monthFormatter: DateFormatter
     private let dayFormatter: DateFormatter
