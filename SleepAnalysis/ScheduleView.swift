@@ -262,6 +262,7 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
     var isLoading = false
     
     @FetchRequest var entries: FetchedResults<Entry>
+    @FetchRequest var V0: FetchedResults<V0_main>
     
     public init(
         calendar: Calendar,
@@ -278,11 +279,16 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
         self.header = header
         self.title = title
         
-        _entries = FetchRequest<Entry>(sortDescriptors: [NSSortDescriptor(key: "sleepStart", ascending: false)],
+        _entries = FetchRequest<Entry>(sortDescriptors: [NSSortDescriptor(key: "sleepStart", ascending: true)],
                                        predicate: NSPredicate(
                                         format: "sleepStart >= %@ && sleepEnd <= %@",
                                         Calendar.current.startOfDay(for: date.wrappedValue) as CVarArg,
                                         Calendar.current.startOfDay(for: date.wrappedValue + 86400) as CVarArg))
+        _V0 = FetchRequest<V0_main>(sortDescriptors: [NSSortDescriptor(key: "time", ascending: true)],
+                                        predicate: NSPredicate(
+                                            format: "time >= %@ && time <= %@",
+                                            Calendar.current.startOfDay(for: date.wrappedValue) as CVarArg,
+                                            Calendar.current.startOfDay(for: date.wrappedValue + 86400) as CVarArg))
     }
     
     public var body: some View {
@@ -317,27 +323,49 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                         Capsule()
                             .fill(Color.secondary)
                             .frame(width: 30, height: 3)
+                            .padding(.bottom, 20)
                         
-                        Button(action: {
-                            print(lastSleep.description)
-                            readSleep(from: lastSleep, to: Date.now)
-                            lastSleep = Date.now
-                        }, label: {Text("Sync with Healthkit")})
+//                        Button(action: {
+//                            print(lastSleep.description)
+//                            readSleep(from: lastSleep, to: Date.now)
+//                            lastSleep = Date.now
+//                        }, label: {Text("Sync with Healthkit")})
                     }.background(Color.white)
                         .cornerRadius(20)
                     
                     VStack{
+                        
                         NavigationView{
-                            List(entries) { entry in
-                                NavigationLink {
-                                    CalendarDetailView(entry: entry)
-                                } label: {
-                                    CalendarCardView(entry: entry)
-                                    //                        Text("Start of sleep: \(entry.sleepStart!.formatted(date: .omitted ,time: .shortened))")
-                                    //                        Text("End of sleep: \(entry.sleepEnd!.formatted(date: .omitted, time: .shortened))")
-                                    //                        Text("Duration of sleep: \(entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)/60.0/60.0) hours")
+                            VStack{
+                                HStack{
+                                    Text("내 수면")
+                                        .bold()
+                                        .font(.title2)
+                                        .padding([.top, .leading, .trailing], 15)
+                                    Spacer()
                                 }
-                            }.listStyle(.plain)
+                                ZStack{
+                                    VStack{
+                                        List(entries) { entry in
+                                            if entry.sleepStart! == entries.first!.sleepStart! {
+                                                CalendarCardViewFirst(entry: entry)
+                                                    .frame(height:130)
+                                                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                                    .listRowSeparator(.hidden)
+                                                    .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                            }else{
+                                                CalendarCardView(entry: entry)
+                                                    .frame(height:110)
+                                                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                                    .listRowSeparator(.hidden)
+                                                    .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                            }
+                                        }
+                                        .cornerRadius(20)
+                                    }
+                                }.padding([.bottom, .leading, .trailing], 5)
+                                    .cornerRadius(20)
+                            }
                         }
                         //                VStack{
                         //                    AlertView()
@@ -355,13 +383,13 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                         //                    .cornerRadius(15)
                         //                    .onTapGesture{print("you clicked alertView")}
                     }.cornerRadius(20)
-                        .padding([.bottom, .leading, .trailing], 15)
-                        .padding([.top], 8)
-                }.background(Color.gray.brightness(0.35))
+                        .padding([.bottom, .leading, .trailing], 10)
+                        .padding([.top], 3)
+                }.background(Color(red: 0.948, green: 0.953, blue: 0.962))
             }
             .onAppear{
 //                requestSleepAuthorization()
-                print("WHAT")
+                print("LAST SLEEP2: ", lastSleep)
                 readSleep(from: lastSleep, to: Date.now)
                 lastSleep = Date.now
             }

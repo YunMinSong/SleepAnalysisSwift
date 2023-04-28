@@ -69,20 +69,22 @@ struct ContentView: View {
                     VStack{
                         HeaderView()
                             .padding()
+                            .background(.white)
                             
-                        VStack {
-                            AlertView(tabSelection: $tabSelection)
-                                .padding()
-                                .background(.white)
-                                .previewLayout(.fixed(width: 400, height: 60))
-                                .cornerRadius(15)
-                                .onTapGesture{print("you clicked alertView")}
+                        VStack (spacing: 40){
+//                            AlertView(tabSelection: $tabSelection)
+//                                .padding()
+//                                .background(.white)
+//                                .previewLayout(.fixed(width: 400, height: 60))
+//                                .cornerRadius(15)
+//                                .onTapGesture{print("you clicked alertView")}
                             SleepTimeView(tabSelection: $tabSelection, mainSleepStart: $mainSleepStart, mainSleepEnd: $mainSleepEnd, napSleepStart: $napSleepStart, napSleepEnd: $napSleepEnd)
                                 .padding()
                                 .background(.white)
                                 .previewLayout(.fixed(width: 400, height: 120))
                                 .cornerRadius(15)
                                 .onTapGesture{print("you clicked sleeptimeView")}
+                            
                             GraphView(AwarenessData: $AwarenessData, tabSelection: $tabSelection)
                                 .padding()
                                 .background(.white)
@@ -90,7 +92,6 @@ struct ContentView: View {
                                 .cornerRadius(15)
                                 .frame(height: geometry.size.height/3)
                                 .onTapGesture{print("you clicked graphView")}
-                            Spacer()
                             //                List{
                             //                Chart {
                             //                    ForEach(SleepData){
@@ -132,12 +133,12 @@ struct ContentView: View {
                     .onAppear(){
                         if needUpdate || Date.now.timeIntervalSince(lastUpdated) > 60.0*60.0*2{
                             isLoading = true
+                            print("LAST SLEEP: ", lastSleep)
                             readSleep(from: lastSleep, to: Date.now)
                             lastSleep = Date.now
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2){
                                 needUpdate = false
                                 lastUpdated = Date.now
-                                print("BRUH")
                                 //PCR prediction initial data
                                 let startDate = Date.now.addingTimeInterval(-1.0*60*60*24*1)
                                 var V0 =  [-0.8590, -0.6837, 0.1140, 14.2133] //initial condition

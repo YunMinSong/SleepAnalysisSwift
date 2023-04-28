@@ -42,11 +42,119 @@ public struct CalendarDetailView: View{
     }
 }
 
+func secondsToHoursMinutesSeconds(_ seconds: Int) -> (Int, Int, Int) {
+    return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
+}
+
+func getTimeDuration(original: Double) -> String {
+    let (h,m,_) = secondsToHoursMinutesSeconds(Int(original))
+
+    let result = "\(h)" + "시간 " + "\(m)" + "분"
+    return result
+}
+
 public struct CalendarCardView: View{
     var entry: Entry
+    @State private var from:String = "19:40"
+    @State private var to: String = "20:40"
+    @State private var duration: String = "04:20"
     public var body: some View{
-        Text("Start of sleep: \(entry.sleepStart!.formatted(date: .omitted ,time: .shortened))")
-        Text("End of sleep: \(entry.sleepEnd!.formatted(date: .omitted, time: .shortened))")
-        Text("Duration of sleep: \(entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)/60.0/60.0) hours")
+            VStack(alignment: .leading) {
+                ZStack{
+                    VStack{
+                        ZStack{
+                            Rectangle()
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                            HStack{
+                                Image("moon2")
+                                VStack{
+                                    HStack{
+                                        Text("낮잠").font(.system(size: 13))
+                                        Spacer()
+                                    }
+                                    HStack{
+                                        Text(getTimeDuration(original:entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)))
+                                            .bold()
+                                            .font(.title3)
+                                        Spacer()
+                                    }
+                                }
+                                Spacer()
+                            }.padding(10)
+                        }
+                        Spacer()
+                        HStack{
+                            Text(entry.sleepEnd!.formatted(date: .omitted, time: .shortened))
+                                .font(.system(size: 10))
+                                .frame(maxWidth:50, alignment: .bottomLeading)
+                            VStack { Divider().background(.gray) }
+                        }.background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                    }
+                }
+                Spacer()
+                /*Image("sskoo")
+                 .padding(.vertical, 50.0)
+                 .alignmentGuide(.leading, computeValue: { d in -100.0})
+                 */
+            //        Text("Start of sleep: \(entry.sleepStart!.formatted(date: .omitted ,time: .shortened))")
+            //        Text("End of sleep: \(entry.sleepEnd!.formatted(date: .omitted, time: .shortened))")
+            //        Text("Duration of sleep: \(entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)/60.0/60.0) hours")
+        }
+    }
+}
+
+public struct CalendarCardViewFirst: View{
+    var entry: Entry
+    public var body: some View{
+            VStack(alignment: .leading) {
+                ZStack{
+                    VStack{
+                        HStack{
+                            Text(entry.sleepStart!.formatted(date: .omitted, time: .shortened))
+                                .font(.system(size: 10))
+                                .frame(maxWidth:50, alignment: .bottomLeading)
+                            VStack { Divider().background(.gray) }
+                        }.background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                            .padding([.leading], 5)
+                        ZStack{
+                            Rectangle()
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                            HStack{
+                                Image("moon2")
+                                VStack{
+                                    HStack{
+                                        Text("낮잠").font(.system(size: 13))
+                                        Spacer()
+                                    }
+                                    HStack{
+                                        Text(getTimeDuration(original:entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)))
+                                            .bold()
+                                            .font(.title3)
+                                        Spacer()
+                                    }
+                                }
+                                Spacer()
+                            }.padding(10)
+                        }
+                        Spacer()
+                        HStack{
+                            Text(entry.sleepEnd!.formatted(date: .omitted, time: .shortened))
+                                .font(.system(size: 10))
+                                .frame(maxWidth:50, alignment: .bottomLeading)
+                            VStack { Divider().background(.gray) }
+                        }.background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                    }
+                }
+                Spacer()
+                /*Image("sskoo")
+                 .padding(.vertical, 50.0)
+                 .alignmentGuide(.leading, computeValue: { d in -100.0})
+                 */
+            //        Text("Start of sleep: \(entry.sleepStart!.formatted(date: .omitted ,time: .shortened))")
+            //        Text("End of sleep: \(entry.sleepEnd!.formatted(date: .omitted, time: .shortened))")
+            //        Text("Duration of sleep: \(entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)/60.0/60.0) hours")
+        }
     }
 }

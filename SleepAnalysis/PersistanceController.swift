@@ -48,7 +48,9 @@ struct PersistenceController {
         if context.hasChanges {
             do {
                 try context.save()
-            } catch {
+            } catch let error as NSError{
+                let nserror = error as NSError
+                fatalError("Unresolved error when saving MOC: \(nserror), \(nserror.userInfo)")
                 // Show some error here
             }
         }

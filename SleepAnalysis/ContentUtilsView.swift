@@ -12,9 +12,11 @@ import Charts
 struct HeaderView: View{
     var body: some View {
         HStack{
-            Text("my sleep")
+            Text("my night")
+                .font(.title)
+                .bold()
             Spacer()
-            Button(action: {print("notif is pressed")}, label: {Text("notif")})
+            Button(action: {print("notif is pressed")}, label: {Image("bell")})
         }
     }
 }
@@ -58,8 +60,18 @@ struct SleepTimeView: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack{
-                Text("수면 추천")
-                    .bold()
+                VStack{
+                    HStack{
+                        Text("\(userName)님")
+                            .bold()
+                            .font(.title2)
+                        Spacer()
+                    }
+                    HStack{
+                        Text("이때 주무시는건 어때요?")
+                        Spacer()
+                    }
+                }
                 Spacer()
                 Button(action: {self.tabSelection = 3}, label: {
                     Image(systemName: "chevron.right")
@@ -85,19 +97,89 @@ struct SleepTimeView: View {
             //                .cornerRadius(20)
             
             if sleep_onset == Date.now || work_onset == Date.now || work_offset == Date.now || !isRegistered {
-                BeforeTimeGet(userName: userId)
+                ZStack {
+                    Rectangle()
+                        .foregroundColor(.white)
+                        .cornerRadius(16.0)
+                        .frame(height: 300)
+                    VStack(alignment: .leading) {
+                        Text("\(userName)님에게 딱 맞는 수면 패턴을 추천해 드릴게요")
+                            .font(.custom("Small", size: 15))
+                            .padding(.top, 5.0)
+                        GifImage("notFound")
+                            .padding(.horizontal, 20)
+                        /*Image("sskoo")
+                            .padding(.vertical, 50.0)
+                            .alignmentGuide(.leading, computeValue: { d in -100.0})
+                         */
+                    }
+                }.padding(.horizontal)
             } else {
-                BoxWithRecommend(from1: $from1, to1: $to1, from2: $from2, to2: $to2)
+                RecommendedSleep(from1: $from1, to1: $to1, from2: $from2, to2: $to2)
                     .frame(maxWidth: .infinity, alignment: .center)
             }
         }
     }
 }
 
+struct RecommendedSleep: View {
+    
+    @Binding var from1: String
+    @Binding var to1: String
+    @Binding var from2: String
+    @Binding var to2: String
+    
+    var body: some View {
+        ZStack {
+            Rectangle()
+                .foregroundColor(Color(red: 0.948, green: 0.953, blue: 0.962))
+                .frame(width: 310, height: 180)
+                .cornerRadius(16)
+                .padding(.vertical, 10)
+            VStack(alignment: .center, spacing: 10) {
+                RecommendedCaption(from: $from1, to: $to1)
+                RecommendedCaption(from: $from2, to: $to2)
+            }
+        }
+    }
+}
+
+struct RecommendedCaption: View {
+    
+    @Binding var from: String
+    @Binding var to: String
+    
+    var body: some View {
+        ZStack {
+            Rectangle()
+                .foregroundColor(.white)
+                .frame(width: 278, height: 70)
+                .cornerRadius(16)
+            HStack(spacing: 15) {
+                Image("moon3")
+                HStack(alignment: .bottom, spacing: 3) {
+                    Text(specificTime(original:from).0)
+                        .font(.custom("Small", size: 15))
+                    Text(from)
+                        .font(.headline)
+                    Text("부터")
+                        .font(.custom("Small", size: 15))
+                    Text(timeInterval(original:to))
+                        .font(.headline)
+                    Text("이상")
+                        .font(.custom("Small", size: 15))
+                }
+            }.padding([.leading, .trailing],10)
+        }
+    }
+}
+
+
 struct GraphView: View {
     
     @Binding var AwarenessData: [LineData]
     @Binding var tabSelection : Int
+    @State private var userName: String = "홍길동"
     var body: some View {
         VStack(alignment: .leading) {
             HStack{
@@ -105,8 +187,11 @@ struct GraphView: View {
                     Text("잠시 바람 쐬는건 어때요?")
                         .bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    Text("각성도가 낮아요")
+                        .font(.title2)
+                        .padding([.bottom], 5)
+                    Text("\(userName)님 각성도가 낮아요")
                         .font(.system(size: 12))
+                        .padding([.bottom], 10)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 Spacer()
@@ -114,16 +199,28 @@ struct GraphView: View {
                     Image(systemName: "chevron.right")
                 })
             }
-            Chart {
-                ForEach(AwarenessData){
-                    LineMark(
-                        x: .value("x", $0.x),
-                        y: .value("y", $0.y),
-                        series: .value("Alertness", "a")
-                    ).interpolationMethod(.catmullRom)
-                        .foregroundStyle(by: .value("Category", $0.Category))
+            ZStack{
+                Rectangle()
+                    .foregroundColor(Color(red: 0.948, green: 0.953, blue: 0.962))
+                    .frame(width: 310, height: 180)
+                    .cornerRadius(16)
+                Chart {
+                    ForEach(AwarenessData){
+                        LineMark(
+                            x: .value("x", $0.x),
+                            y: .value("y", $0.y),
+                            series: .value("Alertness", "a")
+                        ).interpolationMethod(.catmullRom)
+                            .foregroundStyle(by: .value("Category", $0.Category))
+                    }
                 }
+                .chartYAxis(.hidden)
+                .chartXAxis(.hidden)
+                .frame(width: 290, height: 160)
             }
+//            .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+//            .cornerRadius(16)
+//            .offset(x:10, y:10)
         }
     }
 }

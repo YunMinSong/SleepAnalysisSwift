@@ -32,6 +32,7 @@ func readSleep(from startDateQ: Date?, to endDateQ: Date?) {
     let persistenceController = PersistenceController.shared
     let context = persistenceController.container.viewContext
     
+    
     if HKHealthStore.isHealthDataAvailable(){
         let healthStore = HKHealthStore()
         
@@ -56,20 +57,21 @@ func readSleep(from startDateQ: Date?, to endDateQ: Date?) {
                 // do something with those data
                 var gSleepStart : Date = Date(timeIntervalSince1970: 0)
                 var gSleepEnd : Date = Date(timeIntervalSince1970: 0)
+                let check: Date = gSleepStart
                 for item in result {
                     if let sample = item as? HKCategorySample {
                         
                         //init
                         let startDate = sample.startDate
                         let endDate = sample.endDate
-//                        let sleepTimeForOneDay = sample.endDate.timeIntervalSince(sample.startDate)/60.0/60.0
+                        let sleepTimeForOneDay = sample.endDate.timeIntervalSince(sample.startDate)/60.0/60.0
                         
                         //print
 //                        print("Start: ", startDate.formatted(date: .numeric, time: .shortened))
 //                        print("End: ", endDate.formatted(date: .numeric, time: .shortened))
 //                        print("Sleep Time: ", sleepTimeForOneDay)
                         
-                        if gSleepStart == Date(timeIntervalSince1970: 0){
+                        if gSleepStart == check {
                             gSleepStart = startDate
                             gSleepEnd = endDate
                             continue
@@ -84,14 +86,21 @@ func readSleep(from startDateQ: Date?, to endDateQ: Date?) {
                             continue
                         }
                         
-                        //if it is not, then save g balues and set g values to the next startDate
+//                        print("G START: ", gSleepStart)
+//                        print("G END: ", gSleepEnd)
+                        //if it is not, then save g values and set g values to the next startDate
                         let entry = Entry(context: context)
                         entry.sleepStart = gSleepStart
                         entry.sleepEnd = gSleepEnd
-                        do {
-                            try context.save()
-                        } catch {
-                            // handle the Core Data error
+                        
+                        if context.hasChanges{
+                            do {
+                                try context.save()
+                            } catch let nserror as NSError{
+                                // handle the Core Data error
+                                print("Unresolved error \(nserror), \(nserror.userInfo)")
+                                
+                            }
                         }
                         
                         gSleepStart = startDate
@@ -101,10 +110,15 @@ func readSleep(from startDateQ: Date?, to endDateQ: Date?) {
                 let entry = Entry(context: context)
                 entry.sleepStart = gSleepStart
                 entry.sleepEnd = gSleepEnd
-                do {
-                    try context.save()
-                } catch {
-                    // handle the Core Data error
+//                print("G START2", gSleepStart)
+//                print("G END2", gSleepEnd)
+//                print("G DURATION2", gSleepEnd.timeIntervalSince(gSleepStart) > 1800.0)
+                if gSleepStart != check && gSleepEnd.timeIntervalSince(gSleepStart) > 1800.0{
+                    do {
+                        try context.save()
+                    } catch {
+                        // handle the Core Data error
+                    }
                 }
             }
         }

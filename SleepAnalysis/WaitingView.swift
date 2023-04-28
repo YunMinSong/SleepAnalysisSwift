@@ -12,6 +12,7 @@ struct WaitingView: View {
     
     @AppStorage("UserEmail") private var userEmail: String = ""
     @AppStorage("UserId") private var userId: String = "-"
+    @AppStorage("lastSleep") var lastSleep:Date = Date.now.addingTimeInterval(-1*60.0*60.0*24.0*14.0)
     let currentDate = Date()
     let email: String
     @State var sleepForWeek: [HKCategorySample] = []
@@ -39,7 +40,8 @@ struct WaitingView: View {
                 self.userEmail = email
                 self.userId = extractId(email: email)
                 //Collect sleep data during last 7 days
-                readSleep(from: Date(timeInterval: -604800, since: currentDate), to: currentDate)
+                readSleep(from: lastSleep, to: Date.now)
+                lastSleep = Date.now
             }
     }
 }

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0B71F8E029F9071700E5B4A9 /* Loading.gif in Resources */ = {isa = PBXBuildFile; fileRef = 0B71F8DF29F9071700E5B4A9 /* Loading.gif */; };
 		3C3DA74929C9317C001E92A7 /* BeforeRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3DA74829C9317C001E92A7 /* BeforeRegisterView.swift */; };
 		3C3DA74B29C93684001E92A7 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3DA74A29C93684001E92A7 /* RegisterView.swift */; };
 		3C3DA74D29C93F9A001E92A7 /* CheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C3DA74C29C93F9A001E92A7 /* CheckView.swift */; };
@@ -22,6 +21,7 @@
 		404A6C0429AC7BC700DDE5B6 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404A6C0329AC7BC700DDE5B6 /* Theme.swift */; };
 		404A6C0929B605B300DDE5B6 /* ContentUtilsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404A6C0829B605B200DDE5B6 /* ContentUtilsView.swift */; };
 		404A6C0B29C2A20500DDE5B6 /* ScheduleUtilsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404A6C0A29C2A20500DDE5B6 /* ScheduleUtilsView.swift */; };
+		407C648F29FB2F1600F0FB09 /* Loading.gif in Resources */ = {isa = PBXBuildFile; fileRef = 407C648E29FB2F1600F0FB09 /* Loading.gif */; };
 		409F4E49291176F30065BC3F /* SleepAnalysisApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4E48291176F30065BC3F /* SleepAnalysisApp.swift */; };
 		409F4E4B291176F30065BC3F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409F4E4A291176F30065BC3F /* ContentView.swift */; };
 		409F4E4D291176F50065BC3F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 409F4E4C291176F50065BC3F /* Assets.xcassets */; };
@@ -58,7 +58,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0B71F8DF29F9071700E5B4A9 /* Loading.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Loading.gif; sourceTree = "<group>"; };
 		3C3DA74829C9317C001E92A7 /* BeforeRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeforeRegisterView.swift; sourceTree = "<group>"; };
 		3C3DA74A29C93684001E92A7 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 		3C3DA74C29C93F9A001E92A7 /* CheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckView.swift; sourceTree = "<group>"; };
@@ -73,6 +72,7 @@
 		404A6C0329AC7BC700DDE5B6 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		404A6C0829B605B200DDE5B6 /* ContentUtilsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentUtilsView.swift; sourceTree = "<group>"; };
 		404A6C0A29C2A20500DDE5B6 /* ScheduleUtilsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleUtilsView.swift; sourceTree = "<group>"; };
+		407C648E29FB2F1600F0FB09 /* Loading.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = Loading.gif; path = ../../../../Downloads/Loading.gif; sourceTree = "<group>"; };
 		409F4E45291176F30065BC3F /* SleepAnalysis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SleepAnalysis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		409F4E48291176F30065BC3F /* SleepAnalysisApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepAnalysisApp.swift; sourceTree = "<group>"; };
 		409F4E4A291176F30065BC3F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -166,8 +166,8 @@
 				409F4E48291176F30065BC3F /* SleepAnalysisApp.swift */,
 				409F4E4A291176F30065BC3F /* ContentView.swift */,
 				404A6C0829B605B200DDE5B6 /* ContentUtilsView.swift */,
+				407C648E29FB2F1600F0FB09 /* Loading.gif */,
 				3C72124229D27699000D74FF /* notFound.gif */,
-				0B71F8DF29F9071700E5B4A9 /* Loading.gif */,
 				409F4E4C291176F50065BC3F /* Assets.xcassets */,
 				3C3DA74829C9317C001E92A7 /* BeforeRegisterView.swift */,
 				3C3DA74A29C93684001E92A7 /* RegisterView.swift */,
@@ -331,7 +331,7 @@
 			files = (
 				3C72124329D27699000D74FF /* notFound.gif in Resources */,
 				409F4E4D291176F50065BC3F /* Assets.xcassets in Resources */,
-				0B71F8E029F9071700E5B4A9 /* Loading.gif in Resources */,
+				407C648F29FB2F1600F0FB09 /* Loading.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
