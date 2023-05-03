@@ -29,6 +29,7 @@ struct WhenSleepView: View {
     
     @AppStorage("sleep_onset") var sleep_onset: Date = Date.now
     @AppStorage("UserId") private var userId: String = "-"
+    @AppStorage("needUpdate") var needUpdate:Bool = false
     
     @State var isValid: Bool = true
     @State var userName: String = "홍길동"
@@ -66,6 +67,8 @@ struct WhenSleepView: View {
                 .simultaneousGesture(TapGesture().onEnded({
                     self.sleep_onset = saveTime()
                 }))
+        }.onAppear{
+            needUpdate = true
         }
     }
     

@@ -64,12 +64,6 @@ func readSleep(from startDateQ: Date?, to endDateQ: Date?) {
                         //init
                         let startDate = sample.startDate
                         let endDate = sample.endDate
-                        let sleepTimeForOneDay = sample.endDate.timeIntervalSince(sample.startDate)/60.0/60.0
-                        
-                        //print
-//                        print("Start: ", startDate.formatted(date: .numeric, time: .shortened))
-//                        print("End: ", endDate.formatted(date: .numeric, time: .shortened))
-//                        print("Sleep Time: ", sleepTimeForOneDay)
                         
                         if gSleepStart == check {
                             gSleepStart = startDate
@@ -79,15 +73,12 @@ func readSleep(from startDateQ: Date?, to endDateQ: Date?) {
                         
                         //check with g values
                         let distanceWithG = startDate.timeIntervalSince(gSleepEnd)
-//                        print("DISTANCE: ", distanceWithG)
                         //if the distance is less than half an hour, update the end date
                         if distanceWithG <= 1800.0{
                             gSleepEnd = endDate
                             continue
                         }
                         
-//                        print("G START: ", gSleepStart)
-//                        print("G END: ", gSleepEnd)
                         //if it is not, then save g values and set g values to the next startDate
                         let entry = Entry(context: context)
                         entry.sleepStart = gSleepStart
@@ -110,9 +101,7 @@ func readSleep(from startDateQ: Date?, to endDateQ: Date?) {
                 let entry = Entry(context: context)
                 entry.sleepStart = gSleepStart
                 entry.sleepEnd = gSleepEnd
-//                print("G START2", gSleepStart)
-//                print("G END2", gSleepEnd)
-//                print("G DURATION2", gSleepEnd.timeIntervalSince(gSleepStart) > 1800.0)
+
                 if gSleepStart != check && gSleepEnd.timeIntervalSince(gSleepStart) > 1800.0{
                     do {
                         try context.save()

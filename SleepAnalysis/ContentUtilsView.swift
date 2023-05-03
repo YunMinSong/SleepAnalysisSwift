@@ -37,6 +37,26 @@ struct AlertView: View {
     }
 }
 
+func date_to_string(date: Date) -> String{
+    let formatter = DateFormatter()
+    formatter.dateFormat = "HH:mm"
+    return formatter.string(from: date)
+}
+
+func time_to_string(seconds: Int) -> String{
+    let hour = seconds/3600
+    let minutes = (seconds%3600)/60
+    var hour_string = "\(hour)"
+    var minute_string = "\(minutes)"
+    if hour < 10{
+        hour_string = "0\(hour)"
+    }
+    if minutes < 10{
+        minute_string = "0\(minutes)"
+    }
+    return (hour_string+":"+minute_string)
+}
+
 struct SleepTimeView: View {
     @Binding var tabSelection : Int
     @Binding var mainSleepStart : Date
@@ -49,20 +69,20 @@ struct SleepTimeView: View {
     @AppStorage("work_offset") var work_offset: Date = Date.now
     @AppStorage("Registered") var isRegistered: Bool = false
     @AppStorage("UserId") private var userId: String = "-"
-    
-    @State private var userName: String = "홍길동"
+        
     //Put calculated one
-    @State private var from1: String = "19:40"
-    @State private var to1: String = "04:20"
-    @State private var from2: String = "10:15"
-    @State private var to2: String = "02:50"
-    
     var body: some View {
+        
+        let from1 = date_to_string(date: mainSleepStart)
+        let to1 = time_to_string(seconds: Int(mainSleepEnd.timeIntervalSince(mainSleepStart)))
+        let from2 = date_to_string(date: napSleepStart)
+        let to2 = time_to_string(seconds: Int(napSleepEnd.timeIntervalSince(napSleepStart)))
+
         VStack(alignment: .leading) {
             HStack{
                 VStack{
                     HStack{
-                        Text("\(userName)님")
+                        Text("\(userId)님")
                             .bold()
                             .font(.title2)
                         Spacer()
@@ -103,7 +123,7 @@ struct SleepTimeView: View {
                         .cornerRadius(16.0)
                         .frame(height: 300)
                     VStack(alignment: .leading) {
-                        Text("\(userName)님에게 딱 맞는 수면 패턴을 추천해 드릴게요")
+                        Text("\(userId)님에게 딱 맞는 수면 패턴을 추천해 드릴게요")
                             .font(.custom("Small", size: 15))
                             .padding(.top, 5.0)
                         GifImage("notFound")
@@ -115,8 +135,7 @@ struct SleepTimeView: View {
                     }
                 }.padding(.horizontal)
             } else {
-                RecommendedSleep(from1: $from1, to1: $to1, from2: $from2, to2: $to2)
-                    .frame(maxWidth: .infinity, alignment: .center)
+                RecommendedSleep(from1: from1, to1: to1, from2: from2, to2: to2)
             }
         }
     }
@@ -124,10 +143,10 @@ struct SleepTimeView: View {
 
 struct RecommendedSleep: View {
     
-    @Binding var from1: String
-    @Binding var to1: String
-    @Binding var from2: String
-    @Binding var to2: String
+    var from1: String
+    var to1: String
+    var from2: String
+    var to2: String
     
     var body: some View {
         ZStack {
@@ -137,17 +156,38 @@ struct RecommendedSleep: View {
                 .cornerRadius(16)
                 .padding(.vertical, 10)
             VStack(alignment: .center, spacing: 10) {
-                RecommendedCaption(from: $from1, to: $to1)
-                RecommendedCaption(from: $from2, to: $to2)
+                RecommendedCaption(from: from1, to: to1)
+                if (to2 != "00:00"){
+                    RecommendedCaption(from: from2, to: to2)
+                }else{
+                    NoNapCaption()
+                }
             }
+        }
+    }
+}
+
+struct NoNapCaption: View {
+    
+    var body: some View {
+        ZStack {
+            Rectangle()
+                .foregroundColor(.white)
+                .frame(width: 278, height: 70)
+                .cornerRadius(16)
+            HStack(spacing: 15) {
+                Image("moon3")
+                Text("No Nap Needed")
+                    .font(.headline)
+            }.padding([.leading, .trailing],10)
         }
     }
 }
 
 struct RecommendedCaption: View {
     
-    @Binding var from: String
-    @Binding var to: String
+    var from: String
+    var to: String
     
     var body: some View {
         ZStack {

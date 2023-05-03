@@ -133,7 +133,6 @@ struct ContentView: View {
                     .onAppear(){
                         if needUpdate || Date.now.timeIntervalSince(lastUpdated) > 60.0*60.0*2{
                             isLoading = true
-                            print("LAST SLEEP: ", lastSleep)
                             readSleep(from: lastSleep, to: Date.now)
                             lastSleep = Date.now
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2){
@@ -164,10 +163,10 @@ struct ContentView: View {
                                 mainSleepEnd = Date.now.addingTimeInterval(Double(MainSleep[1])*5.0*60.0)
                                 napSleepStart = Date.now.addingTimeInterval(Double(NapSleep[0])*5.0*60.0)
                                 napSleepEnd = Date.now.addingTimeInterval(Double(NapSleep[1])*5.0*60.0)
-                                //                    print("Main sleep: ", mainSleepStart)
-                                //                    print("Main sleep: ", mainSleepEnd)
-                                //                    print("Nap sleep: ", napSleepStart)
-                                //                    print("Nap sleep: ", napSleepEnd)
+//                                print("Main sleep: ", mainSleepStart)
+//                                print("Main sleep: ", mainSleepEnd)
+//                                print("Nap sleep: ", napSleepStart)
+//                                print("Nap sleep: ", napSleepEnd)
                                 
                                 
                                 var idx = Int(MainSleep[0])
