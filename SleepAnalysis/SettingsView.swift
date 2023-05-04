@@ -19,13 +19,27 @@ struct SettingsView: View {
         formatter.dateFormat = "yyyy.MM.dd. HH:mm"
         return formatter
     }()
+    @AppStorage("lastLoad") var lastLoadTime: String = ""
+    
+    
     var body: some View {
             NavigationView{
                 ZStack{
                     Rectangle()
                         .foregroundColor(Color(red: 0.948, green: 0.953, blue: 0.962))
                     List{
-                        NavigationLink(destination: Text("Load data")){
+                        NavigationLink(destination:
+                                        Button(action: {
+                            //Need to Give action for loading sleep data
+                            lastLoadTime = formatter.string(from: now)
+                        }) {
+                            Rectangle()
+                                .foregroundColor(.blue)
+                                .frame(width: 310, height: 48)
+                                .cornerRadius(28)
+                                .overlay(
+                                    Text("수면 데이터 불러오기").foregroundColor(.white))
+                        }){
                             VStack(spacing: 5){
                                 HStack{
                                     Text("내 수면 데이터 불러오기")
@@ -33,10 +47,7 @@ struct SettingsView: View {
                                     Spacer()
                                 }
                                 HStack{
-                                    Text("마지막 데이터 업데이트:")
-                                        .font(.system(size: 14))
-                                        .foregroundColor(Color(red: 0.7, green: 0.7, blue: 0.7))
-                                    Text(now, formatter: formatter)
+                                    Text("마지막 데이터 업데이트 " + lastLoadTime)
                                         .font(.system(size: 14))
                                         .foregroundColor(Color(red: 0.7, green: 0.7, blue: 0.7))
                                     Spacer()
@@ -62,7 +73,12 @@ struct SettingsView: View {
                                 }
                             }
                         }.padding()
-                        NavigationLink(destination: Text("App Version Detail")){
+                        NavigationLink(destination: VStack(alignment: .leading) {
+                            Text("앱 상세 버전").font(.headline)
+                                .padding(.bottom)
+                            Text("버전: " + loadVersion()[0])
+                            Text("빌드 버전: " + loadVersion()[1])
+                        }){
                             VStack(spacing: 5){
                                 HStack{
                                     Text("앱 버전")
@@ -170,6 +186,14 @@ struct RecSettingView: View {
             }.padding()
         }.padding()
     }
+}
+
+//Load version and build version
+func loadVersion() -> [String] {
+    guard let dictionary = Bundle.main.infoDictionary,
+          let version = dictionary["CFBundleShortVersionString"] as? String,
+          let build = dictionary["CFBundleVersion"] as? String else {return ["", ""]}
+    return [version, build]
 }
 
 struct SettingsView_Previews: PreviewProvider {
