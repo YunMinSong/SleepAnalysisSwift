@@ -11,6 +11,9 @@ import CoreData
 struct MainView: View {
     @State private var tabSelection = 1
     @AppStorage("UserEmail") private var userEmail: String = ""
+    @State var AwarenessData = [LineData](repeating: LineData(Category: "Awareness", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
+    @State var SleepData = [LineData](repeating: LineData(Category: "Sleep", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
+    @State var SleepSuggestionData = [LineData](repeating: LineData(Category: "Sleep Suggestion", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
     
     let persistenceController = PersistenceController.shared
     
@@ -19,7 +22,7 @@ struct MainView: View {
             BeforeRegisterView()
         } else {
             TabView(selection: $tabSelection) {
-                ContentView(tabSelection: $tabSelection)
+                ContentView(tabSelection: $tabSelection, AwarenessData: $AwarenessData, SleepData: $SleepData, SleepSuggestionData: $SleepSuggestionData)
                     .tabItem {
                         Label("Home", systemImage: "house.fill")
                     }.environment(\.managedObjectContext, persistenceController.container.viewContext)
@@ -30,11 +33,11 @@ struct MainView: View {
                         Label("Schedule", systemImage: "calendar.badge.clock")
                     }
                     .tag(2)
-                RecommendView()
+                RecommendView(AwarenessData: $AwarenessData, SleepData: $SleepData, SleepSuggestionData: $SleepSuggestionData)
                     .tabItem {
                         Label("Recommend", systemImage: "moon.fill")
-                            .environment(\.managedObjectContext, persistenceController.container.viewContext)
                     }
+                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
                     .tag(3)
                 SettingsView()
                     .tabItem {

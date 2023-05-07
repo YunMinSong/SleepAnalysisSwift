@@ -114,12 +114,12 @@ func processSleepData(V0: [Double], entries: FetchedResults<Entry>) -> ([[Double
 struct ContentView: View {
     @Environment(\.managedObjectContext) var managedObjectContext
     @Binding var tabSelection: Int
-    @State var AwarenessData = [LineData](repeating: LineData(Category: "Awareness", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
-    @State var SleepData = [LineData](repeating: LineData(Category: "Sleep", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
-    @State var SleepSuggestionData = [LineData](repeating: LineData(Category: "Sleep Suggestion", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
+    @Binding var AwarenessData: [LineData]
+    @Binding var SleepData: [LineData]
+    @Binding var SleepSuggestionData: [LineData]
     @State var isLoading = false
-    @State var lastUpdated = Date.now.addingTimeInterval(-60.0*60.0*3)
     
+    @AppStorage("lastUpdated") var lastUpdated:Date = Date.now.addingTimeInterval(-60.0*60.0*3)
     @AppStorage("lastSleep") var lastSleep:Date = Date.now.addingTimeInterval(-1*60.0*60.0*24.0*14.0)
     @AppStorage("needUpdate") var needUpdate:Bool = false
     
