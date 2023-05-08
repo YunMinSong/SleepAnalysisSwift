@@ -349,7 +349,7 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
 //                                                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
 //                                                        .listRowSeparator(.hidden)
 //                                                        .background(Color(red: 0.948, green: 0.953, blue: 0.962))
-                                                }.frame(height:110)
+                                                }.frame(height:130)
                                                     .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                                                     .listRowSeparator(.hidden)
                                                     .background(Color(red: 0.948, green: 0.953, blue: 0.962))

@@ -50,10 +50,9 @@ public struct CalendarDetailView: View{
     var entry : Entry
     public var body: some View{
         VStack{
-            Text("Hi")
             Text("Start of sleep: \(entry.sleepStart!.formatted(date: .omitted ,time: .shortened))")
             Text("End of sleep: \(entry.sleepEnd!.formatted(date: .omitted, time: .shortened))")
-            Text("Duration of sleep: \(entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)/60.0/60.0) hours")
+            Text("Duration of sleep: \(getTimeDuration(original: entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)))")
         }.navigationTitle("sleep")
     }
 }

@@ -93,9 +93,75 @@ struct SettingsView: View {
                                 }
                             }
                         }.padding()
+                        NavigationLink(destination: AddSleepView()){
+                            VStack(spacing: 5){
+                                HStack{
+                                    Text("수면을 더하")
+                                        .bold()
+                                    Spacer()
+                                }
+                            }
+                        }.padding()
                     }.listStyle(.inset)
                 }.navigationTitle("설정")
             }.navigationBarBackButtonHidden()
+    }
+}
+
+struct AddSleepView: View{
+    @State var startDate = Date.now
+    @State var endDate = Date.now
+    
+    let oneweekbefore = Date.now.addingTimeInterval(-1.0*60*60*24*7)
+    let oneweekafter = Date.now.addingTimeInterval(60*60*24*7*1.0)
+    var body: some View{
+        ZStack{
+            Rectangle()
+                .foregroundColor(.white)
+                .frame(height: 350)
+                .cornerRadius(16.0)
+            VStack{
+                Text("수면을 더하")
+                    .font(.title)
+                    .bold()
+                
+                Text("")
+                HStack{
+                    Text("Add Sleep : ")
+                        .bold()
+                    Spacer()
+                }
+                HStack{
+                    Spacer(minLength: 65)
+                    Text("Start")
+                    Spacer()
+                    DatePicker(
+                        "",
+                        selection: $startDate,
+                        in: oneweekbefore...oneweekafter,
+                        displayedComponents: [.date, .hourAndMinute]
+                    )
+                    Spacer()
+                }
+                HStack{
+                    Spacer(minLength: 70)
+                    Text("End")
+                    Spacer()
+                    DatePicker(
+                        "",
+                        selection: $endDate,
+                        in: oneweekbefore...oneweekafter,
+                        displayedComponents: [.date, .hourAndMinute]
+                    )
+                    Spacer()
+                }
+                Text("")
+                Text("")
+                Button(action: {
+                    writeSleep(.asleepCore, startDate: startDate, endDate: endDate)
+                }, label: {Text("Add sleep")})
+            }.padding()
+        }.padding()
     }
 }
 
