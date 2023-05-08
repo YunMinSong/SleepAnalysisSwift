@@ -184,37 +184,6 @@ struct ScheduleView: View {
             .background(Color.white)
             .cornerRadius(20, corners: [.bottomLeft, .bottomRight])
             
-//            VStack{
-//                NavigationView{
-//                    List(entries) { entry in
-//                        NavigationLink {
-//                            CalendarDetailView(entry: entry)
-//                        } label: {
-//                            CalendarCardView(entry: entry)
-//                            //                        Text("Start of sleep: \(entry.sleepStart!.formatted(date: .omitted ,time: .shortened))")
-//                            //                        Text("End of sleep: \(entry.sleepEnd!.formatted(date: .omitted, time: .shortened))")
-//                            //                        Text("Duration of sleep: \(entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)/60.0/60.0) hours")
-//                        }
-//                    }.listStyle(.plain)
-//                }
-//                VStack{
-//                    AlertView()
-//                        .padding()
-//                        .background(.white)
-//                        .previewLayout(.fixed(width: 400, height: 60))
-//                        .cornerRadius(15)
-//                        .onTapGesture{print("you clicked alertView")}
-//                }.padding(.bottom, 20)
-//
-//                AlertView()
-//                    .padding()
-//                    .background(.white)
-//                    .previewLayout(.fixed(width: 400, height: 60))
-//                    .cornerRadius(15)
-//                    .onTapGesture{print("you clicked alertView")}
-//            }.cornerRadius(20)
-//                .padding([.bottom, .leading, .trailing], 15)
-//                .padding([.top], 8)
         }.background(Color.gray.brightness(0.35))
     }
     
@@ -247,7 +216,8 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
     @Environment(\.managedObjectContext) var managedObjectContext
     
     @AppStorage("lastSleep") var lastSleep: Date = Date.now.addingTimeInterval(-1*60.0*60.0*24.0*14.0)
-    
+    @State var goodDuration: Int = 0
+    @State var badDuration: Int = 0
     
     // Injected dependencies
     private var calendar: Calendar
@@ -260,7 +230,7 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
     // Constants
     private let daysInWeek = 7
     var isLoading = false
-    
+
     @FetchRequest var entries: FetchedResults<Entry>
     @FetchRequest var V0: FetchedResults<V0_main>
     
@@ -281,7 +251,7 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
         
         _entries = FetchRequest<Entry>(sortDescriptors: [NSSortDescriptor(key: "sleepStart", ascending: true)],
                                        predicate: NSPredicate(
-                                        format: "sleepStart >= %@ && sleepEnd <= %@",
+                                        format: "sleepStart >= %@ && sleepStart < %@",
                                         Calendar.current.startOfDay(for: date.wrappedValue) as CVarArg,
                                         Calendar.current.startOfDay(for: date.wrappedValue + 86400) as CVarArg))
         _V0 = FetchRequest<V0_main>(sortDescriptors: [NSSortDescriptor(key: "time", ascending: true)],
@@ -325,11 +295,6 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                             .frame(width: 30, height: 3)
                             .padding(.bottom, 20)
                         
-//                        Button(action: {
-//                            print(lastSleep.description)
-//                            readSleep(from: lastSleep, to: Date.now)
-//                            lastSleep = Date.now
-//                        }, label: {Text("Sync with Healthkit")})
                     }.background(Color.white)
                         .cornerRadius(20)
                     
@@ -344,52 +309,195 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                         .padding([.top, .leading, .trailing], 15)
                                     Spacer()
                                 }
+                                HStack{
+                                    HStack{
+                                        Image("thumbUp")
+                                        VStack{
+                                            Text("Positive")
+                                                .font(.caption)
+                                            Text("\(getTimeDuration(original: Double(goodDuration)*60.0))")
+                                                .bold()
+                                                .font(.title3)
+                                                .foregroundColor(.green)
+                                        }
+                                    }.padding(10)
+                                    HStack{
+                                        Image("thumbDown")
+                                        VStack{
+                                            Text("Negative")
+                                                .font(.caption)
+                                            Text("\(getTimeDuration(original: Double(badDuration)*60.0))")
+                                                .bold()
+                                                .font(.title3)
+                                                .foregroundColor(.red)
+                                        }
+                                    }.padding(10)
+                                }
                                 ZStack{
                                     VStack{
-                                        List(entries) { entry in
-                                            if entry.sleepStart! == entries.first!.sleepStart! {
-                                                CalendarCardViewFirst(entry: entry)
-                                                    .frame(height:130)
+                                        List(self.entries.indices, id: \.self) { index in
+                                            
+                                            let sleepStart = entries[index].sleepStart!
+                                            let sleepEnd = entries[index].sleepEnd!
+                                            let endOfDay = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: entries[index].sleepEnd!)!
+                                            if (index == 0) {
+                                                NavigationLink{
+                                                    CalendarDetailView(entry: entries[index])
+                                                }label:{
+                                                    CalendarCardViewFirst(entry: entries[index])
+//                                                        .frame(height:130)
+//                                                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+//                                                        .listRowSeparator(.hidden)
+//                                                        .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                }.frame(height:110)
                                                     .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                                                     .listRowSeparator(.hidden)
                                                     .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                if index == entries.endIndex-1{
+                                                    CalendarCardAwarenessView(entry: EntryAwareness(sleepStart: entries[index].sleepEnd!, sleepEnd: min(Date.now, endOfDay)))
+                                                        .frame(height:110)
+                                                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                                        .listRowSeparator(.hidden)
+                                                        .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                }
                                             }else{
-                                                CalendarCardView(entry: entry)
+                                                CalendarCardAwarenessView(entry: EntryAwareness(sleepStart: entries[index-1].sleepEnd!, sleepEnd: entries[index].sleepStart!))
                                                     .frame(height:110)
                                                     .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                                                     .listRowSeparator(.hidden)
                                                     .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                
+                                                if index == entries.endIndex-1{
+                                                    
+                                                    if sleepEnd > endOfDay{
+                                                        NavigationLink{
+                                                            CalendarDetailView(entry: entries[index])
+                                                        }label:{
+                                                            CalendarCardView(entry: EntryAwareness(sleepStart: sleepStart, sleepEnd: endOfDay))
+//                                                                .frame(height:110)
+//                                                                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+//                                                                .listRowSeparator(.hidden)
+//                                                                .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                        }.frame(height:110)
+                                                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                                            .listRowSeparator(.hidden)
+                                                            .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                    }else{
+                                                        NavigationLink{
+                                                            CalendarDetailView(entry: entries[index])
+                                                        }label:{
+                                                            CalendarCardView(entry: EntryAwareness(sleepStart: sleepStart, sleepEnd: sleepEnd))
+//                                                                .frame(height:110)
+//                                                                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+//                                                                .listRowSeparator(.hidden)
+//                                                                .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                        }.frame(height:110)
+                                                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                                            .listRowSeparator(.hidden)
+                                                            .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                        CalendarCardAwarenessView(entry: EntryAwareness(sleepStart: entries[index].sleepEnd!, sleepEnd: min(Date.now, endOfDay)))
+                                                            .frame(height:110)
+                                                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                                            .listRowSeparator(.hidden)
+                                                            .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                    }
+                                                }else{
+                                                    NavigationLink{
+                                                        CalendarDetailView(entry: entries[index])
+                                                    }label:{
+                                                        CalendarCardView(entry: EntryAwareness(sleepStart: sleepStart, sleepEnd: sleepEnd))
+                                                            .frame(height:110)
+                                                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                                            .listRowSeparator(.hidden)
+                                                            .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                    }
+                                                }
                                             }
                                         }
                                         .cornerRadius(20)
                                     }
                                 }.padding([.bottom, .leading, .trailing], 5)
                                     .cornerRadius(20)
+                                    .onChange(of: date){ theDate in
+                                        goodDuration = 0
+                                        badDuration = 0
+                                        var checkTime: [EntryAwareness] = []
+                                        for idx in entries.indices{
+                                            
+                                            if idx > 0{
+                                                checkTime.append(EntryAwareness(sleepStart: entries[idx-1].sleepEnd!, sleepEnd: entries[idx].sleepStart!))
+                                            }
+                                            if idx == entries.endIndex-1{
+                                                let endOfDay = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: entries[idx].sleepEnd!)!
+                                                if entries[idx].sleepEnd! > endOfDay{
+                                                    continue
+                                                }
+                                                checkTime.append(EntryAwareness(sleepStart: entries[idx].sleepEnd!, sleepEnd: min(Date.now, endOfDay)))
+                                            }
+                                        }
+                                        for sleepTime in checkTime{
+                                            let sleepStart = sleepTime.sleepStart
+                                            let sleepEnd = sleepTime.sleepEnd
+                                            for tempV in V0{
+                                                let tempTime = tempV.time!
+                                                if tempTime >= sleepStart && tempTime <= sleepEnd{
+                                                    let y_data = [tempV.y, tempV.x, tempV.n, tempV.h]
+                                                    let C = 3.37*0.5*(1+coef_y*y_data[1] + coef_x * y_data[0])
+                                                    let D_up = (2.46+10.2+C) //sleep thres
+                                                    let awareness = D_up - y_data[3]
+                                                    if awareness > 0{
+                                                        goodDuration += 5
+                                                    }else{
+                                                        badDuration += 5
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .onAppear{
+                                        goodDuration = 0
+                                        badDuration = 0
+                                        var checkTime: [EntryAwareness] = []
+                                        for idx in entries.indices{
+                                            
+                                            if idx > 0{
+                                                checkTime.append(EntryAwareness(sleepStart: entries[idx-1].sleepEnd!, sleepEnd: entries[idx].sleepStart!))
+                                            }
+                                            if idx == entries.endIndex-1{
+                                                let endOfDay = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: entries[idx].sleepEnd!)!
+                                                if entries[idx].sleepEnd! > endOfDay{
+                                                    continue
+                                                }
+                                                checkTime.append(EntryAwareness(sleepStart: entries[idx].sleepEnd!, sleepEnd: min(Date.now, endOfDay)))
+                                            }
+                                        }
+                                        for sleepTime in checkTime{
+                                            let sleepStart = sleepTime.sleepStart
+                                            let sleepEnd = sleepTime.sleepEnd
+                                            for tempV in V0{
+                                                let tempTime = tempV.time!
+                                                if tempTime >= sleepStart && tempTime <= sleepEnd{
+                                                    let y_data = [tempV.y, tempV.x, tempV.n, tempV.h]
+                                                    let C = 3.37*0.5*(1+coef_y*y_data[1] + coef_x * y_data[0])
+                                                    let D_up = (2.46+10.2+C) //sleep thres
+                                                    let awareness = D_up - y_data[3]
+                                                    if awareness > 0{
+                                                        goodDuration += 5
+                                                    }else{
+                                                        badDuration += 5
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                             }
                         }
-                        //                VStack{
-                        //                    AlertView()
-                        //                        .padding()
-                        //                        .background(.white)
-                        //                        .previewLayout(.fixed(width: 400, height: 60))
-                        //                        .cornerRadius(15)
-                        //                        .onTapGesture{print("you clicked alertView")}
-                        //                }.padding(.bottom, 20)
-                        //
-                        //                AlertView()
-                        //                    .padding()
-                        //                    .background(.white)
-                        //                    .previewLayout(.fixed(width: 400, height: 60))
-                        //                    .cornerRadius(15)
-                        //                    .onTapGesture{print("you clicked alertView")}
                     }.cornerRadius(20)
                         .padding([.bottom, .leading, .trailing], 10)
                         .padding([.top], 3)
                 }.background(Color(red: 0.948, green: 0.953, blue: 0.962))
             }
             .onAppear{
-//                requestSleepAuthorization()
-                print("LAST SLEEP2: ", lastSleep)
                 readSleep(from: lastSleep, to: Date.now)
                 lastSleep = Date.now
             }

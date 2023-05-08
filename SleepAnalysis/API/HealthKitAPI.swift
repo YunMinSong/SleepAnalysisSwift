@@ -27,6 +27,46 @@ func requestSleepAuthorization() {
     }
 }
 
+func writeSleep(_ sleepAnalysis: HKCategoryValueSleepAnalysis, startDate: Date, endDate: Date) {
+    
+    let persistenceController = PersistenceController.shared
+    let context = persistenceController.container.viewContext
+        
+    let healthStore = HKHealthStore()
+    
+    // again, we define the object type we want
+    guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else {
+        return
+    }
+    
+    // we create our new object we want to push in Health app
+    let sample = HKCategorySample(type: sleepType, value: sleepAnalysis.rawValue, start: startDate, end: endDate)
+    
+    // at the end, we save it
+    healthStore.save(sample) { (success, error) in
+        guard success && error == nil else {
+            print("ERROR: ", error!)
+            return
+        }
+        
+        // success!
+    }
+    
+    let entry = Entry(context: context)
+    entry.sleepStart = startDate
+    entry.sleepEnd = endDate
+    
+    if context.hasChanges{
+        do {
+            try context.save()
+        } catch let nserror as NSError{
+            // handle the Core Data error
+            print("Unresolved error \(nserror), \(nserror.userInfo)")
+            
+        }
+    }
+}
+
 func readSleep(from startDateQ: Date?, to endDateQ: Date?) {
     
     let persistenceController = PersistenceController.shared
@@ -73,8 +113,9 @@ func readSleep(from startDateQ: Date?, to endDateQ: Date?) {
                         
                         //check with g values
                         let distanceWithG = startDate.timeIntervalSince(gSleepEnd)
+                        let distanceOfSleep = gSleepEnd.timeIntervalSince(gSleepStart)
                         //if the distance is less than half an hour, update the end date
-                        if distanceWithG <= 1800.0{
+                        if distanceWithG <= 1800.0 || distanceOfSleep <= 1800.0{
                             gSleepEnd = endDate
                             continue
                         }

@@ -66,10 +66,10 @@ func processSleepData(V0: [Double], entries: FetchedResults<Entry>) -> ([[Double
     mainSleepEnd = Date.now.addingTimeInterval(Double(MainSleep[1])*5.0*60.0)
     napSleepStart = Date.now.addingTimeInterval(Double(NapSleep[0])*5.0*60.0)
     napSleepEnd = Date.now.addingTimeInterval(Double(NapSleep[1])*5.0*60.0)
-    print("Main sleep: ", mainSleepStart)
-    print("Main sleep: ", mainSleepEnd)
-    print("Nap sleep: ", napSleepStart)
-    print("Nap sleep: ", napSleepEnd)
+//    print("Main sleep: ", mainSleepStart)
+//    print("Main sleep: ", mainSleepEnd)
+//    print("Nap sleep: ", napSleepStart)
+//    print("Nap sleep: ", napSleepEnd)
     
     
     var idx = Int(MainSleep[0])
@@ -182,7 +182,7 @@ struct ContentView: View {
                                     managedObjectContext.delete(v)
                                 }
                                 let (y_data, suggestion_pattern, sleep_pattern) = processSleepData(V0: V0, entries: entries)
-                                let yesterday = Date.now.addingTimeInterval(60.0*60.0*24.0)
+                                let yesterday = Date.now.addingTimeInterval(-1*60.0*60.0*24.0)
                                 for x in 0...575{
                                     let V0_core = V0_main(context: managedObjectContext)
                                     V0_core.time = yesterday.addingTimeInterval(Double(x)*5.0*60.0)
