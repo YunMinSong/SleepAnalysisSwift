@@ -47,13 +47,76 @@ struct EntryAwareness{
 }
 
 public struct CalendarDetailView: View{
-    var entry : Entry
+    @Environment(\.managedObjectContext) var managedObjectContext
+    
+    @ObservedObject var entry : Entry
+    @State var sleepStart: Date = Date.now
+    @State var sleepEnd: Date = Date.now
+    @State private var entryStart: Date = Date.now
+    let calendar = Calendar.current
+        
     public var body: some View{
         VStack{
-            Text("Start of sleep: \(entry.sleepStart!.formatted(date: .omitted ,time: .shortened))")
-            Text("End of sleep: \(entry.sleepEnd!.formatted(date: .omitted, time: .shortened))")
-            Text("Duration of sleep: \(getTimeDuration(original: entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)))")
-        }.navigationTitle("sleep")
+            let startTime = calendar.startOfDay(for: Date.now)
+            let endTime = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: Date.now)!
+            HStack{
+                Text("Start of Sleep : ")
+                    .bold()
+                Spacer()
+            }.padding([.trailing, .leading], 10)
+            HStack{
+                DatePicker(
+                    "",
+                    selection: $sleepStart,
+                    in: startTime...endTime,
+                    displayedComponents: [.date, .hourAndMinute]
+                )
+                Spacer()
+            }
+            HStack{
+                Text("End of Sleep : ")
+                    .bold()
+                Spacer()
+            }.padding([.trailing, .leading], 10)
+            HStack{
+                DatePicker(
+                    "",
+                    selection: $sleepEnd,
+                    in: startTime...endTime,
+                    displayedComponents: [.date, .hourAndMinute]
+                )
+                Spacer()
+            }
+            HStack{
+                Text("Duration of Sleep : \(getTimeDuration(original: entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)))")
+                    .bold()
+                Spacer()
+            }.padding([.trailing, .leading], 10)
+            Text("")
+            
+            Button(action: {
+                entry.sleepStart = sleepStart
+                entry.sleepEnd = sleepEnd
+                entryStart = sleepStart
+                if managedObjectContext.hasChanges{
+                    do {
+                        try managedObjectContext.save()
+                    } catch let nserror as NSError{
+                        // handle the Core Data error
+                        print("Unresolved error \(nserror), \(nserror.userInfo)")
+                        
+                    }
+                }
+            }, label: {Text("Edit Sleep")})
+            
+        }.navigationTitle("Sleep")
+            .onAppear{
+                sleepStart = entry.sleepStart!
+                sleepEnd = entry.sleepEnd!
+            }
+            .onDisappear{
+                entryStart = Date.now
+            }
     }
 }
 
@@ -160,13 +223,13 @@ public struct CalendarCardView: View{
 }
 
 public struct CalendarCardViewFirst: View{
-    var entry: Entry
+    var entry:EntryAwareness
     public var body: some View{
             VStack(alignment: .leading) {
                 ZStack{
                     VStack{
                         HStack{
-                            Text(entry.sleepStart!.formatted(date: .omitted, time: .shortened))
+                            Text(entry.sleepStart.formatted(date: .omitted, time: .shortened))
                                 .font(.system(size: 10))
                                 .frame(maxWidth:50, alignment: .bottomLeading)
                             VStack { Divider().background(.gray) }
@@ -184,7 +247,7 @@ public struct CalendarCardViewFirst: View{
                                         Spacer()
                                     }
                                     HStack{
-                                        Text(getTimeDuration(original:entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)))
+                                        Text(getTimeDuration(original:entry.sleepEnd.timeIntervalSince(entry.sleepStart)))
                                             .bold()
                                             .font(.title3)
                                         Spacer()
@@ -195,7 +258,7 @@ public struct CalendarCardViewFirst: View{
                         }
                         Spacer()
                         HStack{
-                            Text(entry.sleepEnd!.formatted(date: .omitted, time: .shortened))
+                            Text(entry.sleepEnd.formatted(date: .omitted, time: .shortened))
                                 .font(.system(size: 10))
                                 .frame(maxWidth:50, alignment: .bottomLeading)
                             VStack { Divider().background(.gray) }

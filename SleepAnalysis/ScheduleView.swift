@@ -343,12 +343,9 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                             if (index == 0) {
                                                 NavigationLink{
                                                     CalendarDetailView(entry: entries[index])
+                                                        .environment(\.managedObjectContext, managedObjectContext)
                                                 }label:{
-                                                    CalendarCardViewFirst(entry: entries[index])
-//                                                        .frame(height:130)
-//                                                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-//                                                        .listRowSeparator(.hidden)
-//                                                        .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                    CalendarCardViewFirst(entry: EntryAwareness(sleepStart: sleepStart, sleepEnd: sleepEnd))
                                                 }.frame(height:130)
                                                     .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                                                     .listRowSeparator(.hidden)
@@ -372,12 +369,9 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                                     if sleepEnd > endOfDay{
                                                         NavigationLink{
                                                             CalendarDetailView(entry: entries[index])
+                                                                .environment(\.managedObjectContext, managedObjectContext)
                                                         }label:{
                                                             CalendarCardView(entry: EntryAwareness(sleepStart: sleepStart, sleepEnd: endOfDay))
-//                                                                .frame(height:110)
-//                                                                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-//                                                                .listRowSeparator(.hidden)
-//                                                                .background(Color(red: 0.948, green: 0.953, blue: 0.962))
                                                         }.frame(height:110)
                                                             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                                                             .listRowSeparator(.hidden)
@@ -385,12 +379,9 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                                     }else{
                                                         NavigationLink{
                                                             CalendarDetailView(entry: entries[index])
+                                                                .environment(\.managedObjectContext, managedObjectContext)
                                                         }label:{
                                                             CalendarCardView(entry: EntryAwareness(sleepStart: sleepStart, sleepEnd: sleepEnd))
-//                                                                .frame(height:110)
-//                                                                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-//                                                                .listRowSeparator(.hidden)
-//                                                                .background(Color(red: 0.948, green: 0.953, blue: 0.962))
                                                         }.frame(height:110)
                                                             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                                                             .listRowSeparator(.hidden)
@@ -404,6 +395,7 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                                 }else{
                                                     NavigationLink{
                                                         CalendarDetailView(entry: entries[index])
+                                                            .environment(\.managedObjectContext, managedObjectContext)
                                                     }label:{
                                                         CalendarCardView(entry: EntryAwareness(sleepStart: sleepStart, sleepEnd: sleepEnd))
                                                             .frame(height:110)
