@@ -31,6 +31,15 @@ struct WhenStartView: View {
     @State var whenStartMinute_2: String = ""
     @State var whenStart: String = ""
     
+    @FocusState private var focusField: StartField?
+    
+    enum StartField: Hashable {
+        case hour1
+        case hour2
+        case minute1
+        case minute2
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text("언제 일을 시작하시나요?")
@@ -50,11 +59,47 @@ struct WhenStartView: View {
                 .opacity(isSame() ? 0 : 1)
             HStack(spacing: 10) {
                 whenView(when: $whenStartHour_1)
+                    .focused($focusField, equals: .hour1)
+                    .onChange(of: whenStartHour_1) { _ in
+                        if whenStartHour_1.isEmpty {
+                            focusField = .hour1
+                        } else if whenStartHour_2.isEmpty {
+                            focusField = .hour2
+                        } else {
+                            focusField = nil
+                        }
+                    }
                 whenView(when: $whenStartHour_2)
+                    .focused($focusField, equals: .hour2)
+                    .onChange(of: whenStartHour_2) { _ in
+                        if whenStartHour_2.isEmpty {
+                            focusField = .hour2
+                        } else if whenStartMinute_1.isEmpty {
+                            focusField = .minute1
+                        } else {
+                            focusField = nil
+                        }
+                    }
                 Text(":")
                     .font(.largeTitle)
                 whenView(when: $whenStartMinute_1)
+                    .focused($focusField, equals: .minute1)
+                    .onChange(of: whenStartMinute_1) { _ in
+                        if whenStartMinute_1.isEmpty {
+                            focusField = .minute1
+                        } else if whenStartMinute_2.isEmpty {
+                            focusField = .minute2
+                        } else {
+                            focusField = nil
+                        }
+                    }
                 whenView(when: $whenStartMinute_2)
+                    .focused($focusField, equals: .minute2)
+                    .onChange(of: whenStartMinute_2) { _ in
+                        if !whenStartMinute_2.isEmpty {
+                            focusField = nil
+                        }
+                    }
             }
             .alignmentGuide(.leading, computeValue: {d in -20.0})
             .padding(.top, 80.0)
@@ -67,6 +112,8 @@ struct WhenStartView: View {
                 .simultaneousGesture(TapGesture().onEnded({
                     self.work_onset = saveTime()
                 }))
+        }.onTapGesture {
+            self.endTextEditing()
         }
     }
     

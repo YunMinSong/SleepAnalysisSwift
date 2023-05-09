@@ -41,6 +41,15 @@ struct WhenSleepView: View {
     @State var whenSleepMinute_1: String = ""
     @State var whenSleepMinute_2: String = ""
     
+    @FocusState private var focusField: SleepField?
+    
+    enum SleepField: Hashable {
+        case hour1
+        case hour2
+        case minute1
+        case minute2
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text("언제 주무시고 싶으신가요?")
@@ -53,11 +62,47 @@ struct WhenSleepView: View {
                 .alignmentGuide(.leading, computeValue: {d in -20.0})
             HStack(spacing: 10) {
                 whenView(when: $whenSleepHour_1)
+                    .focused($focusField, equals: .hour1)
+                    .onChange(of: whenSleepHour_1) { _ in
+                        if whenSleepHour_1.isEmpty {
+                            focusField = .hour1
+                        } else if whenSleepHour_2.isEmpty {
+                            focusField = .hour2
+                        } else {
+                            focusField = nil
+                        }
+                    }
                 whenView(when: $whenSleepHour_2)
+                    .focused($focusField, equals: .hour2)
+                    .onChange(of: whenSleepHour_2) { _ in
+                        if whenSleepHour_2.isEmpty {
+                            focusField = .hour2
+                        } else if whenSleepMinute_1.isEmpty {
+                            focusField = .minute1
+                        } else {
+                            focusField = nil
+                        }
+                    }
                 Text(":")
                     .font(.largeTitle)
                 whenView(when: $whenSleepMinute_1)
+                    .focused($focusField, equals: .minute1)
+                    .onChange(of: whenSleepMinute_1) { _ in
+                        if whenSleepMinute_1.isEmpty {
+                            focusField = .minute1
+                        } else if whenSleepMinute_2.isEmpty {
+                            focusField = .minute2
+                        } else {
+                            focusField = nil
+                        }
+                    }
                 whenView(when: $whenSleepMinute_2)
+                    .focused($focusField, equals: .minute2)
+                    .onChange(of: whenSleepMinute_2) { _ in
+                        if !whenSleepMinute_2.isEmpty {
+                            focusField = nil
+                        }
+                    }
             }
             .alignmentGuide(.leading, computeValue: {d in -20.0})
             .padding(.top, 80.0)
@@ -70,7 +115,10 @@ struct WhenSleepView: View {
                 .simultaneousGesture(TapGesture().onEnded({
                     self.sleep_onset = saveTime()
                 }))
-        }.onAppear{
+        }.onTapGesture {
+            self.endTextEditing()
+        }
+        .onAppear{
             needUpdate = true
         }
     }
@@ -158,6 +206,13 @@ extension View {
     }
 }
 #endif
+
+//Make keyboard down by touching empty view
+extension View {
+    func endTextEditing() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
 
 //struct WhenSleepView_Previews: PreviewProvider {
 //    static var previews: some View {

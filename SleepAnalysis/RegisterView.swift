@@ -39,6 +39,8 @@ struct RegisterView: View {
                     .cornerRadius(28)
                     .overlay(Text("다음").foregroundColor(.white))
             }
+        }.onTapGesture {
+            self.endTextEditing()
         }
     }
 }
