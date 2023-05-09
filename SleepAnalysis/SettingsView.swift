@@ -67,7 +67,16 @@ struct SettingsView: View {
                         NavigationLink(destination: RecSettingView()){
                             VStack(spacing: 5){
                                 HStack{
-                                    Text("추천 수면 세팅")
+                                    Text("추천 수면 설정")
+                                        .bold()
+                                    Spacer()
+                                }
+                            }
+                        }.padding()
+                        NavigationLink(destination: AddSleepView()){
+                            VStack(spacing: 5){
+                                HStack{
+                                    Text("수면 기록 추가")
                                         .bold()
                                     Spacer()
                                 }
@@ -93,15 +102,6 @@ struct SettingsView: View {
                                 }
                             }
                         }.padding()
-                        NavigationLink(destination: AddSleepView()){
-                            VStack(spacing: 5){
-                                HStack{
-                                    Text("수면을 더하")
-                                        .bold()
-                                    Spacer()
-                                }
-                            }
-                        }.padding()
                     }.listStyle(.inset)
                 }.navigationTitle("설정")
             }.navigationBarBackButtonHidden()
@@ -121,19 +121,19 @@ struct AddSleepView: View{
                 .frame(height: 350)
                 .cornerRadius(16.0)
             VStack{
-                Text("수면을 더하")
+                Text("수면 기록 추가")
                     .font(.title)
                     .bold()
                 
                 Text("")
                 HStack{
-                    Text("Add Sleep : ")
+                    Text("수면 시간 : ")
                         .bold()
                     Spacer()
                 }
                 HStack{
-                    Spacer(minLength: 65)
-                    Text("Start")
+                    Spacer(minLength: 70)
+                    Text("시작")
                     Spacer()
                     DatePicker(
                         "",
@@ -145,7 +145,7 @@ struct AddSleepView: View{
                 }
                 HStack{
                     Spacer(minLength: 70)
-                    Text("End")
+                    Text("종료")
                     Spacer()
                     DatePicker(
                         "",
@@ -159,7 +159,13 @@ struct AddSleepView: View{
                 Text("")
                 Button(action: {
                     writeSleep(.asleepCore, startDate: startDate, endDate: endDate)
-                }, label: {Text("Add sleep")})
+                }, label: {Rectangle()
+                        .foregroundColor(.blue)
+                        .frame(width: 310, height: 48)
+                        .cornerRadius(28)
+                        .overlay(
+                            Text("수면 기록 추가하기").foregroundColor(.white))})
+                .padding(.vertical, 10.0)
             }.padding()
         }.padding()
     }
@@ -181,13 +187,13 @@ struct RecSettingView: View {
                 .frame(height: 350)
                 .cornerRadius(16.0)
             VStack{
-                Text("추천 수면 세팅")
+                Text("추천 수면 설정")
                     .font(.title)
                     .bold()
                 
                 Text("")
                 HStack{
-                    Text("Sleep Onset : ")
+                    Text("수면 시작 : ")
                         .bold()
                     Spacer()
                 }
@@ -203,13 +209,13 @@ struct RecSettingView: View {
                     Spacer()
                 }
                 HStack{
-                    Text("Work Period : ")
+                    Text("근무 시간 : ")
                         .bold()
                     Spacer()
                 }
                 HStack{
-                    Spacer(minLength: 65)
-                    Text("Start")
+                    Spacer(minLength: 70)
+                    Text("시작")
                     Spacer()
                     DatePicker(
                         "",
@@ -223,7 +229,7 @@ struct RecSettingView: View {
                 }
                 HStack{
                     Spacer(minLength: 70)
-                    Text("End")
+                    Text("종료")
                     Spacer()
                     DatePicker(
                         "",
@@ -236,7 +242,7 @@ struct RecSettingView: View {
                     Spacer()
                 }
                 HStack{
-                    Text("Alarm Setting : ")
+                    Text("알람 맞추기 : ")
                         .bold()
                     Spacer()
                 }
