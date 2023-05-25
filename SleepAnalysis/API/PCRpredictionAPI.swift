@@ -48,7 +48,7 @@ func PCR_normal_sleep(V: [Double]) -> [Double] {
     dVdt[0] = (1 / kappa) * ( gamma * ( V[0] - (4 * pow(V[0],3)/3) ) - V[1] * ( pow((24 / (f * tau_c)),2)))
     dVdt[1] = (1 / kappa) * ( V[0] )
     dVdt[2] = lambda1 * (-beta * V[2])
-    dVdt[3] = (1 / chi) * (-V[3] + mu * normal_sleep_Qm )
+    dVdt[3] = (1 / chi) * (-V[3] + mu * normal_sleep_Qm)
     return dVdt
 }
 
@@ -106,6 +106,35 @@ func pcr_simulation(V0: [Double], sleep_pattern: [Double], step: Double) -> [[Do
     return y //return the simulation result
 }
 
+
+func pcr_simulation_end(V0: [Double], sleep_pattern: [Double], step: Double) -> [Double]{
+    let duration = sleep_pattern.count
+    var V_tmp = V0
+    var H, C, D_up, D_down: Double
+    let rk = RungeKutta()
+    for i in 0...(duration-2){ //simulate every 1 min range
+        H = V_tmp[3]
+        C = 3.37*0.5*(1+coef_y*V_tmp[1] + coef_x*V_tmp[0])
+        D_up = (2.46+10.2+C) //sleep thres
+        D_down = (1.45+10.2+C) //wake thres
+        
+        //if model simulation and sleep pattern do not match
+        if (D_down > H) && (sleep_pattern[i+1] > 0.5){ //forced sleep case
+            V_tmp = rk.rk4(y: V_tmp, dydx: PCR_forced_sleep(V: V_tmp), h: step, f: PCR_forced_sleep)
+        }
+        else if (D_up < H) && (sleep_pattern[i+1] < 0.5){ //forced wake case
+            V_tmp = rk.rk4(y: V_tmp, dydx: PCR_forced_wake(V: V_tmp), h: step, f: PCR_forced_wake)
+        }
+        else if (D_down <= H) && (sleep_pattern[i+1] > 0.5){ //normal sleep case
+            V_tmp = rk.rk4(y: V_tmp, dydx: PCR_normal_sleep(V: V_tmp), h: step, f: PCR_normal_sleep)
+        }
+        else{ //normal wake case
+            V_tmp = rk.rk4(y: V_tmp, dydx: PCR_normal_wake(V: V_tmp), h: step, f: PCR_normal_wake)
+        }
+    }
+    return V_tmp //return the simulation result
+}
+
 // Suggest CSS sleep pattern based on current state, sleep onset, and work schedule
 // <input>
 // V0: current state of the model [ x y n H ]
@@ -122,26 +151,24 @@ func pcr_simulation(V0: [Double], sleep_pattern: [Double], step: Double) -> [[Do
 // if nap sleep is impossible, Nap = [0,0];
 func Sleep_pattern_suggestion(V0: [Double], sleep_onset: Int, work_onset: Int, work_offset: Int, step: Double)->(CSS: [Int], Nap: [Int]){
     let unit = Int(0.5/step) // Time between nap offset and work onset
-    var len0 = work_onset - sleep_onset // length between work onset and work onset
-    var len1 = work_offset - work_onset
+    let len0 = work_onset - sleep_onset // length between work onset and work onset
+    let len1 = work_offset - work_onset
     var i: Int // iterator
     let rk = RungeKutta() // R-K class
     var CSS = [0, 0] //Output 1
     var Nap = [0, 0] //Output 2
-
+    
     if sleep_onset <= 0 || len0 <= 0 || len1 <= 0 { // Wrong input
         return (CSS, Nap)
     }
-
     
     // Find CSS sleep
-    var sleep_pattern = [Double](repeating: 0.0, count: sleep_onset+1)
-    let y = pcr_simulation(V0: V0, sleep_pattern: sleep_pattern, step: step) // simulate from current to sleep onset
-    
-    var V_tmp = y[sleep_onset]
+    var sleep_pattern1 = [Double](repeating: 0.0, count: sleep_onset+1)
+    let V_tmp0 = pcr_simulation_end(V0: V0, sleep_pattern: sleep_pattern1, step: step)
+    var V_tmp = V_tmp0
     var H = V_tmp[3] // sleep pressure
     var D_up = (2.46 + 10.2 + (3.37*0.5)*(1.0+coef_y*V_tmp[1]+coef_x*V_tmp[0]))/v_vh // sleep threshold
-
+    
     var sleep_start = 0 // first point where the CSS sleep is possible
     var sleep_amount = 0 // duration of the CSS sleep
     
@@ -160,7 +187,7 @@ func Sleep_pattern_suggestion(V0: [Double], sleep_onset: Int, work_onset: Int, w
         }while(i < len0)
         
         if i >= len0 { //CSS sleep is impossible before the work onset
-            V_tmp = y[sleep_onset];
+            V_tmp = V_tmp0;
         }
         else{
             sleep_start = i // the earliest time that CSS sleep is possible
@@ -186,15 +213,15 @@ func Sleep_pattern_suggestion(V0: [Double], sleep_onset: Int, work_onset: Int, w
     }
     var CSS_start = 0
     var CSS_end = 0
-
+    
     if sleep_start + sleep_amount >= len0{
         CSS = [sleep_onset + sleep_start, work_onset]
-        //return (CSS, Nap)
+        return (CSS, Nap)
     }
     if sleep_amount < unit{ // CSS sleep is impossible or meaningless
-        CSS = [0, 0];
+        CSS = [0, 0]
         CSS_end = sleep_onset // start of CSS sleep
-        V_tmp = y[sleep_onset]
+        V_tmp = V_tmp0
     }
     else{ // CSS sleep is identified
         CSS_start = sleep_onset + sleep_start // start of CSS sleep
@@ -202,10 +229,9 @@ func Sleep_pattern_suggestion(V0: [Double], sleep_onset: Int, work_onset: Int, w
         CSS = [CSS_start, CSS_end];
     }
 
-    // find minimal nap sleep
-    sleep_pattern = [Double](repeating:0.0, count: work_offset-CSS_end+1);
+    sleep_pattern1 = [Double](repeating:0.0, count: work_offset-CSS_end+1);
     // print(work_offset, CSS)
-    var y_temp = pcr_simulation(V0: V_tmp, sleep_pattern: sleep_pattern, step: step)
+    var y_temp = pcr_simulation(V0: V_tmp, sleep_pattern: sleep_pattern1, step: step)
 
     var H1, H2, C1, C2, D_up1, D_up2: Double
     H1 = y_temp[work_onset-CSS_end][3] // sleep pressure start
@@ -214,7 +240,7 @@ func Sleep_pattern_suggestion(V0: [Double], sleep_onset: Int, work_onset: Int, w
     C2 = (3.37*0.5)*(1.0 + coef_y*y_temp[work_offset-CSS_end][1] + coef_x*y_temp[work_offset-CSS_end][0])
     D_up1 = (2.46 + 10.2 + C1)/v_vh // sleep threshold start
     D_up2 = (2.46 + 10.2 + C2)/v_vh // sleep threshold start
-
+    
     if D_up1 + D_up2 - H1 - H2 > 0{ //AL condition is satisfied
         return (CSS, Nap)
     }
@@ -228,11 +254,11 @@ func Sleep_pattern_suggestion(V0: [Double], sleep_onset: Int, work_onset: Int, w
         }
         
         V_tmp = y_temp[work_onset - i*unit - CSS_end]
-        sleep_pattern = [Double](repeating:0.0, count: len1 + i*unit + 1)
+        sleep_pattern1 = [Double](repeating:0.0, count: len1 + i*unit + 1)
         for j in 0..<i*unit{
-            sleep_pattern[j] = 1 // simulate increasing nap as 30 min
+            sleep_pattern1[j] = 1 // simulate increasing nap as 30 min
         }
-        y_temp2 = pcr_simulation(V0: V_tmp, sleep_pattern: sleep_pattern, step:step); // simulate from the end of CSS sleep to the end of work with nap
+        y_temp2 = pcr_simulation(V0: V_tmp, sleep_pattern: sleep_pattern1, step:step); // simulate from the end of CSS sleep to the end of work with nap
         H1 = y_temp2[i*unit][3] // sleep pressure start
         H2 = y_temp2[work_offset - work_onset + i*unit][3] // sleep pressure end
         C1 = (3.37*0.5)*(1.0 + coef_y*y_temp2[i*unit][1] + coef_x*y_temp2[i*unit][0])
