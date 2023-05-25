@@ -26,9 +26,6 @@ var dateFormatter: DateFormatter = {
 }()
 
 struct WhenSleepView: View {
-    @Binding var AwarenessData: [LineData]
-    @Binding var SleepData: [LineData]
-    @Binding var SleepSuggestionData: [LineData]
     
     @AppStorage("sleep_onset") var sleep_onset: Date = Date.now
     @AppStorage("UserId") private var userId: String = "-"
@@ -107,7 +104,7 @@ struct WhenSleepView: View {
             .alignmentGuide(.leading, computeValue: {d in -20.0})
             .padding(.top, 80.0)
             
-            NavigationLink(destination: WhenStartView(AwarenessData: $AwarenessData, SleepData: $SleepData, SleepSuggestionData: $SleepSuggestionData, sleep_onset: saveTime())) {
+            NavigationLink(destination: WhenStartView(sleep_onset: saveTime())) {
                 Rectangle().foregroundColor(.blue).frame(width: 390, height: 56).cornerRadius(8)
                     .overlay(Text("다음").foregroundColor(.white))
             }.padding(.top, 100.0)

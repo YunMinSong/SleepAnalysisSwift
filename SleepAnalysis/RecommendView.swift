@@ -14,9 +14,7 @@ import EventKit
 
 struct RecommendView: View {
     @Environment(\.managedObjectContext) var managedObjectContext
-    @Binding var AwarenessData: [LineData]
-    @Binding var SleepData: [LineData]
-    @Binding var SleepSuggestionData: [LineData]
+    @StateObject var data = AwarenessModel()
     @AppStorage("sleep_onset") var sleep_onset: Date = Date.now
     @AppStorage("work_onset") var work_onset: Date = Date.now
     @AppStorage("work_offset") var work_offset: Date = Date.now
@@ -53,7 +51,7 @@ struct RecommendView: View {
                     Rectangle()
                         .foregroundColor(Color(red: 0.948, green: 0.953, blue: 0.962))
                     if sleep_onset == Date.now || work_onset == Date.now || work_offset == Date.now || !isRegistered {
-                        BeforeTimeGet(AwarenessData: $AwarenessData, SleepData: $SleepData, SleepSuggestionData: $SleepSuggestionData, userName: userId)
+                        BeforeTimeGet(userName: userId)
                     } else {
                         AfterTimeGet(userName: userId, from1: $from1, to1: $to1, from2: $from2, to2: $to2, sleep_onset: sleep_onset, work_onset: work_onset, work_offset: work_offset)
                     }
@@ -95,14 +93,14 @@ struct RecommendView: View {
                                 }
                             }
                             for x in 0...575{
-                                SleepSuggestionData[x] = LineData(Category: suggestion_pattern[x].1, x: formatDate(offset: Double(x)*5.0*60.0), y: Double(suggestion_pattern[x].0))
+                                data.SleepSuggestionData[x] = LineData(Category: suggestion_pattern[x].1, x: formatDate(offset: Double(x)*5.0*60.0), y: Double(suggestion_pattern[x].0))
                             }
                             for x in 0...575{
                                 let C = 3.37*0.5*(1+coef_y*y_data[x][1] + coef_x * y_data[x][0])
                                 let D_up = (2.46+10.2+C) //sleep thres
                                 let awareness = D_up - y_data[x][3]
-                                AwarenessData[x] = LineData(Category:"Alertness",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(awareness))
-                                SleepData[x] = LineData(Category:"Sleep",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(sleep_pattern[x]))
+                                data.AwarenessData[x] = LineData(Category:"Alertness",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(awareness))
+                                data.SleepData[x] = LineData(Category:"Sleep",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(sleep_pattern[x]))
                             }
                             isLoading=false
                             from1 = date_to_string(date: self.mainSleepStart)
@@ -118,9 +116,6 @@ struct RecommendView: View {
 }
 
 struct BeforeTimeGet: View {
-    @Binding var AwarenessData: [LineData]
-    @Binding var SleepData: [LineData]
-    @Binding var SleepSuggestionData: [LineData]
     //@Binding var userName: String
     let userName: String
     
@@ -145,7 +140,7 @@ struct BeforeTimeGet: View {
                     .padding(.vertical, 50.0)
                     .alignmentGuide(.leading, computeValue: { d in -100.0})
                  */
-                NavigationLink(destination: WhenSleepView(AwarenessData: $AwarenessData, SleepData: $SleepData, SleepSuggestionData: $SleepSuggestionData)) {
+                NavigationLink(destination: WhenSleepView()) {
                     Rectangle()
                         .foregroundColor(.blue)
                         .cornerRadius(28)

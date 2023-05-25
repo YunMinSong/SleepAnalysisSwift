@@ -14,9 +14,6 @@ import SwiftUI
 import Combine
 
 struct WhenStartView: View {
-    @Binding var AwarenessData: [LineData]
-    @Binding var SleepData: [LineData]
-    @Binding var SleepSuggestionData: [LineData]
     
     let sleep_onset: Date
     
@@ -104,7 +101,7 @@ struct WhenStartView: View {
             .alignmentGuide(.leading, computeValue: {d in -20.0})
             .padding(.top, 80.0)
             
-            NavigationLink(destination: WhenFinishView(AwarenessData: $AwarenessData, SleepData: $SleepData, SleepSuggestionData: $SleepSuggestionData, sleep_onset: sleep_onset, work_onset: saveTime())) {
+            NavigationLink(destination: WhenFinishView(sleep_onset: sleep_onset, work_onset: saveTime())) {
                 Rectangle().foregroundColor(.blue).frame(width: 390, height: 56).cornerRadius(8)
                     .overlay(Text("다음").foregroundColor(.white))
             }.padding(.top, 100.0)

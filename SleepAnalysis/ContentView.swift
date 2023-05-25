@@ -114,9 +114,10 @@ func processSleepData(V0: [Double], entries: FetchedResults<Entry>) -> ([[Double
 struct ContentView: View {
     @Environment(\.managedObjectContext) var managedObjectContext
     @Binding var tabSelection: Int
-    @Binding var AwarenessData: [LineData]
-    @Binding var SleepData: [LineData]
-    @Binding var SleepSuggestionData: [LineData]
+//    @Binding var AwarenessData: [LineData]
+//    @Binding var SleepData: [LineData]
+//    @Binding var SleepSuggestionData: [LineData]
+    @StateObject var data = AwarenessModel()
     @State var isLoading = false
     
     @AppStorage("lastUpdated") var lastUpdated:Date = Date.now.addingTimeInterval(-60.0*60.0*3)
@@ -151,7 +152,7 @@ struct ContentView: View {
                                 .cornerRadius(15)
                                 .onTapGesture{print("you clicked sleeptimeView")}
                             
-                            GraphView(AwarenessData: $AwarenessData, tabSelection: $tabSelection)
+                            GraphView(AwarenessData: $data.AwarenessData,tabSelection: $tabSelection)
                                 .padding()
                                 .background(.white)
                                 .previewLayout(.fixed(width: 400, height: 60))
@@ -197,14 +198,14 @@ struct ContentView: View {
                                     }
                                 }
                                 for x in 0...575{
-                                    SleepSuggestionData[x] = LineData(Category: suggestion_pattern[x].1, x: formatDate(offset: Double(x)*5.0*60.0), y: Double(suggestion_pattern[x].0))
+                                    data.SleepSuggestionData[x] = LineData(Category: suggestion_pattern[x].1, x: formatDate(offset: Double(x)*5.0*60.0), y: Double(suggestion_pattern[x].0))
                                 }
                                 for x in 0...575{
                                     let C = 3.37*0.5*(1+coef_y*y_data[x][1] + coef_x * y_data[x][0])
                                     let D_up = (2.46+10.2+C) //sleep thres
                                     let awareness = D_up - y_data[x][3]
-                                    AwarenessData[x] = LineData(Category:"Alertness",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(awareness))
-                                    SleepData[x] = LineData(Category:"Sleep",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(sleep_pattern[x]))
+                                    data.AwarenessData[x] = LineData(Category:"Alertness",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(awareness))
+                                    data.SleepData[x] = LineData(Category:"Sleep",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(sleep_pattern[x]))
                                 }
                                 isLoading=false
                             }

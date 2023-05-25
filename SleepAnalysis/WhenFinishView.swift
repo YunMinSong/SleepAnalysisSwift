@@ -16,9 +16,6 @@ import Combine
 
 struct WhenFinishView: View {
     
-    @Binding var AwarenessData: [LineData]
-    @Binding var SleepData: [LineData]
-    @Binding var SleepSuggestionData: [LineData]
     
     let sleep_onset: Date
     let work_onset: Date
@@ -107,7 +104,7 @@ struct WhenFinishView: View {
             .alignmentGuide(.leading, computeValue: {d in -20.0})
             .padding(.top, 80.0)
             
-            NavigationLink(destination: RecommendView(AwarenessData: $AwarenessData, SleepData: $SleepData, SleepSuggestionData: $SleepSuggestionData)) {
+            NavigationLink(destination: RecommendView()) {
                 Rectangle().foregroundColor(.blue).frame(width: 390, height: 56).cornerRadius(8)
                     .overlay(Text("다음").foregroundColor(.white))
             }.padding(.top, 100.0)

@@ -97,24 +97,6 @@ struct SleepTimeView: View {
                     Image(systemName: "chevron.right")
                 })
             }
-            //            VStack{
-            //                HStack {
-            //                    Spacer()
-            //                    Text(mainSleepStart.formatted(date: .numeric, time: .shortened))
-            //                    Text(mainSleepEnd.formatted(date: .numeric, time: .shortened))
-            //                    Spacer()
-            //                    Text("Duration: \(mainSleepEnd.timeIntervalSince(mainSleepStart)/3600, specifier: "%.0f") hours")
-            //                }
-            //                HStack {
-            //                    Spacer()
-            //                    Text(napSleepStart.formatted(date: .numeric, time: .shortened))
-            //                    Text(napSleepEnd.formatted(date: .numeric, time: .shortened))
-            //                    Spacer()
-            //                    Text("Duration: \(napSleepEnd.timeIntervalSince(napSleepStart)/3600, specifier: "%.0f") hours")
-            //                }
-            //            }.padding(15)
-            //                .background(Color.gray.brightness(0.35))
-            //                .cornerRadius(20)
             
             if sleep_onset == Date.now || work_onset == Date.now || work_offset == Date.now || !isRegistered {
                 ZStack {
@@ -253,6 +235,22 @@ struct GraphView: View {
                         ).interpolationMethod(.catmullRom)
                             .foregroundStyle(by: .value("Category", $0.Category))
                     }
+                    PointMark(x: .value("x", AwarenessData[288].x), y: .value("y", AwarenessData[288].y))
+                        .annotation(position: .trailing, alignment: .leading) {
+                            Text("now")
+                                .foregroundStyle(.gray)
+                                .offset(x: 10, y: 0)
+                        }
+                    RuleMark(
+                        xStart: .value("Start", AwarenessData[0].x),
+                        xEnd: .value("End", AwarenessData[575].x),
+                        y: .value("Value", 0.0)
+                    ).opacity(0.3)
+                        .foregroundStyle(.gray)
+                        .annotation(position: .trailing, alignment: .leading) {
+                            Text("0")
+                                .foregroundStyle(.gray)
+                        }
                 }
                 .chartYAxis(.hidden)
                 .chartXAxis(.hidden)
