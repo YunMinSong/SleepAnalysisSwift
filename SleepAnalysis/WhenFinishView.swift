@@ -21,7 +21,7 @@ struct WhenFinishView: View {
     let work_onset: Date
     
     @AppStorage("work_offset") var work_offset: Date = Date.now
-    @AppStorage("UserId") private var userId: String = "-"
+    @AppStorage("UserId") var userId: String = "-"
     @AppStorage("Registered") var isRegistered: Bool = false
     
     @State var userName: String = "홍길동"

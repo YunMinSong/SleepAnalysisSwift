@@ -16,7 +16,7 @@ class AwarenessModel: ObservableObject{
 
 struct MainView: View {
     @State private var tabSelection = 1
-    @AppStorage("UserEmail") private var userEmail: String = ""
+    @AppStorage("UserEmail") var userEmail: String = ""
     @AppStorage("needUpdate") var needUpdate:Bool = false
     @AppStorage("sleep_onset") var sleep_onset: Date = Date.now
     @AppStorage("work_onset") var work_onset: Date = Date.now

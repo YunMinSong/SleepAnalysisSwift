@@ -10,8 +10,8 @@ import HealthKit
 
 struct WaitingView: View {
     
-    @AppStorage("UserEmail") private var userEmail: String = ""
-    @AppStorage("UserId") private var userId: String = "-"
+    @AppStorage("UserEmail") var userEmail: String = ""
+    @AppStorage("UserId") var userId: String = "-"
     @AppStorage("lastSleep") var lastSleep:Date = Date.now.addingTimeInterval(-1*60.0*60.0*24.0*14.0)
     let currentDate = Date()
     let email: String

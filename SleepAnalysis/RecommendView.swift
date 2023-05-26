@@ -189,14 +189,32 @@ struct AfterTimeGet: View {
                 ZStack {
                     Rectangle()
                         .foregroundColor(.white)
-                        .frame(height: 460)
+                        .frame(height: 600)
                         .cornerRadius(16.0)
                     VStack(alignment: .leading) {
                         Text("\(userName)님을 위한 추천 수면")
                             .font(.title2)
                             .bold()
                             .padding(.top)
+                            .alignmentGuide(.leading, computeValue: { d in -25.0})
+                        //Clock
+                        ZStack {
+                            Circle()
+                                .frame(width: 150, height: 150)
+                                .foregroundColor(Color(red: 0.949, green: 0.949, blue: 0.949))
+                                .alignmentGuide(.leading, computeValue: { d in -70.0})
+                            Path { path in
+                                path.move(to: CGPoint(x: 180, y: 78))
+                                path.addArc(center: .init(x: 180, y: 78), radius: 75, startAngle: Angle(degrees: timeToAngle(time: from2)), endAngle: Angle(degrees: timeToAngle(time: addTimeInString(time1: from2, time2: to2))), clockwise: false)
+                            }.fill(Color.yellow)
+                            Path { path in
+                                path.move(to: CGPoint(x: 180, y: 78))
+                                path.addArc(center: .init(x: 180, y: 78), radius: 75, startAngle: Angle(degrees: timeToAngle(time: from1)), endAngle: Angle(degrees: timeToAngle(time: addTimeInString(time1: from1, time2: to1))), clockwise: false)
+                            }.fill(Color.blue)
+                        }
+                        //
                         BoxWithRecommend(from1: $from1, to1: $to1, from2: $from2, to2: $to2)
+                            .alignmentGuide(.leading, computeValue: { d in -25.0})
                         Button(action: {
                         }) {
                             Rectangle()
@@ -206,6 +224,7 @@ struct AfterTimeGet: View {
                                 .overlay(Text("알람 맞추기")
                                     .foregroundColor(.white))
                         }.padding(.bottom)
+                            .alignmentGuide(.leading, computeValue: { d in -25.0})
                     }
                 }.padding()
                 Rectangle()
@@ -428,8 +447,60 @@ func induceHourMinute(original: Date?) -> String {
     return String(hour1) + String(hour2) + ":" + String(minute1) + String(minute2)
 }
 
-//struct RecommendView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        RecommendView()
-//    }
-//}
+func getHourMinute(time: String) -> (Double, Double) {
+    if !time.contains(":") || time.count != 5 {
+        return (0.0, 0.0)
+    } else {
+        let hour1 = time[time.startIndex]
+        let hour2 = time[time.index(after: time.startIndex)]
+        let minute1 = time[time.index(time.startIndex, offsetBy: 3)]
+        let minute2 = time[time.index(time.startIndex, offsetBy: 4)]
+        let hour = Double(String(hour1) + String(hour2))
+        let minute = Double(String(minute1)+String(minute2))
+        return (hour ?? 0.0, minute ?? 0.0)
+    }
+}
+
+func timeToAngle(time: String) -> Double {
+    let Dtime = getHourMinute(time: time)
+    if Dtime.0 > 24.0 || Dtime.1 > 60.0 {
+        return -90.0
+    } else {
+        return 15*Dtime.0 + 0.25*Dtime.1 - 90.0
+    }
+}
+
+func addTimeInString(time1: String, time2: String) -> String {
+    let hour1 = getHourMinute(time: time1).0
+    let minute1 = getHourMinute(time: time1).1
+    let hour2 = getHourMinute(time: time2).0
+    let minute2 = getHourMinute(time: time2).1
+    var hour = Int(hour1 + hour2)
+    var minute = Int(minute1 + minute2)
+    let hourR: String
+    let minuteR: String
+    if hour >= 24 {
+        hour-=24
+    }
+    if minute >= 60 {
+        hour+=1
+        minute-=60
+    }
+    if hour < 10 {
+        hourR = "0"+String(hour)
+    } else {
+        hourR = String(hour)
+    }
+    if minute < 10 {
+        minuteR = "0"+String(minute)
+    } else {
+        minuteR = String(minute)
+    }
+    return hourR+":"+minuteR
+}
+
+/*struct RecommendView_Previews: PreviewProvider {
+    static var previews: some View {
+        RecommendView()
+    }
+}*/

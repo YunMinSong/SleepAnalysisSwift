@@ -18,7 +18,7 @@ struct WhenStartView: View {
     let sleep_onset: Date
     
     @AppStorage("work_onset") var work_onset: Date = Date.now
-    @AppStorage("UserId") private var userId: String = "-"
+    @AppStorage("UserId") var userId: String = "-"
     
     @State var isValid: Bool = true
     @State var userName: String = "홍길동"

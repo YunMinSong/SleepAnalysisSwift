@@ -10,7 +10,8 @@ import HealthKit
 
 struct CheckView: View {
     
-    @AppStorage("UserEmail") private var userEmail: String = ""
+    @AppStorage("UserEmail") var userEmail: String = ""
+    @AppStorage("UserId") var userId: String = "-"
     let email: String
     
     var body: some View {

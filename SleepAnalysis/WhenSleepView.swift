@@ -28,7 +28,7 @@ var dateFormatter: DateFormatter = {
 struct WhenSleepView: View {
     
     @AppStorage("sleep_onset") var sleep_onset: Date = Date.now
-    @AppStorage("UserId") private var userId: String = "-"
+    @AppStorage("UserId") var userId: String = "-"
     @AppStorage("needUpdate") var needUpdate:Bool = false
     
     @State var isValid: Bool = true
