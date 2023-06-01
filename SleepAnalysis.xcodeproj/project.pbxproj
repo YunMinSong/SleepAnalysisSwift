@@ -15,6 +15,7 @@
 		3C5A3BBA2A00911200A90459 /* notFound.gif in Resources */ = {isa = PBXBuildFile; fileRef = 3C5A3BB92A00911200A90459 /* notFound.gif */; };
 		3C5A3BBC2A00911900A90459 /* (null) in Resources */ = {isa = PBXBuildFile; };
 		3C5A3BBE2A00957400A90459 /* Loading.gif in Resources */ = {isa = PBXBuildFile; fileRef = 3C5A3BBD2A00957400A90459 /* Loading.gif */; };
+		3C6633CF2A206A7E005D2B45 /* AwakenessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6633CE2A206A7E005D2B45 /* AwakenessView.swift */; };
 		3C72124529D279C3000D74FF /* GIFImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C72124429D279C3000D74FF /* GIFImage.swift */; };
 		3C858FCA29C01450003A7704 /* RecommendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C858FC929C01450003A7704 /* RecommendView.swift */; };
 		3C858FCC29C03529003A7704 /* WhenSleepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C858FCB29C03529003A7704 /* WhenSleepView.swift */; };
@@ -66,6 +67,7 @@
 		3C3DA75029C94985001E92A7 /* FinishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishView.swift; sourceTree = "<group>"; };
 		3C5A3BB92A00911200A90459 /* notFound.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = notFound.gif; path = ../../../../Downloads/notFound.gif; sourceTree = "<group>"; };
 		3C5A3BBD2A00957400A90459 /* Loading.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = Loading.gif; path = ../../../../Downloads/Loading.gif; sourceTree = "<group>"; };
+		3C6633CE2A206A7E005D2B45 /* AwakenessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwakenessView.swift; sourceTree = "<group>"; };
 		3C72124429D279C3000D74FF /* GIFImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIFImage.swift; sourceTree = "<group>"; };
 		3C858FC929C01450003A7704 /* RecommendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendView.swift; sourceTree = "<group>"; };
 		3C858FCB29C03529003A7704 /* WhenSleepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhenSleepView.swift; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 				3C3DA74C29C93F9A001E92A7 /* CheckView.swift */,
 				3C3DA74E29C9452D001E92A7 /* WaitingView.swift */,
 				3C3DA75029C94985001E92A7 /* FinishView.swift */,
+				3C6633CE2A206A7E005D2B45 /* AwakenessView.swift */,
 				40A350A72917D78000D3E80C /* MainView.swift */,
 				40A350A92917D88600D3E80C /* ScheduleView.swift */,
 				404A6C0A29C2A20500DDE5B6 /* ScheduleUtilsView.swift */,
@@ -373,6 +376,7 @@
 				3CFE4CF729C5A28A00BDDAF9 /* WhenStartView.swift in Sources */,
 				40D271B129D5DA500065BC39 /* LoadingView.swift in Sources */,
 				40A350AC2917DBAF00D3E80C /* SettingsView.swift in Sources */,
+				3C6633CF2A206A7E005D2B45 /* AwakenessView.swift in Sources */,
 				3C3DA74F29C9452D001E92A7 /* WaitingView.swift in Sources */,
 				40B3ECA6291DEAE4001C4C4B /* HealthKitAPI.swift in Sources */,
 				404A6C0429AC7BC700DDE5B6 /* Theme.swift in Sources */,
