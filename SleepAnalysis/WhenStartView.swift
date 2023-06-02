@@ -136,7 +136,7 @@ struct WhenStartView: View {
     func timeIsAppropriate() -> Bool {
         let startHour: Int = Int(whenStartHour_1+whenStartHour_2) ?? 0
         let startMinute: Int = Int(whenStartMinute_1+whenStartMinute_2) ?? 0
-        if startHour <= 0 || startHour > 24 || startMinute > 59 || !isSame() {
+        if startHour < 0 || startHour > 24 || startMinute > 59 || !isSame() {
             return false
         }
         return true

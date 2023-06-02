@@ -140,7 +140,7 @@ struct WhenFinishView: View {
     func timeIsAppropriate() -> Bool {
         let finishHour: Int = Int(whenFinishHour_1+whenFinishHour_2) ?? 0
         let finishMinute: Int = Int(whenFinishMinute_1+whenFinishMinute_2) ?? 0
-        if finishHour <= 0 || finishHour > 24 || finishMinute > 59 || !isSame() {
+        if finishHour < 0 || finishHour > 24 || finishMinute > 59 || !isSame() {
             return false
         }
         return true

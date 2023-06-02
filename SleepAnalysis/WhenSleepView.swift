@@ -131,7 +131,7 @@ struct WhenSleepView: View {
     func timeIsAppropriate() -> Bool {
         let sleepHour: Int = Int(whenSleepHour_1+whenSleepHour_2) ?? 0
         let sleepMinute: Int = Int(whenSleepMinute_1+whenSleepMinute_2) ?? 0
-        if sleepHour <= 0 || sleepHour > 24 || sleepMinute > 59 {
+        if sleepHour < 0 || sleepHour > 24 || sleepMinute > 59 {
             return false
         }
         return true
