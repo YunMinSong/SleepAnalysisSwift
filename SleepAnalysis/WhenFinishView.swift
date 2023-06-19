@@ -30,6 +30,7 @@ struct WhenFinishView: View {
     @State var whenFinishMinute_1: String = ""
     @State var whenFinishMinute_2: String = ""
     @State var whenFinish: String = ""
+    @Binding var AwarenessData: [LineData]
     
     @FocusState private var focusField: FinishField?
     
@@ -104,7 +105,7 @@ struct WhenFinishView: View {
             .alignmentGuide(.leading, computeValue: {d in -20.0})
             .padding(.top, 80.0)
             
-            NavigationLink(destination: RecommendView()) {
+            NavigationLink(destination: RecommendView(AwarenessData: $AwarenessData)) {
                 Rectangle().foregroundColor(.blue).frame(width: 390, height: 56).cornerRadius(8)
                     .overlay(Text("다음").foregroundColor(.white))
             }.padding(.top, 100.0)

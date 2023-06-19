@@ -14,7 +14,7 @@ import EventKit
 
 struct RecommendView: View {
     @Environment(\.managedObjectContext) var managedObjectContext
-    @StateObject var data = AwarenessModel()
+    @Binding var AwarenessData: [LineData]
     @AppStorage("sleep_onset") var sleep_onset: Date = Date.now
     @AppStorage("work_onset") var work_onset: Date = Date.now
     @AppStorage("work_offset") var work_offset: Date = Date.now
@@ -23,7 +23,7 @@ struct RecommendView: View {
     
     @State private var userName: String = "홍길동"
     @State var isLoading = false
-    
+        
     @AppStorage("lastUpdated") var lastUpdated:Date = Date.now.addingTimeInterval(-60.0*60.0*3)
     @AppStorage("lastSleep") var lastSleep:Date = Date.now.addingTimeInterval(-1*60.0*60.0*24.0*14.0)
     @AppStorage("needUpdate") var needUpdate:Bool = false
@@ -51,27 +51,18 @@ struct RecommendView: View {
                     Rectangle()
                         .foregroundColor(Color(red: 0.948, green: 0.953, blue: 0.962))
                     if sleep_onset == Date.now || work_onset == Date.now || work_offset == Date.now || !isRegistered {
-                        BeforeTimeGet(userName: userId)
+                        BeforeTimeGet(userName: userId, AwarenessData: $AwarenessData)
                     } else {
                         AfterTimeGet(userName: userId, from1: $from1, to1: $to1, from2: $from2, to2: $to2, sleep_onset: sleep_onset, work_onset: work_onset, work_offset: work_offset)
                     }
                 }.navigationTitle("추천 수면")
                 .onAppear{
-                    print(needUpdate)
-                    if needUpdate || Date.now.timeIntervalSince(lastUpdated) > 60.0*60.0*2{
-                        if sleep_onset < Date.now{
-                            sleep_onset = sleep_onset.addingTimeInterval(60*60*24.0)
-                        }
-                        while work_onset < sleep_onset{
-                            work_onset = work_onset.addingTimeInterval(60*60*24.0)
-                        }
-                        while work_offset < work_onset{
-                            work_offset = work_offset.addingTimeInterval(60*60*24.0)
-                        }
+                    if doUpdate(needUpdate: needUpdate, lastUpdated: lastUpdated){
+                        (sleep_onset, work_onset, work_offset) = updateOnsetDate(current_time: Date.now, sleep_onset: sleep_onset, work_onset: work_onset, work_offset: work_offset)
                         isLoading = true
                         readSleep(from: lastSleep, to: Date.now)
                         lastSleep = Date.now
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2){
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1){
                             needUpdate = false
                             lastUpdated = Date.now
                             //PCR prediction initial data
@@ -101,15 +92,16 @@ struct RecommendView: View {
                                     // handle the Core Data error
                                 }
                             }
-                            for x in 0...575{
-                                data.SleepSuggestionData[x] = LineData(Category: suggestion_pattern[x].1, x: formatDate(offset: Double(x)*5.0*60.0), y: Double(suggestion_pattern[x].0))
-                            }
+//                            for x in 0...575{
+//                                data.SleepSuggestionData[x] = LineData(Category: suggestion_pattern[x].1, x: formatDate(offset: Double(x)*5.0*60.0), y: Double(suggestion_pattern[x].0))
+//                            }
                             for x in 0...575{
                                 let C = 3.37*0.5*(1+coef_y*y_data[x][1] + coef_x * y_data[x][0])
                                 let D_up = (2.46+10.2+C) //sleep thres
                                 let awareness = D_up - y_data[x][3]
-                                data.AwarenessData[x] = LineData(Category:"Alertness",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(awareness))
-                                data.SleepData[x] = LineData(Category:"Sleep",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(sleep_pattern[x]))
+                                print(x, awareness)
+                                AwarenessData[x] = LineData(Category:"Alertness",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(awareness))
+//                                data.SleepData[x] = LineData(Category:"Sleep",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(sleep_pattern[x]))
                             }
                             isLoading=false
                             from1 = date_to_string(date: self.mainSleepStart)
@@ -127,6 +119,8 @@ struct RecommendView: View {
 struct BeforeTimeGet: View {
     //@Binding var userName: String
     let userName: String
+    
+    @Binding var AwarenessData: [LineData]
     
     var body: some View {
         ZStack {
@@ -149,7 +143,7 @@ struct BeforeTimeGet: View {
                     .padding(.vertical, 50.0)
                     .alignmentGuide(.leading, computeValue: { d in -100.0})
                  */
-                NavigationLink(destination: WhenSleepView()) {
+                NavigationLink(destination: WhenSleepView(AwarenessData: $AwarenessData)) {
                     Rectangle()
                         .foregroundColor(.blue)
                         .cornerRadius(28)

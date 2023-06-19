@@ -8,14 +8,17 @@
 import SwiftUI
 import CoreData
 
-class AwarenessModel: ObservableObject{
-    @Published var AwarenessData = [LineData](repeating: LineData(Category: "Awareness", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
-    @Published var SleepData = [LineData](repeating: LineData(Category: "Sleep", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
-    @Published var SleepSuggestionData = [LineData](repeating: LineData(Category: "Sleep Suggestion", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
-}
+//class AwarenessModel: ObservableObject{
+//    @Published var AwarenessData = [LineData](repeating: LineData(Category: "Awareness", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
+//    @Published var SleepData = [LineData](repeating: LineData(Category: "Sleep", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
+//    @Published var SleepSuggestionData = [LineData](repeating: LineData(Category: "Sleep Suggestion", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
+//
+//    init(
+//}
 
 struct MainView: View {
     @State private var tabSelection = 1
+    @State public var AwarenessData = [LineData](repeating: LineData(Category: "Awareness", x: formatDate(offset: 0.0), y: 0.0), count: 12*24*2)
     @AppStorage("UserEmail") var userEmail: String = ""
     @AppStorage("needUpdate") var needUpdate:Bool = false
     @AppStorage("sleep_onset") var sleep_onset: Date = Date.now
@@ -33,7 +36,7 @@ struct MainView: View {
             BeforeRegisterView()
         } else {
             TabView(selection: $tabSelection) {
-                ContentView(tabSelection: $tabSelection)
+                ContentView(tabSelection: $tabSelection, AwarenessData: $AwarenessData)
                     .tabItem {
                         Label("Home", systemImage: "house.fill")
                     }.environment(\.managedObjectContext, persistenceController.container.viewContext)
@@ -44,7 +47,7 @@ struct MainView: View {
                         Label("Schedule", systemImage: "calendar.badge.clock")
                     }
                     .tag(2)
-                RecommendView()
+                RecommendView(AwarenessData: $AwarenessData)
                     .tabItem {
                         Label("Recommend", systemImage: "moon.fill")
                     }
@@ -57,17 +60,6 @@ struct MainView: View {
                     }
                     .tag(4)
             }.navigationBarBackButtonHidden()
-                .onAppear{
-                    if sleep_onset < Date.now{
-                        sleep_onset = sleep_onset.addingTimeInterval(60*60*24.0)
-                    }
-                    while work_onset < sleep_onset{
-                        work_onset = work_onset.addingTimeInterval(60*60*24.0)
-                    }
-                    while work_offset < work_onset{
-                        work_offset = work_offset.addingTimeInterval(60*60*24.0)
-                    }
-                }
         }
     }
 }

@@ -19,6 +19,7 @@ struct WhenStartView: View {
     
     @AppStorage("work_onset") var work_onset: Date = Date.now
     @AppStorage("UserId") var userId: String = "-"
+    @Binding var AwarenessData: [LineData]
     
     @State var isValid: Bool = true
     @State var userName: String = "홍길동"
@@ -101,7 +102,7 @@ struct WhenStartView: View {
             .alignmentGuide(.leading, computeValue: {d in -20.0})
             .padding(.top, 80.0)
             
-            NavigationLink(destination: WhenFinishView(sleep_onset: sleep_onset, work_onset: saveTime())) {
+            NavigationLink(destination: WhenFinishView(sleep_onset: sleep_onset, work_onset: saveTime(), AwarenessData: $AwarenessData)) {
                 Rectangle().foregroundColor(.blue).frame(width: 390, height: 56).cornerRadius(8)
                     .overlay(Text("다음").foregroundColor(.white))
             }.padding(.top, 100.0)

@@ -52,15 +52,7 @@ func processSleepData(V0: [Double], entries: FetchedResults<Entry>) -> ([[Double
     @AppStorage("napSleepStart") var napSleepStart: Date = Date.now
     @AppStorage("napSleepEnd") var napSleepEnd: Date = Date.now
     
-    if sleep_onset < Date.now{
-        sleep_onset = sleep_onset.addingTimeInterval(60*60*24.0)
-    }
-    while work_onset < sleep_onset{
-        work_onset = work_onset.addingTimeInterval(60*60*24.0)
-    }
-    while work_offset < work_onset{
-        work_offset = work_offset.addingTimeInterval(60*60*24.0)
-    }
+    (sleep_onset, work_onset, work_offset) = updateOnsetDate(current_time: Date.now, sleep_onset: sleep_onset, work_onset: work_onset, work_offset: work_offset)
     
     //PCR prediction initial data
     let startDate = Date.now.addingTimeInterval(-1.0*60*60*24*1)
@@ -76,11 +68,6 @@ func processSleepData(V0: [Double], entries: FetchedResults<Entry>) -> ([[Double
     mainSleepEnd = Date.now.addingTimeInterval(Double(MainSleep[1])*5.0*60.0)
     napSleepStart = Date.now.addingTimeInterval(Double(NapSleep[0])*5.0*60.0)
     napSleepEnd = Date.now.addingTimeInterval(Double(NapSleep[1])*5.0*60.0)
-    print("Main sleep: ", mainSleepStart)
-    print("Main sleep: ", mainSleepEnd)
-    print("Nap sleep: ", napSleepStart)
-    print("Nap sleep: ", napSleepEnd)
-    
     
     var idx = Int(MainSleep[0])
     var offset = Int(MainSleep[1])
@@ -127,7 +114,7 @@ struct ContentView: View {
 //    @Binding var AwarenessData: [LineData]
 //    @Binding var SleepData: [LineData]
 //    @Binding var SleepSuggestionData: [LineData]
-    @StateObject var data = AwarenessModel()
+    @Binding var AwarenessData: [LineData]
     @State var isLoading = false
     
     @AppStorage("lastUpdated") var lastUpdated:Date = Date.now.addingTimeInterval(-60.0*60.0*3)
@@ -162,7 +149,7 @@ struct ContentView: View {
                                 .cornerRadius(15)
                                 .onTapGesture{print("you clicked sleeptimeView")}
                             
-                            GraphView(AwarenessData: $data.AwarenessData,tabSelection: $tabSelection)
+                            GraphView(AwarenessData: $AwarenessData,tabSelection: $tabSelection)
                                 .padding()
                                 .background(.white)
                                 .previewLayout(.fixed(width: 400, height: 60))
@@ -172,7 +159,8 @@ struct ContentView: View {
                         }.padding()
                     }
                     .onAppear(){
-                        if needUpdate || Date.now.timeIntervalSince(lastUpdated) > 60.0*60.0*2{
+                        print(AwarenessData[575])
+                        if doUpdate(needUpdate: needUpdate, lastUpdated: lastUpdated){
                             isLoading = true
                             readSleep(from: lastSleep, to: Date.now)
                             lastSleep = Date.now
@@ -207,15 +195,15 @@ struct ContentView: View {
                                         // handle the Core Data error
                                     }
                                 }
-                                for x in 0...575{
-                                    data.SleepSuggestionData[x] = LineData(Category: suggestion_pattern[x].1, x: formatDate(offset: Double(x)*5.0*60.0), y: Double(suggestion_pattern[x].0))
-                                }
+//                                for x in 0...575{
+//                                    data.SleepSuggestionData[x] = LineData(Category: suggestion_pattern[x].1, x: formatDate(offset: Double(x)*5.0*60.0), y: Double(suggestion_pattern[x].0))
+//                                }
                                 for x in 0...575{
                                     let C = 3.37*0.5*(1+coef_y*y_data[x][1] + coef_x * y_data[x][0])
                                     let D_up = (2.46+10.2+C) //sleep thres
                                     let awareness = D_up - y_data[x][3]
-                                    data.AwarenessData[x] = LineData(Category:"Alertness",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(awareness))
-                                    data.SleepData[x] = LineData(Category:"Sleep",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(sleep_pattern[x]))
+                                    AwarenessData[x] = LineData(Category:"Alertness",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(awareness))
+//                                    data.SleepData[x] = LineData(Category:"Sleep",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(sleep_pattern[x]))
                                 }
                                 isLoading=false
                             }
