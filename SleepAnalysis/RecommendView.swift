@@ -59,6 +59,15 @@ struct RecommendView: View {
                 .onAppear{
                     print(needUpdate)
                     if needUpdate || Date.now.timeIntervalSince(lastUpdated) > 60.0*60.0*2{
+                        if sleep_onset < Date.now{
+                            sleep_onset = sleep_onset.addingTimeInterval(60*60*24.0)
+                        }
+                        while work_onset < sleep_onset{
+                            work_onset = work_onset.addingTimeInterval(60*60*24.0)
+                        }
+                        while work_offset < work_onset{
+                            work_offset = work_offset.addingTimeInterval(60*60*24.0)
+                        }
                         isLoading = true
                         readSleep(from: lastSleep, to: Date.now)
                         lastSleep = Date.now

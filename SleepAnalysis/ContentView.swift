@@ -43,14 +43,24 @@ func processSleepData(V0: [Double], entries: FetchedResults<Entry>) -> ([[Double
     @AppStorage("V0_n") var V0_n: Double = 0.6758
     @AppStorage("V0_H") var V0_H: Double = 13.3336
     
-    var suggestion_pattern = [(Double, String)](repeating: (0.0, "Main Sleep"), count: 12*24*2+10)
-    var sleep_pattern = [Double](repeating: 0.0, count: 12*24*2+10)
-    var y_data = [[Double]](repeating: [0.0], count: 12*24*2+10)
+    var suggestion_pattern = [(Double, String)](repeating: (0.0, "Main Sleep"), count: 12*24*4+10)
+    var sleep_pattern = [Double](repeating: 0.0, count: 12*24*4+10)
+    var y_data = [[Double]](repeating: [0.0], count: 12*24*4+10)
     
     @AppStorage("mainSleepStart") var mainSleepStart: Date = Date.now
     @AppStorage("mainSleepEnd") var mainSleepEnd: Date = Date.now
     @AppStorage("napSleepStart") var napSleepStart: Date = Date.now
     @AppStorage("napSleepEnd") var napSleepEnd: Date = Date.now
+    
+    if sleep_onset < Date.now{
+        sleep_onset = sleep_onset.addingTimeInterval(60*60*24.0)
+    }
+    while work_onset < sleep_onset{
+        work_onset = work_onset.addingTimeInterval(60*60*24.0)
+    }
+    while work_offset < work_onset{
+        work_offset = work_offset.addingTimeInterval(60*60*24.0)
+    }
     
     //PCR prediction initial data
     let startDate = Date.now.addingTimeInterval(-1.0*60*60*24*1)
@@ -66,10 +76,10 @@ func processSleepData(V0: [Double], entries: FetchedResults<Entry>) -> ([[Double
     mainSleepEnd = Date.now.addingTimeInterval(Double(MainSleep[1])*5.0*60.0)
     napSleepStart = Date.now.addingTimeInterval(Double(NapSleep[0])*5.0*60.0)
     napSleepEnd = Date.now.addingTimeInterval(Double(NapSleep[1])*5.0*60.0)
-//    print("Main sleep: ", mainSleepStart)
-//    print("Main sleep: ", mainSleepEnd)
-//    print("Nap sleep: ", napSleepStart)
-//    print("Nap sleep: ", napSleepEnd)
+    print("Main sleep: ", mainSleepStart)
+    print("Main sleep: ", mainSleepEnd)
+    print("Nap sleep: ", napSleepStart)
+    print("Nap sleep: ", napSleepEnd)
     
     
     var idx = Int(MainSleep[0])

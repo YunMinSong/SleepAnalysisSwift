@@ -138,7 +138,7 @@ struct AddSleepView: View{
                     DatePicker(
                         "",
                         selection: $startDate,
-                        in: oneweekbefore...oneweekafter,
+//                        in: oneweekbefore...oneweekafter,
                         displayedComponents: [.date, .hourAndMinute]
                     )
                     Spacer()
@@ -150,7 +150,7 @@ struct AddSleepView: View{
                     DatePicker(
                         "",
                         selection: $endDate,
-                        in: oneweekbefore...oneweekafter,
+//                        in: oneweekbefore...oneweekafter,
                         displayedComponents: [.date, .hourAndMinute]
                     )
                     Spacer()
@@ -201,7 +201,7 @@ struct RecSettingView: View {
                     DatePicker(
                         "",
                         selection: $sleep_onset,
-                        in: now...oneweekafter,
+//                        in: now...oneweekafter,
                         displayedComponents: [.date, .hourAndMinute]
                     ).onChange(of: sleep_onset, perform: { _ in
                         needUpdate = true
@@ -220,7 +220,7 @@ struct RecSettingView: View {
                     DatePicker(
                         "",
                         selection: $work_onset,
-                        in: now...oneweekafter,
+//                        in: now...oneweekafter,
                         displayedComponents: [.date, .hourAndMinute]
                     ).onChange(of: work_onset, perform: { _ in
                         needUpdate = true
@@ -234,7 +234,7 @@ struct RecSettingView: View {
                     DatePicker(
                         "",
                         selection: $work_offset,
-                        in: now...oneweekafter,
+//                        in: now...oneweekafter,
                         displayedComponents: [.date, .hourAndMinute]
                     ).onChange(of: work_offset, perform: { _ in
                         needUpdate = true
@@ -257,6 +257,17 @@ struct RecSettingView: View {
                 }
             }.padding()
         }.padding()
+            .onDisappear{
+                if sleep_onset < Date.now{
+                    sleep_onset = sleep_onset.addingTimeInterval(60*60*24.0)
+                }
+                while work_onset < sleep_onset{
+                    work_onset = work_onset.addingTimeInterval(60*60*24.0)
+                }
+                while work_offset < work_onset{
+                    work_offset = work_offset.addingTimeInterval(60*60*24.0)
+                }
+            }
     }
 }
 
