@@ -411,6 +411,7 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                 }.padding([.bottom, .leading, .trailing], 5)
                                     .cornerRadius(20)
                                     .onChange(of: date){ theDate in
+                                        print(theDate)
                                         goodDuration = 0
                                         badDuration = 0
                                         var checkTime: [EntryAwareness] = []
@@ -430,6 +431,9 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                         for sleepTime in checkTime{
                                             let sleepStart = sleepTime.sleepStart
                                             let sleepEnd = sleepTime.sleepEnd
+                                            print("CHECK TIME: ")
+                                            print(sleepStart.formatted(date: .complete, time: .complete))
+                                            print(sleepEnd.formatted(date: .complete, time: .complete))
                                             for tempV in V0{
                                                 let tempTime = tempV.time!
                                                 if tempTime >= sleepStart && tempTime <= sleepEnd{

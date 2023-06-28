@@ -256,9 +256,7 @@ struct GraphView: View {
                 .chartXAxis(.hidden)
                 .frame(width: 290, height: 160)
             }
-//            .background(Color(red: 0.948, green: 0.953, blue: 0.962))
-//            .cornerRadius(16)
-//            .offset(x:10, y:10)
         }
     }
 }
+

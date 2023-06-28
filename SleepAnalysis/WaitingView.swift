@@ -40,8 +40,6 @@ struct WaitingView: View {
                 self.userEmail = email
                 self.userId = extractId(email: email)
                 //Collect sleep data during last 7 days
-                readSleep(from: lastSleep, to: Date.now)
-                lastSleep = Date.now
             }
     }
 }

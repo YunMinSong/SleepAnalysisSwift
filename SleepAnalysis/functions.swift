@@ -2,10 +2,10 @@ import SwiftUI
 import CoreData
 
 func updateOnsetDate(current_time: Date, sleep_onset: Date, work_onset: Date, work_offset: Date)->(Date, Date, Date){
-    if sleep_onset < current_time{
-        return (current_time, work_onset, work_offset)
+    if sleep_onset <= current_time{
+        return (current_time.addingTimeInterval(60*10), work_onset, work_offset)
     }
-    if work_onset < current_time{
+    if work_onset <= current_time{
         var new_sleep_onset = sleep_onset
         var new_work_onset = work_onset
         var new_work_offset = work_offset

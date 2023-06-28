@@ -27,12 +27,40 @@ public func formatDate(offset: Double)->Date{
     return date
 }
 
-struct entry{
-    let sleepStart: Date?
-    let sleepEnd: Date?
+func processSleepData(V0: [Double], entries: FetchedResults<Entry>, startProcess: Date, endProcess: Date) -> [[Double]]{
+    
+    let startProcess = adjustDate(date: startProcess)
+    let endProcess = adjustDate(date: endProcess)
+    let duration = max(0, Int(endProcess.timeIntervalSince(startProcess)/60/5) + 12*24)
+    
+    var sleep_pattern = [Double](repeating: 0.0, count: duration+10)
+    var y_data = [[Double]](repeating: [0.0], count: duration+10)
+    
+    for entry in entries{
+        if entry.sleepStart == nil{
+            continue
+        }
+        if entry.sleepStart! < startProcess || entry.sleepEnd! > endProcess{
+            continue
+        }else{
+            let startToSleep = entry.sleepStart!.timeIntervalSince(startProcess)
+            let sleepToSleep = entry.sleepEnd!.timeIntervalSince(entry.sleepStart!)
+            
+            //fill out the array
+            let idx = Int(startToSleep/60/5)
+            let offset = Int(sleepToSleep/60/5)
+                        
+            for i in 0..<offset{
+                sleep_pattern[idx+i] = 1.0
+            }
+        }
+    }
+    y_data = pcr_simulation(V0: V0, sleep_pattern: sleep_pattern, step: 5/60.0)
+    
+    return y_data
 }
 
-func processSleepData(V0: [Double], entries: FetchedResults<Entry>) -> ([[Double]], [(Double, String)], [Double]){
+func processSleepPrediction(V0: [Double], entries: FetchedResults<Entry>) -> ([[Double]], [(Double, String)], [Double]){
     
     @AppStorage("sleep_onset") var sleep_onset: Date = Date.now
     @AppStorage("work_onset") var work_onset: Date = Date.now
@@ -51,7 +79,7 @@ func processSleepData(V0: [Double], entries: FetchedResults<Entry>) -> ([[Double
     @AppStorage("mainSleepEnd") var mainSleepEnd: Date = Date.now
     @AppStorage("napSleepStart") var napSleepStart: Date = Date.now
     @AppStorage("napSleepEnd") var napSleepEnd: Date = Date.now
-    
+        
     (sleep_onset, work_onset, work_offset) = updateOnsetDate(current_time: Date.now, sleep_onset: sleep_onset, work_onset: work_onset, work_offset: work_offset)
     
     //PCR prediction initial data
@@ -59,7 +87,10 @@ func processSleepData(V0: [Double], entries: FetchedResults<Entry>) -> ([[Double
     //Sleep Suggestion
     let step = 1/12.0
     let V0_suggest = [V0_x, V0_y, V0_n, V0_H]
-
+    print(V0_suggest)
+    print(sleep_onset.formatted(date: .complete, time: .complete))
+    print(work_onset.formatted(date: .complete, time: .complete))
+    print(work_offset.formatted(date: .complete, time: .complete))
     let suggest = Sleep_pattern_suggestion(V0: V0_suggest, sleep_onset: Int(sleep_onset.timeIntervalSince(Date.now)/60/5), work_onset: Int(work_onset.timeIntervalSince(Date.now)/60/5), work_offset: Int(work_offset.timeIntervalSince(Date.now)/60/5), step: step)
     let MainSleep = suggest.CSS
     let NapSleep = suggest.Nap
@@ -68,6 +99,9 @@ func processSleepData(V0: [Double], entries: FetchedResults<Entry>) -> ([[Double
     mainSleepEnd = Date.now.addingTimeInterval(Double(MainSleep[1])*5.0*60.0)
     napSleepStart = Date.now.addingTimeInterval(Double(NapSleep[0])*5.0*60.0)
     napSleepEnd = Date.now.addingTimeInterval(Double(NapSleep[1])*5.0*60.0)
+    
+    print(mainSleepStart.formatted(date: .complete, time: .complete))
+    print(mainSleepEnd.formatted(date: .complete, time: .complete))
     
     var idx = Int(MainSleep[0])
     var offset = Int(MainSleep[1])
@@ -106,6 +140,21 @@ func processSleepData(V0: [Double], entries: FetchedResults<Entry>) -> ([[Double
     y_data = pcr_simulation(V0: V0, sleep_pattern: sleep_pattern, step: 5/60.0)
     
     return (y_data, suggestion_pattern, sleep_pattern)
+}
+
+func adjustDate(date: Date)-> Date{
+    let calendar = Calendar.current
+
+    var minutes = calendar.component(.minute, from: date)
+    minutes = minutes + (minutes % 5)
+    var dateComponents = DateComponents()
+    dateComponents.year = calendar.component(.year, from: date)
+    dateComponents.month = calendar.component(.month, from: date)
+    dateComponents.day = calendar.component(.day, from: date)
+    dateComponents.hour = calendar.component(.hour, from: date)
+    dateComponents.minute = minutes
+    dateComponents.second = calendar.component(.second, from: date)
+    return calendar.date(from: dateComponents)!
 }
 
 struct ContentView: View {
@@ -159,28 +208,51 @@ struct ContentView: View {
                         }.padding()
                     }
                     .onAppear(){
-                        print(AwarenessData[575])
                         if doUpdate(needUpdate: needUpdate, lastUpdated: lastUpdated){
                             isLoading = true
+                            let startProcess = lastSleep
                             readSleep(from: lastSleep, to: Date.now)
-                            lastSleep = Date.now
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2){
                                 needUpdate = false
                                 lastUpdated = Date.now
-                                
                                 //PCR prediction initial data
                                 let startDate = Date.now.addingTimeInterval(-1.0*60*60*24*1)
+                                var done = false
                                 var V0 =  [-0.8590, -0.6837, 0.1140, 14.2133] //initial condition
+                                let endProcess = Date.now.addingTimeInterval(-1*60*60*24)
                                 
                                 //find V0
                                 for v in V0_cores{
                                     if v.time! >= startDate{
-                                        V0 = [v.y, v.x, v.n, v.h]
-                                        break
+                                        if done == false{
+                                            V0 = [v.y, v.x, v.n, v.h]
+                                            done = true
+                                        }
+                                        managedObjectContext.delete(v)
                                     }
-                                    managedObjectContext.delete(v)
+                                    if v.time! >= lastSleep && v.time! < endProcess{
+                                        managedObjectContext.delete(v)
+                                    }
                                 }
-                                let (y_data, suggestion_pattern, sleep_pattern) = processSleepData(V0: V0, entries: entries)
+                                
+                                //update processed data
+                                let process_y_data = processSleepData(V0: V0, entries: entries, startProcess: startProcess, endProcess: endProcess)
+                                let duration = max(0, Int(endProcess.timeIntervalSince(startProcess)/60/5))
+                                for x in 0...duration{
+                                    let V0_core = V0_main(context: managedObjectContext)
+                                    V0_core.time = lastSleep.addingTimeInterval(Double(x)*5.0*60.0)
+                                    V0_core.y = process_y_data[x][0]
+                                    V0_core.x = process_y_data[x][1]
+                                    V0_core.n = process_y_data[x][2]
+                                    V0_core.h = process_y_data[x][3]
+                                    do {
+                                        try managedObjectContext.save()
+                                    } catch {
+                                        // handle the Core Data error
+                                    }
+                                }
+                                
+                                let (y_data, suggestion_pattern, sleep_pattern) = processSleepPrediction(V0: V0, entries: entries)
                                 let yesterday = Date.now.addingTimeInterval(-1*60.0*60.0*24.0)
                                 for x in 0...575{
                                     let V0_core = V0_main(context: managedObjectContext)
@@ -195,16 +267,13 @@ struct ContentView: View {
                                         // handle the Core Data error
                                     }
                                 }
-//                                for x in 0...575{
-//                                    data.SleepSuggestionData[x] = LineData(Category: suggestion_pattern[x].1, x: formatDate(offset: Double(x)*5.0*60.0), y: Double(suggestion_pattern[x].0))
-//                                }
                                 for x in 0...575{
                                     let C = 3.37*0.5*(1+coef_y*y_data[x][1] + coef_x * y_data[x][0])
                                     let D_up = (2.46+10.2+C) //sleep thres
                                     let awareness = D_up - y_data[x][3]
                                     AwarenessData[x] = LineData(Category:"Alertness",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(awareness))
-//                                    data.SleepData[x] = LineData(Category:"Sleep",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(sleep_pattern[x]))
                                 }
+                                lastSleep = Date.now
                                 isLoading=false
                             }
                         }

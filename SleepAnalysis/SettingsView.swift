@@ -257,17 +257,6 @@ struct RecSettingView: View {
                 }
             }.padding()
         }.padding()
-            .onDisappear{
-                if sleep_onset < Date.now{
-                    sleep_onset = sleep_onset.addingTimeInterval(60*60*24.0)
-                }
-                while work_onset < sleep_onset{
-                    work_onset = work_onset.addingTimeInterval(60*60*24.0)
-                }
-                while work_offset < work_onset{
-                    work_offset = work_offset.addingTimeInterval(60*60*24.0)
-                }
-            }
     }
 }
 
