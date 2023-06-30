@@ -122,6 +122,7 @@ func readSleep(from startDateQ: Date?, to endDateQ: Date?) {
                         
                         //if it is not, then save g values and set g values to the next startDate
                         let entry = Entry(context: context)
+                                                
                         entry.sleepStart = gSleepStart
                         entry.sleepEnd = gSleepEnd
                         

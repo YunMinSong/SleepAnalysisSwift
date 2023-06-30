@@ -73,15 +73,6 @@ struct SettingsView: View {
                                 }
                             }
                         }.padding()
-                        NavigationLink(destination: AddSleepView()){
-                            VStack(spacing: 5){
-                                HStack{
-                                    Text("수면 기록 추가")
-                                        .bold()
-                                    Spacer()
-                                }
-                            }
-                        }.padding()
                         NavigationLink(destination: VStack(alignment: .leading) {
                             Text("앱 상세 버전").font(.headline)
                                 .padding(.bottom)
@@ -111,9 +102,13 @@ struct SettingsView: View {
 struct AddSleepView: View{
     @State var startDate = Date.now
     @State var endDate = Date.now
+    @State var addDone = false
+    
+    @AppStorage("needUpdate") var needUpdate: Bool = false
     
     let oneweekbefore = Date.now.addingTimeInterval(-1.0*60*60*24*7)
     let oneweekafter = Date.now.addingTimeInterval(60*60*24*7*1.0)
+    
     var body: some View{
         ZStack{
             Rectangle()
@@ -159,6 +154,9 @@ struct AddSleepView: View{
                 Text("")
                 Button(action: {
                     writeSleep(.asleepCore, startDate: startDate, endDate: endDate)
+                    addDone = true
+                    needUpdate = true
+                    
                 }, label: {Rectangle()
                         .foregroundColor(.blue)
                         .frame(width: 310, height: 48)
@@ -166,6 +164,9 @@ struct AddSleepView: View{
                         .overlay(
                             Text("수면 기록 추가하기").foregroundColor(.white))})
                 .padding(.vertical, 10.0)
+                .alert("Sleep time has been added", isPresented: $addDone) {
+                    Button("OK", role: .cancel) { }
+                }
             }.padding()
         }.padding()
     }

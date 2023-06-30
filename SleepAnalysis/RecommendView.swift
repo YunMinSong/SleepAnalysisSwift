@@ -64,7 +64,6 @@ struct RecommendView: View {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2){
                             needUpdate = false
                             lastUpdated = Date.now
-                            print("STARRRTT: ", startProcess)
                             //PCR prediction initial data
                             let startDate = Date.now.addingTimeInterval(-1.0*60*60*24*1)
                             var done = false
@@ -88,7 +87,6 @@ struct RecommendView: View {
                             //update processed data
                             let process_y_data = processSleepData(V0: V0, entries: entries, startProcess: startProcess, endProcess: endProcess)
                             let duration = max(0, Int(endProcess.timeIntervalSince(startProcess)/60/5))
-                            print("DURATION BOYS: ", duration)
                             for x in 0...duration{
                                 let V0_core = V0_main(context: managedObjectContext)
                                 V0_core.time = lastSleep.addingTimeInterval(Double(x)*5.0*60.0)

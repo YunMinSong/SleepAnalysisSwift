@@ -81,16 +81,16 @@ func processSleepPrediction(V0: [Double], entries: FetchedResults<Entry>) -> ([[
     @AppStorage("napSleepEnd") var napSleepEnd: Date = Date.now
         
     (sleep_onset, work_onset, work_offset) = updateOnsetDate(current_time: Date.now, sleep_onset: sleep_onset, work_onset: work_onset, work_offset: work_offset)
-    
+        
     //PCR prediction initial data
     let startDate = Date.now.addingTimeInterval(-1.0*60*60*24*1)
     //Sleep Suggestion
     let step = 1/12.0
     let V0_suggest = [V0_x, V0_y, V0_n, V0_H]
-    print(V0_suggest)
-    print(sleep_onset.formatted(date: .complete, time: .complete))
-    print(work_onset.formatted(date: .complete, time: .complete))
-    print(work_offset.formatted(date: .complete, time: .complete))
+//    print(V0_suggest)
+//    print(sleep_onset.formatted(date: .complete, time: .complete))
+//    print(work_onset.formatted(date: .complete, time: .complete))
+//    print(work_offset.formatted(date: .complete, time: .complete))
     let suggest = Sleep_pattern_suggestion(V0: V0_suggest, sleep_onset: Int(sleep_onset.timeIntervalSince(Date.now)/60/5), work_onset: Int(work_onset.timeIntervalSince(Date.now)/60/5), work_offset: Int(work_offset.timeIntervalSince(Date.now)/60/5), step: step)
     let MainSleep = suggest.CSS
     let NapSleep = suggest.Nap
@@ -100,8 +100,8 @@ func processSleepPrediction(V0: [Double], entries: FetchedResults<Entry>) -> ([[
     napSleepStart = Date.now.addingTimeInterval(Double(NapSleep[0])*5.0*60.0)
     napSleepEnd = Date.now.addingTimeInterval(Double(NapSleep[1])*5.0*60.0)
     
-    print(mainSleepStart.formatted(date: .complete, time: .complete))
-    print(mainSleepEnd.formatted(date: .complete, time: .complete))
+//    print(mainSleepStart.formatted(date: .complete, time: .complete))
+//    print(mainSleepEnd.formatted(date: .complete, time: .complete))
     
     var idx = Int(MainSleep[0])
     var offset = Int(MainSleep[1])
@@ -274,7 +274,7 @@ struct ContentView: View {
                                     AwarenessData[x] = LineData(Category:"Alertness",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(awareness))
                                 }
                                 lastSleep = Date.now
-                                isLoading=false
+                                isLoading = false
                             }
                         }
                     }

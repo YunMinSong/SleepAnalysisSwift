@@ -218,6 +218,7 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
     @AppStorage("lastSleep") var lastSleep: Date = Date.now.addingTimeInterval(-1*60.0*60.0*24.0*14.0)
     @State var goodDuration: Int = 0
     @State var badDuration: Int = 0
+    @State var addButton: Bool = false
     
     // Injected dependencies
     private var calendar: Calendar
@@ -308,6 +309,14 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                         .font(.title2)
                                         .padding([.top, .leading, .trailing], 15)
                                     Spacer()
+                                    NavigationLink{
+                                        AddSleepView()
+                                    }label:{
+                                        Image("plus").resizable().scaledToFit()
+                                            .frame(width:30, height: 30)
+                                            .padding()
+                                    }
+                                    
                                 }
                                 HStack{
                                     HStack{
@@ -411,7 +420,6 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                 }.padding([.bottom, .leading, .trailing], 5)
                                     .cornerRadius(20)
                                     .onChange(of: date){ theDate in
-                                        print(theDate)
                                         goodDuration = 0
                                         badDuration = 0
                                         var checkTime: [EntryAwareness] = []
@@ -431,9 +439,6 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                         for sleepTime in checkTime{
                                             let sleepStart = sleepTime.sleepStart
                                             let sleepEnd = sleepTime.sleepEnd
-                                            print("CHECK TIME: ")
-                                            print(sleepStart.formatted(date: .complete, time: .complete))
-                                            print(sleepEnd.formatted(date: .complete, time: .complete))
                                             for tempV in V0{
                                                 let tempTime = tempV.time!
                                                 if tempTime >= sleepStart && tempTime <= sleepEnd{

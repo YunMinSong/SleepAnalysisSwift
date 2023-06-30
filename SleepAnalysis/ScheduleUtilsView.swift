@@ -20,11 +20,18 @@ struct EntryAwareness{
 
 public struct CalendarDetailView: View{
     @Environment(\.managedObjectContext) var managedObjectContext
+    @Environment(\.dismiss) private var dismiss
+    
+    @FetchRequest(sortDescriptors: []) var entries: FetchedResults<Entry>
+    @FetchRequest(sortDescriptors: []) var V0_cores: FetchedResults<V0_main>
+    @AppStorage("needUpdate") var needUpdate: Bool = false
     
     @ObservedObject var entry : Entry
     @State var sleepStart: Date = Date.now
     @State var sleepEnd: Date = Date.now
     @State private var entryStart: Date = Date.now
+    @State private var editDone = false
+    @State private var removeDone = false
     let calendar = Calendar.current
         
     public var body: some View{
@@ -41,7 +48,7 @@ public struct CalendarDetailView: View{
                     "",
                     selection: $sleepStart,
                     in: startTime...endTime,
-                    displayedComponents: [.date, .hourAndMinute]
+                    displayedComponents: [.hourAndMinute]
                 )
                 Spacer()
             }
@@ -55,7 +62,7 @@ public struct CalendarDetailView: View{
                     "",
                     selection: $sleepEnd,
                     in: startTime...endTime,
-                    displayedComponents: [.date, .hourAndMinute]
+                    displayedComponents: [.hourAndMinute]
                 )
                 Spacer()
             }
@@ -66,20 +73,43 @@ public struct CalendarDetailView: View{
             }.padding([.trailing, .leading], 10)
             Text("")
             
-            Button(action: {
-                entry.sleepStart = sleepStart
-                entry.sleepEnd = sleepEnd
-                entryStart = sleepStart
-                if managedObjectContext.hasChanges{
-                    do {
-                        try managedObjectContext.save()
-                    } catch let nserror as NSError{
-                        // handle the Core Data error
-                        print("Unresolved error \(nserror), \(nserror.userInfo)")
-                        
+            HStack{
+                Button(action: {
+                    editDone = true
+                    entry.sleepStart = sleepStart
+                    entry.sleepEnd = sleepEnd
+                    entryStart = sleepStart
+                    if managedObjectContext.hasChanges{
+                        do {
+                            try managedObjectContext.save()
+                        } catch let nserror as NSError{
+                            // handle the Core Data error
+                            print("Unresolved error \(nserror), \(nserror.userInfo)")
+                            
+                        }
                     }
+                    needUpdate = true
+                    
+                }, label: {Text("Edit Sleep")})
+                .alert("Sleep time has been updated", isPresented: $editDone) {
+                    Button("OK", role: .cancel) { }
                 }
-            }, label: {Text("Edit Sleep")})
+                Text("  ")
+                Button(action: {
+                    removeDone = true
+                    managedObjectContext.delete(entry)
+                    try! managedObjectContext.save()
+                    entry.sleepStart = Date.now
+                    entry.sleepEnd = Date.now
+                    needUpdate = true
+                    dismiss()
+                    
+                }, label: {Text("Remove Sleep")}
+                ).alert("Sleep time has been deleted", isPresented: $removeDone) {
+                    Button("OK", role: .cancel) { }
+                }
+                
+            }
             
         }.navigationTitle("Sleep")
             .onAppear{
