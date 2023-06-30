@@ -103,8 +103,10 @@ struct AddSleepView: View{
     @State var startDate = Date.now
     @State var endDate = Date.now
     @State var addDone = false
+    @State var overlapError = false
     
     @AppStorage("needUpdate") var needUpdate: Bool = false
+    @FetchRequest(sortDescriptors: [NSSortDescriptor(key: "sleepStart", ascending: true)]) var entries: FetchedResults<Entry>
     
     let oneweekbefore = Date.now.addingTimeInterval(-1.0*60*60*24*7)
     let oneweekafter = Date.now.addingTimeInterval(60*60*24*7*1.0)
@@ -153,9 +155,26 @@ struct AddSleepView: View{
                 Text("")
                 Text("")
                 Button(action: {
-                    writeSleep(.asleepCore, startDate: startDate, endDate: endDate)
-                    addDone = true
-                    needUpdate = true
+                    var isSafe = true
+                    for entry in entries{
+                        let sleepStart = entry.sleepStart!
+                        let sleepEnd = entry.sleepEnd!
+                        if startDate >= sleepStart && startDate <= sleepEnd{
+                            isSafe = false
+                            break
+                        }
+                        if endDate >= sleepStart && endDate <= sleepEnd{
+                            isSafe = false
+                            break
+                        }
+                    }
+                    if isSafe{
+                        writeSleep(.asleepCore, startDate: startDate, endDate: endDate)
+                        addDone = true
+                        needUpdate = true
+                    }else{
+                        overlapError = true
+                    }
                     
                 }, label: {Rectangle()
                         .foregroundColor(.blue)
@@ -165,6 +184,9 @@ struct AddSleepView: View{
                             Text("수면 기록 추가하기").foregroundColor(.white))})
                 .padding(.vertical, 10.0)
                 .alert("Sleep time has been added", isPresented: $addDone) {
+                    Button("OK", role: .cancel) { }
+                }
+                .alert("Sleep time is overlapping", isPresented: $overlapError) {
                     Button("OK", role: .cancel) { }
                 }
             }.padding()
