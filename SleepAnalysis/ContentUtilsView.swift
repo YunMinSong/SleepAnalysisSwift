@@ -12,11 +12,47 @@ import Charts
 struct HeaderView: View{
     var body: some View {
         HStack{
-            Text("my night")
+            Text("2SLEEP")
                 .font(.title)
                 .bold()
             Spacer()
             Button(action: {print("notif is pressed")}, label: {Image("bell")})
+        }
+    }
+}
+
+struct RecommendHeaderView: View{
+    var body: some View {
+        HStack{
+            Text("추천 수면")
+                .font(.title)
+                .bold()
+            Spacer()
+            
+        }
+    }
+}
+
+struct ScheduleHeaderView: View{
+    var body: some View {
+        HStack{
+            Text("수면 기록")
+                .font(.title)
+                .bold()
+            Spacer()
+            
+        }
+    }
+}
+
+struct SettingHeaderView: View{
+    var body: some View {
+        HStack{
+            Text("설정")
+                .font(.title)
+                .bold()
+            Spacer()
+            
         }
     }
 }
@@ -78,7 +114,7 @@ struct SleepTimeView: View {
         let from2 = date_to_string(date: napSleepStart)
         let to2 = time_to_string(seconds: Int(napSleepEnd.timeIntervalSince(napSleepStart)))
 
-        VStack(alignment: .leading) {
+        VStack() {
             HStack{
                 VStack{
                     HStack{
@@ -99,7 +135,7 @@ struct SleepTimeView: View {
             }
             
             if sleep_onset == Date.now || work_onset == Date.now || work_offset == Date.now || !isRegistered {
-                ZStack {
+                ZStack(alignment: .center) {
                     Rectangle()
                         .foregroundColor(.white)
                         .cornerRadius(16.0)
@@ -204,27 +240,19 @@ struct GraphView: View {
     @State private var userName: String = "홍길동"
     var body: some View {
         VStack(alignment: .leading) {
-            HStack{
-                VStack{
-                    Text("잠시 바람 쐬는건 어때요?")
-                        .bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .font(.title2)
-                        .padding([.bottom], 5)
-                    Text("\(userName)님 각성도가 낮아요")
-                        .font(.system(size: 12))
-                        .padding([.bottom], 10)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                Spacer()
-                Button(action: {self.tabSelection = 2}, label: {
-                    Image(systemName: "chevron.right")
-                })
+            VStack{
+                Text("잠시 바람 쐬는건 어때요?")
+                    .bold()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .font(.title2)
+                Text("\(userName)님 각성도가 낮아요")
+                    .padding([.bottom], 10)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             ZStack{
                 Rectangle()
                     .foregroundColor(Color(red: 0.948, green: 0.953, blue: 0.962))
-                    .frame(width: 310, height: 180)
+                    .frame(width: 330, height: 180)
                     .cornerRadius(16)
                 Chart {
                     ForEach(AwarenessData){

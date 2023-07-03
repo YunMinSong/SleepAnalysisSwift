@@ -24,9 +24,10 @@ struct SettingsView: View {
     
     var body: some View {
             NavigationView{
-                ZStack{
-                    Rectangle()
-                        .foregroundColor(Color(red: 0.948, green: 0.953, blue: 0.962))
+                VStack() {
+                    SettingHeaderView()
+                        .padding()
+                        .background(.white)
                     List{
                         NavigationLink(destination:
                                         Button(action: {
@@ -53,7 +54,7 @@ struct SettingsView: View {
                                     Spacer()
                                 }
                             }
-                        }.padding()
+                        }.padding(.vertical)
                         
                         NavigationLink(destination: Text("Terms of Service")){
                             VStack(spacing: 5){
@@ -63,7 +64,7 @@ struct SettingsView: View {
                                     Spacer()
                                 }
                             }
-                        }.padding()
+                        }.padding(.vertical)
                         NavigationLink(destination: RecSettingView()){
                             VStack(spacing: 5){
                                 HStack{
@@ -72,7 +73,7 @@ struct SettingsView: View {
                                     Spacer()
                                 }
                             }
-                        }.padding()
+                        }.padding(.vertical)
                         NavigationLink(destination: VStack(alignment: .leading) {
                             Text("앱 상세 버전").font(.headline)
                                 .padding(.bottom)
@@ -92,9 +93,9 @@ struct SettingsView: View {
                                     Spacer()
                                 }
                             }
-                        }.padding()
+                        }.padding(.vertical)
                     }.listStyle(.inset)
-                }.navigationTitle("설정")
+                }
             }.navigationBarBackButtonHidden()
     }
 }
@@ -262,20 +263,6 @@ struct RecSettingView: View {
                     ).onChange(of: work_offset, perform: { _ in
                         needUpdate = true
                     })
-                    Spacer()
-                }
-                HStack{
-                    Text("알람 맞추기 : ")
-                        .bold()
-                    Spacer()
-                }
-                HStack{
-                    DatePicker(
-                        "",
-                        selection: $alarm,
-                        in: now...Date.now.addingTimeInterval(60.0*60*24),
-                        displayedComponents: [.hourAndMinute]
-                    )
                     Spacer()
                 }
             }.padding()

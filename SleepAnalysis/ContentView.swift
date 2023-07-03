@@ -185,100 +185,104 @@ struct ContentView: View {
                     LoadingView()
                 }else{
                     ScrollView(){
-                    VStack{
-                        HeaderView()
-                            .padding()
-                            .background(.white)
-                            
-                        VStack (spacing: 40){
-                            SleepTimeView(tabSelection: $tabSelection, mainSleepStart: $mainSleepStart, mainSleepEnd: $mainSleepEnd, napSleepStart: $napSleepStart, napSleepEnd: $napSleepEnd)
-                                .padding()
-                                .background(.white)
-                                .previewLayout(.fixed(width: 400, height: 120))
-                                .cornerRadius(15)
-                                .onTapGesture{print("you clicked sleeptimeView")}
-                            
-                            GraphView(AwarenessData: $AwarenessData,tabSelection: $tabSelection)
-                                .padding()
-                                .background(.white)
-                                .previewLayout(.fixed(width: 400, height: 60))
-                                .cornerRadius(15)
-                                .frame(height: geometry.size.height/3)
-                                .onTapGesture{print("you clicked graphView")}
-                        }.padding()
-                    }
-                    .onAppear(){
-                        if doUpdate(needUpdate: needUpdate, lastUpdated: lastUpdated){
-                            isLoading = true
-                            let startProcess = lastSleep
-                            readSleep(from: lastSleep, to: Date.now)
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2){
-                                needUpdate = false
-                                lastUpdated = Date.now
-                                //PCR prediction initial data
-                                let startDate = Date.now.addingTimeInterval(-1.0*60*60*24*1)
-                                var done = false
-                                var V0 =  [-0.8590, -0.6837, 0.1140, 14.2133] //initial condition
-                                let endProcess = Date.now.addingTimeInterval(-1*60*60*24)
-                                
-                                //find V0
-                                for v in V0_cores{
-                                    if v.time! >= startDate{
-                                        if done == false{
-                                            V0 = [v.y, v.x, v.n, v.h]
-                                            done = true
+                        ZStack {
+                            Color(red: 0.948, green: 0.953, blue: 0.962)
+                            VStack{
+                                HeaderView()
+                                    .padding()
+                                    .background(.white)
+                                    
+                                VStack (spacing: 40){
+                                    SleepTimeView(tabSelection: $tabSelection, mainSleepStart: $mainSleepStart, mainSleepEnd: $mainSleepEnd, napSleepStart: $napSleepStart, napSleepEnd: $napSleepEnd)
+                                        .padding()
+                                        .background(.white)
+                                        .previewLayout(.fixed(width: 400, height: 120))
+                                        .cornerRadius(15)
+                                        .onTapGesture{print("you clicked sleeptimeView")}
+                                    
+                                    GraphView(AwarenessData: $AwarenessData,tabSelection: $tabSelection)
+                                        .padding()
+                                        .background(.white)
+                                        .previewLayout(.fixed(width: 400, height: 60))
+                                        .cornerRadius(15)
+                                        .frame(height: geometry.size.height/3)
+                                        .onTapGesture{print("you clicked graphView")}
+                                }.padding()
+                                    .padding(.bottom, 30.0)
+                            }
+                            .onAppear(){
+                                if doUpdate(needUpdate: needUpdate, lastUpdated: lastUpdated){
+                                    isLoading = true
+                                    let startProcess = lastSleep
+                                    readSleep(from: lastSleep, to: Date.now)
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2){
+                                        needUpdate = false
+                                        lastUpdated = Date.now
+                                        //PCR prediction initial data
+                                        let startDate = Date.now.addingTimeInterval(-1.0*60*60*24*1)
+                                        var done = false
+                                        var V0 =  [-0.8590, -0.6837, 0.1140, 14.2133] //initial condition
+                                        let endProcess = Date.now.addingTimeInterval(-1*60*60*24)
+                                        
+                                        //find V0
+                                        for v in V0_cores{
+                                            if v.time! >= startDate{
+                                                if done == false{
+                                                    V0 = [v.y, v.x, v.n, v.h]
+                                                    done = true
+                                                }
+                                                managedObjectContext.delete(v)
+                                            }
+                                            if v.time! >= lastSleep && v.time! < endProcess{
+                                                managedObjectContext.delete(v)
+                                            }
                                         }
-                                        managedObjectContext.delete(v)
-                                    }
-                                    if v.time! >= lastSleep && v.time! < endProcess{
-                                        managedObjectContext.delete(v)
+                                        
+                                        //update processed data
+                                        let process_y_data = processSleepData(V0: V0, entries: entries, startProcess: startProcess, endProcess: endProcess)
+                                        let duration = max(0, Int(endProcess.timeIntervalSince(startProcess)/60/5))
+                                        for x in 0...duration{
+                                            let V0_core = V0_main(context: managedObjectContext)
+                                            V0_core.time = lastSleep.addingTimeInterval(Double(x)*5.0*60.0)
+                                            V0_core.y = process_y_data[x][0]
+                                            V0_core.x = process_y_data[x][1]
+                                            V0_core.n = process_y_data[x][2]
+                                            V0_core.h = process_y_data[x][3]
+                                            do {
+                                                try managedObjectContext.save()
+                                            } catch {
+                                                // handle the Core Data error
+                                            }
+                                        }
+                                        
+                                        let (y_data, suggestion_pattern, sleep_pattern) = processSleepPrediction(V0: V0, entries: entries)
+                                        let yesterday = Date.now.addingTimeInterval(-1*60.0*60.0*24.0)
+                                        for x in 0...575{
+                                            let V0_core = V0_main(context: managedObjectContext)
+                                            V0_core.time = yesterday.addingTimeInterval(Double(x)*5.0*60.0)
+                                            V0_core.y = y_data[x][0]
+                                            V0_core.x = y_data[x][1]
+                                            V0_core.n = y_data[x][2]
+                                            V0_core.h = y_data[x][3]
+                                            do {
+                                                try managedObjectContext.save()
+                                            } catch {
+                                                // handle the Core Data error
+                                            }
+                                        }
+                                        for x in 0...575{
+                                            let C = 3.37*0.5*(1+coef_y*y_data[x][1] + coef_x * y_data[x][0])
+                                            let D_up = (2.46+10.2+C) //sleep thres
+                                            let awareness = D_up - y_data[x][3]
+                                            AwarenessData[x] = LineData(Category:"Alertness",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(awareness))
+                                        }
+                                        lastSleep = Date.now
+                                        isLoading = false
                                     }
                                 }
-                                
-                                //update processed data
-                                let process_y_data = processSleepData(V0: V0, entries: entries, startProcess: startProcess, endProcess: endProcess)
-                                let duration = max(0, Int(endProcess.timeIntervalSince(startProcess)/60/5))
-                                for x in 0...duration{
-                                    let V0_core = V0_main(context: managedObjectContext)
-                                    V0_core.time = lastSleep.addingTimeInterval(Double(x)*5.0*60.0)
-                                    V0_core.y = process_y_data[x][0]
-                                    V0_core.x = process_y_data[x][1]
-                                    V0_core.n = process_y_data[x][2]
-                                    V0_core.h = process_y_data[x][3]
-                                    do {
-                                        try managedObjectContext.save()
-                                    } catch {
-                                        // handle the Core Data error
-                                    }
-                                }
-                                
-                                let (y_data, suggestion_pattern, sleep_pattern) = processSleepPrediction(V0: V0, entries: entries)
-                                let yesterday = Date.now.addingTimeInterval(-1*60.0*60.0*24.0)
-                                for x in 0...575{
-                                    let V0_core = V0_main(context: managedObjectContext)
-                                    V0_core.time = yesterday.addingTimeInterval(Double(x)*5.0*60.0)
-                                    V0_core.y = y_data[x][0]
-                                    V0_core.x = y_data[x][1]
-                                    V0_core.n = y_data[x][2]
-                                    V0_core.h = y_data[x][3]
-                                    do {
-                                        try managedObjectContext.save()
-                                    } catch {
-                                        // handle the Core Data error
-                                    }
-                                }
-                                for x in 0...575{
-                                    let C = 3.37*0.5*(1+coef_y*y_data[x][1] + coef_x * y_data[x][0])
-                                    let D_up = (2.46+10.2+C) //sleep thres
-                                    let awareness = D_up - y_data[x][3]
-                                    AwarenessData[x] = LineData(Category:"Alertness",x:formatDate(offset: Double(x)*5.0*60.0-1.0*60*60*24*1), y:Double(awareness))
-                                }
-                                lastSleep = Date.now
-                                isLoading = false
                             }
                         }
-                    }
-                }.background(Color.gray.brightness(0.35))
+                }
             }
         }
     }
