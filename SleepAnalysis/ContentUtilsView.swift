@@ -237,7 +237,7 @@ struct GraphView: View {
     
     @Binding var AwarenessData: [LineData]
     @Binding var tabSelection : Int
-    @State private var userName: String = "홍길동"
+    @AppStorage("UserId") private var userId: String = "-"
     var body: some View {
         VStack(alignment: .leading) {
             VStack{
@@ -245,7 +245,7 @@ struct GraphView: View {
                     .bold()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .font(.title2)
-                Text("\(userName)님 각성도가 낮아요")
+                Text("\(userId)님 각성도가 낮아요")
                     .padding([.bottom], 10)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
