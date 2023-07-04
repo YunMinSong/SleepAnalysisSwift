@@ -63,9 +63,6 @@ struct ScheduleView: View {
     
     var body: some View {
         VStack {
-            ScheduleHeaderView()
-                .padding()
-                .background(.white)
             CalendarViewComponent(
                 calendar: calendar,
                 date: $selectedDate,
@@ -271,137 +268,106 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
         if isLoading{
             LoadingView()
         }else{
-            VStack {
-                
-                Section(header: title(month)) { }
-                    .padding(.horizontal)
-                    .padding(.bottom, 5.0)
-                    .foregroundColor(.black)
-                
+            ScrollView() {
                 VStack {
-                    VStack{
-                        LazyVGrid(columns: Array(repeating: GridItem(), count: daysInWeek)) {
-                            ForEach(days.prefix(daysInWeek), id: \.self, content: header)
-                        }.padding(.top, 10.0)
-                        
-                        Divider()
-                        
-                        LazyVGrid(columns: Array(repeating: GridItem(), count: daysInWeek)) {
-                            ForEach(days, id: \.self) { date in
-                                if calendar.isDate(date, equalTo: month, toGranularity: .month) {
-                                    content(date)
-                                } else {
-                                    trailing(date)
+                    ScheduleHeaderView()
+                        .padding()
+                        .background(.white)
+                    
+                    Section(header: title(month)) { }
+                        .padding(.horizontal)
+                        .padding(.bottom, 5.0)
+                        .foregroundColor(.black)
+                    
+                    VStack {
+                        VStack{
+                            LazyVGrid(columns: Array(repeating: GridItem(), count: daysInWeek)) {
+                                ForEach(days.prefix(daysInWeek), id: \.self, content: header)
+                            }.padding(.top, 10.0)
+                            
+                            Divider()
+                            
+                            LazyVGrid(columns: Array(repeating: GridItem(), count: daysInWeek)) {
+                                ForEach(days, id: \.self) { date in
+                                    if calendar.isDate(date, equalTo: month, toGranularity: .month) {
+                                        content(date)
+                                    } else {
+                                        trailing(date)
+                                    }
                                 }
                             }
-                        }
+                            
+                            
+                            Capsule()
+                                .fill(Color.black)
+                                .frame(width: 56, height: 3)
+                                .padding(.bottom, 20)
+                            
+                        }.background(Color.white)
+                            .cornerRadius(16)
+                            .padding()
                         
-                        
-                        Capsule()
-                            .fill(Color.black)
-                            .frame(width: 56, height: 3)
-                            .padding(.bottom, 20)
-                        
-                    }.background(Color.white)
-                        .cornerRadius(16)
-                        .padding()
-                    
-                    VStack{
-                        
-                        NavigationView{
-                            VStack{
-                                HStack{
-                                    Text("내 수면")
-                                        .bold()
-                                        .font(.title2)
-                                        .padding([.top, .leading, .trailing], 15)
-                                    Spacer()
-                                    NavigationLink{
-                                        AddSleepView()
-                                    }label:{
-                                        Image("plus").resizable().scaledToFit()
-                                            .frame(width:30, height: 30)
-                                            .padding()
+                        VStack{
+                            
+                            NavigationView{
+                                VStack{
+                                    HStack{
+                                        Text("내 수면")
+                                            .bold()
+                                            .font(.title2)
+                                            .padding([.top, .leading, .trailing], 15)
+                                        Spacer()
+                                        NavigationLink{
+                                            AddSleepView()
+                                        }label:{
+                                            Image("plus").resizable().scaledToFit()
+                                                .frame(width:30, height: 30)
+                                                .padding()
+                                        }
+                                        
                                     }
-                                    
-                                }
-                                HStack{
                                     HStack{
-                                        Image("thumbUp")
+                                        HStack{
+                                            Image("thumbUp")
+                                            VStack{
+                                                Text("Positive")
+                                                    .font(.caption)
+                                                Text("\(getTimeDuration(original: Double(goodDuration)*60.0))")
+                                                    .bold()
+                                                    .font(.title3)
+                                                    .foregroundColor(.green)
+                                            }
+                                        }.padding(10)
+                                        HStack{
+                                            Image("thumbDown")
+                                            VStack{
+                                                Text("Negative")
+                                                    .font(.caption)
+                                                Text("\(getTimeDuration(original: Double(badDuration)*60.0))")
+                                                    .bold()
+                                                    .font(.title3)
+                                                    .foregroundColor(.red)
+                                            }
+                                        }.padding(10)
+                                    }
+                                    ZStack{
                                         VStack{
-                                            Text("Positive")
-                                                .font(.caption)
-                                            Text("\(getTimeDuration(original: Double(goodDuration)*60.0))")
-                                                .bold()
-                                                .font(.title3)
-                                                .foregroundColor(.green)
-                                        }
-                                    }.padding(10)
-                                    HStack{
-                                        Image("thumbDown")
-                                        VStack{
-                                            Text("Negative")
-                                                .font(.caption)
-                                            Text("\(getTimeDuration(original: Double(badDuration)*60.0))")
-                                                .bold()
-                                                .font(.title3)
-                                                .foregroundColor(.red)
-                                        }
-                                    }.padding(10)
-                                }
-                                ZStack{
-                                    VStack{
-                                        List(self.entries.indices, id: \.self) { index in
-                                            
-                                            let sleepStart = entries[index].sleepStart!
-                                            let sleepEnd = entries[index].sleepEnd!
-                                            let endOfDay = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: entries[index].sleepEnd!)!
-                                            if (index == 0) {
-                                                NavigationLink{
-                                                    CalendarDetailView(entry: entries[index])
-                                                        .environment(\.managedObjectContext, managedObjectContext)
-                                                }label:{
-                                                    CalendarCardViewFirst(entry: EntryAwareness(sleepStart: sleepStart, sleepEnd: sleepEnd))
-                                                }.frame(height:130)
-                                                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                                                    .listRowSeparator(.hidden)
-                                                    .background(Color(red: 0.948, green: 0.953, blue: 0.962))
-                                                if index == entries.endIndex-1{
-                                                    CalendarCardAwarenessView(entry: EntryAwareness(sleepStart: entries[index].sleepEnd!, sleepEnd: min(Date.now, endOfDay)))
-                                                        .frame(height:110)
+                                            List(self.entries.indices, id: \.self) { index in
+                                                
+                                                let sleepStart = entries[index].sleepStart!
+                                                let sleepEnd = entries[index].sleepEnd!
+                                                let endOfDay = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: entries[index].sleepEnd!)!
+                                                if (index == 0) {
+                                                    NavigationLink{
+                                                        CalendarDetailView(entry: entries[index])
+                                                            .environment(\.managedObjectContext, managedObjectContext)
+                                                    }label:{
+                                                        CalendarCardViewFirst(entry: EntryAwareness(sleepStart: sleepStart, sleepEnd: sleepEnd))
+                                                    }.frame(height:130)
                                                         .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                                                         .listRowSeparator(.hidden)
                                                         .background(Color(red: 0.948, green: 0.953, blue: 0.962))
-                                                }
-                                            }else{
-                                                CalendarCardAwarenessView(entry: EntryAwareness(sleepStart: entries[index-1].sleepEnd!, sleepEnd: entries[index].sleepStart!))
-                                                    .frame(height:110)
-                                                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                                                    .listRowSeparator(.hidden)
-                                                    .background(Color(red: 0.948, green: 0.953, blue: 0.962))
-                                                
-                                                if index == entries.endIndex-1{
-                                                    
-                                                    if sleepEnd > endOfDay{
-                                                        NavigationLink{
-                                                            CalendarDetailView(entry: entries[index])
-                                                                .environment(\.managedObjectContext, managedObjectContext)
-                                                        }label:{
-                                                            CalendarCardView(entry: EntryAwareness(sleepStart: sleepStart, sleepEnd: endOfDay))
-                                                        }.frame(height:110)
-                                                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                                                            .listRowSeparator(.hidden)
-                                                            .background(Color(red: 0.948, green: 0.953, blue: 0.962))
-                                                    }else{
-                                                        NavigationLink{
-                                                            CalendarDetailView(entry: entries[index])
-                                                                .environment(\.managedObjectContext, managedObjectContext)
-                                                        }label:{
-                                                            CalendarCardView(entry: EntryAwareness(sleepStart: sleepStart, sleepEnd: sleepEnd))
-                                                        }.frame(height:110)
-                                                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                                                            .listRowSeparator(.hidden)
-                                                            .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                    if index == entries.endIndex-1{
                                                         CalendarCardAwarenessView(entry: EntryAwareness(sleepStart: entries[index].sleepEnd!, sleepEnd: min(Date.now, endOfDay)))
                                                             .frame(height:110)
                                                             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
@@ -409,105 +375,142 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                                             .background(Color(red: 0.948, green: 0.953, blue: 0.962))
                                                     }
                                                 }else{
-                                                    NavigationLink{
-                                                        CalendarDetailView(entry: entries[index])
-                                                            .environment(\.managedObjectContext, managedObjectContext)
-                                                    }label:{
-                                                        CalendarCardView(entry: EntryAwareness(sleepStart: sleepStart, sleepEnd: sleepEnd))
-                                                            .frame(height:110)
-                                                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                                                            .listRowSeparator(.hidden)
-                                                            .background(Color(red: 0.948, green: 0.953, blue: 0.962))
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        .cornerRadius(16)
-                                    }
-                                }.padding([.bottom, .leading, .trailing], 5)
-                                    .cornerRadius(20)
-                                    .onChange(of: date){ theDate in
-                                        goodDuration = 0
-                                        badDuration = 0
-                                        var checkTime: [EntryAwareness] = []
-                                        for idx in entries.indices{
-                                            
-                                            if idx > 0{
-                                                checkTime.append(EntryAwareness(sleepStart: entries[idx-1].sleepEnd!, sleepEnd: entries[idx].sleepStart!))
-                                            }
-                                            if idx == entries.endIndex-1{
-                                                let endOfDay = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: entries[idx].sleepEnd!)!
-                                                if entries[idx].sleepEnd! > endOfDay{
-                                                    continue
-                                                }
-                                                checkTime.append(EntryAwareness(sleepStart: entries[idx].sleepEnd!, sleepEnd: min(Date.now, endOfDay)))
-                                            }
-                                        }
-                                        for sleepTime in checkTime{
-                                            let sleepStart = sleepTime.sleepStart
-                                            let sleepEnd = sleepTime.sleepEnd
-                                            for tempV in V0{
-                                                let tempTime = tempV.time!
-                                                if tempTime >= sleepStart && tempTime <= sleepEnd{
-                                                    let y_data = [tempV.y, tempV.x, tempV.n, tempV.h]
-                                                    let C = 3.37*0.5*(1+coef_y*y_data[1] + coef_x * y_data[0])
-                                                    let D_up = (2.46+10.2+C) //sleep thres
-                                                    let awareness = D_up - y_data[3]
-                                                    if awareness > 0{
-                                                        goodDuration += 5
+                                                    CalendarCardAwarenessView(entry: EntryAwareness(sleepStart: entries[index-1].sleepEnd!, sleepEnd: entries[index].sleepStart!))
+                                                        .frame(height:110)
+                                                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                                        .listRowSeparator(.hidden)
+                                                        .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                    
+                                                    if index == entries.endIndex-1{
+                                                        
+                                                        if sleepEnd > endOfDay{
+                                                            NavigationLink{
+                                                                CalendarDetailView(entry: entries[index])
+                                                                    .environment(\.managedObjectContext, managedObjectContext)
+                                                            }label:{
+                                                                CalendarCardView(entry: EntryAwareness(sleepStart: sleepStart, sleepEnd: endOfDay))
+                                                            }.frame(height:110)
+                                                                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                                                .listRowSeparator(.hidden)
+                                                                .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                        }else{
+                                                            NavigationLink{
+                                                                CalendarDetailView(entry: entries[index])
+                                                                    .environment(\.managedObjectContext, managedObjectContext)
+                                                            }label:{
+                                                                CalendarCardView(entry: EntryAwareness(sleepStart: sleepStart, sleepEnd: sleepEnd))
+                                                            }.frame(height:110)
+                                                                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                                                .listRowSeparator(.hidden)
+                                                                .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                            CalendarCardAwarenessView(entry: EntryAwareness(sleepStart: entries[index].sleepEnd!, sleepEnd: min(Date.now, endOfDay)))
+                                                                .frame(height:110)
+                                                                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                                                .listRowSeparator(.hidden)
+                                                                .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                        }
                                                     }else{
-                                                        badDuration += 5
+                                                        NavigationLink{
+                                                            CalendarDetailView(entry: entries[index])
+                                                                .environment(\.managedObjectContext, managedObjectContext)
+                                                        }label:{
+                                                            CalendarCardView(entry: EntryAwareness(sleepStart: sleepStart, sleepEnd: sleepEnd))
+                                                                .frame(height:110)
+                                                                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                                                .listRowSeparator(.hidden)
+                                                                .background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            .cornerRadius(16)
+                                        }
+                                    }.padding([.bottom, .leading, .trailing], 5)
+                                        .cornerRadius(20)
+                                        .onChange(of: date){ theDate in
+                                            goodDuration = 0
+                                            badDuration = 0
+                                            var checkTime: [EntryAwareness] = []
+                                            for idx in entries.indices{
+                                                
+                                                if idx > 0{
+                                                    checkTime.append(EntryAwareness(sleepStart: entries[idx-1].sleepEnd!, sleepEnd: entries[idx].sleepStart!))
+                                                }
+                                                if idx == entries.endIndex-1{
+                                                    let endOfDay = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: entries[idx].sleepEnd!)!
+                                                    if entries[idx].sleepEnd! > endOfDay{
+                                                        continue
+                                                    }
+                                                    checkTime.append(EntryAwareness(sleepStart: entries[idx].sleepEnd!, sleepEnd: min(Date.now, endOfDay)))
+                                                }
+                                            }
+                                            for sleepTime in checkTime{
+                                                let sleepStart = sleepTime.sleepStart
+                                                let sleepEnd = sleepTime.sleepEnd
+                                                for tempV in V0{
+                                                    let tempTime = tempV.time!
+                                                    if tempTime >= sleepStart && tempTime <= sleepEnd{
+                                                        let y_data = [tempV.y, tempV.x, tempV.n, tempV.h]
+                                                        let C = 3.37*0.5*(1+coef_y*y_data[1] + coef_x * y_data[0])
+                                                        let D_up = (2.46+10.2+C) //sleep thres
+                                                        let awareness = D_up - y_data[3]
+                                                        if awareness > 0{
+                                                            goodDuration += 5
+                                                        }else{
+                                                            badDuration += 5
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
-                                    }
-                                    .onAppear{
-                                        goodDuration = 0
-                                        badDuration = 0
-                                        var checkTime: [EntryAwareness] = []
-                                        for idx in entries.indices{
-                                            
-                                            if idx > 0{
-                                                checkTime.append(EntryAwareness(sleepStart: entries[idx-1].sleepEnd!, sleepEnd: entries[idx].sleepStart!))
-                                            }
-                                            if idx == entries.endIndex-1{
-                                                let endOfDay = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: entries[idx].sleepEnd!)!
-                                                if entries[idx].sleepEnd! > endOfDay{
-                                                    continue
+                                        .onAppear{
+                                            goodDuration = 0
+                                            badDuration = 0
+                                            var checkTime: [EntryAwareness] = []
+                                            for idx in entries.indices{
+                                                
+                                                if idx > 0{
+                                                    checkTime.append(EntryAwareness(sleepStart: entries[idx-1].sleepEnd!, sleepEnd: entries[idx].sleepStart!))
                                                 }
-                                                checkTime.append(EntryAwareness(sleepStart: entries[idx].sleepEnd!, sleepEnd: min(Date.now, endOfDay)))
+                                                if idx == entries.endIndex-1{
+                                                    let endOfDay = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: entries[idx].sleepEnd!)!
+                                                    if entries[idx].sleepEnd! > endOfDay{
+                                                        continue
+                                                    }
+                                                    checkTime.append(EntryAwareness(sleepStart: entries[idx].sleepEnd!, sleepEnd: min(Date.now, endOfDay)))
+                                                }
                                             }
-                                        }
-                                        for sleepTime in checkTime{
-                                            let sleepStart = sleepTime.sleepStart
-                                            let sleepEnd = sleepTime.sleepEnd
-                                            for tempV in V0{
-                                                let tempTime = tempV.time!
-                                                if tempTime >= sleepStart && tempTime <= sleepEnd{
-                                                    let y_data = [tempV.y, tempV.x, tempV.n, tempV.h]
-                                                    let C = 3.37*0.5*(1+coef_y*y_data[1] + coef_x * y_data[0])
-                                                    let D_up = (2.46+10.2+C) //sleep thres
-                                                    let awareness = D_up - y_data[3]
-                                                    if awareness > 0{
-                                                        goodDuration += 5
-                                                    }else{
-                                                        badDuration += 5
+                                            for sleepTime in checkTime{
+                                                let sleepStart = sleepTime.sleepStart
+                                                let sleepEnd = sleepTime.sleepEnd
+                                                for tempV in V0{
+                                                    let tempTime = tempV.time!
+                                                    if tempTime >= sleepStart && tempTime <= sleepEnd{
+                                                        let y_data = [tempV.y, tempV.x, tempV.n, tempV.h]
+                                                        let C = 3.37*0.5*(1+coef_y*y_data[1] + coef_x * y_data[0])
+                                                        let D_up = (2.46+10.2+C) //sleep thres
+                                                        let awareness = D_up - y_data[3]
+                                                        if awareness > 0{
+                                                            goodDuration += 5
+                                                        }else{
+                                                            badDuration += 5
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
-                                    }
+                                }
                             }
-                        }
-                    }.cornerRadius(20)
-                        .padding([.bottom, .leading, .trailing])
-                        .padding([.top], 3)
-                }.background(Color(red: 0.948, green: 0.953, blue: 0.962))
-            }
-            .onAppear{
-                readSleep(from: lastSleep, to: Date.now)
-                lastSleep = Date.now
+                        }.cornerRadius(16)
+                            .frame(height: 532)
+                            .padding([.bottom, .leading, .trailing])
+                            .padding([.top], 3)
+                    }.background(Color(red: 0.948, green: 0.953, blue: 0.962))
+                }
+                .onAppear{
+                    readSleep(from: lastSleep, to: Date.now)
+                    lastSleep = Date.now
+                }
             }
         }
     }
