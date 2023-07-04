@@ -231,9 +231,12 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
     // Constants
     private let daysInWeek = 7
     var isLoading = false
-
+    
+    @FetchRequest var fullEntries: FetchedResults<Entry>
     @FetchRequest var entries: FetchedResults<Entry>
+    @FetchRequest var fullV0: FetchedResults<V0_main>
     @FetchRequest var V0: FetchedResults<V0_main>
+    @FetchRequest var awareness: FetchedResults<Awareness>
     
     public init(
         calendar: Calendar,
@@ -260,6 +263,9 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                             format: "time >= %@ && time <= %@",
                                             Calendar.current.startOfDay(for: date.wrappedValue) as CVarArg,
                                             Calendar.current.startOfDay(for: date.wrappedValue + 86400) as CVarArg))
+        _awareness = FetchRequest<Awareness>(sortDescriptors: [NSSortDescriptor(key: "date", ascending: true)])
+        _fullV0 = FetchRequest<V0_main>(sortDescriptors: [NSSortDescriptor(key: "time", ascending: true)])
+        _fullEntries = FetchRequest<Entry>(sortDescriptors: [NSSortDescriptor(key: "sleepStart", ascending: true)])
     }
     
     public var body: some View {
@@ -427,76 +433,28 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                         }
                                     }.padding([.bottom, .leading, .trailing], 5)
                                         .cornerRadius(20)
-                                        .onChange(of: date){ theDate in
-                                            goodDuration = 0
-                                            badDuration = 0
-                                            var checkTime: [EntryAwareness] = []
-                                            for idx in entries.indices{
-                                                
-                                                if idx > 0{
-                                                    checkTime.append(EntryAwareness(sleepStart: entries[idx-1].sleepEnd!, sleepEnd: entries[idx].sleepStart!))
-                                                }
-                                                if idx == entries.endIndex-1{
-                                                    let endOfDay = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: entries[idx].sleepEnd!)!
-                                                    if entries[idx].sleepEnd! > endOfDay{
-                                                        continue
-                                                    }
-                                                    checkTime.append(EntryAwareness(sleepStart: entries[idx].sleepEnd!, sleepEnd: min(Date.now, endOfDay)))
-                                                }
-                                            }
-                                            for sleepTime in checkTime{
-                                                let sleepStart = sleepTime.sleepStart
-                                                let sleepEnd = sleepTime.sleepEnd
-                                                for tempV in V0{
-                                                    let tempTime = tempV.time!
-                                                    if tempTime >= sleepStart && tempTime <= sleepEnd{
-                                                        let y_data = [tempV.y, tempV.x, tempV.n, tempV.h]
-                                                        let C = 3.37*0.5*(1+coef_y*y_data[1] + coef_x * y_data[0])
-                                                        let D_up = (2.46+10.2+C) //sleep thres
-                                                        let awareness = D_up - y_data[3]
-                                                        if awareness > 0{
-                                                            goodDuration += 5
-                                                        }else{
-                                                            badDuration += 5
-                                                        }
-                                                    }
-                                                }
+                                    }
+                                }.padding([.bottom, .leading, .trailing], 5)
+                                    .cornerRadius(20)
+                                    .onChange(of: date){ theDate in
+                                        for aware in awareness{
+                                            let awareDate = Calendar.current.dateComponents([.year, .month, .day],from: aware.date!)
+                                            let currentDate = Calendar.current.dateComponents([.year, .month, .day], from: theDate)
+                                            if awareDate == currentDate{
+                                                goodDuration = Int(aware.goodDuration)
+                                                badDuration = Int(aware.badDuration)
+                                                break
                                             }
                                         }
-                                        .onAppear{
-                                            goodDuration = 0
-                                            badDuration = 0
-                                            var checkTime: [EntryAwareness] = []
-                                            for idx in entries.indices{
-                                                
-                                                if idx > 0{
-                                                    checkTime.append(EntryAwareness(sleepStart: entries[idx-1].sleepEnd!, sleepEnd: entries[idx].sleepStart!))
-                                                }
-                                                if idx == entries.endIndex-1{
-                                                    let endOfDay = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: entries[idx].sleepEnd!)!
-                                                    if entries[idx].sleepEnd! > endOfDay{
-                                                        continue
-                                                    }
-                                                    checkTime.append(EntryAwareness(sleepStart: entries[idx].sleepEnd!, sleepEnd: min(Date.now, endOfDay)))
-                                                }
-                                            }
-                                            for sleepTime in checkTime{
-                                                let sleepStart = sleepTime.sleepStart
-                                                let sleepEnd = sleepTime.sleepEnd
-                                                for tempV in V0{
-                                                    let tempTime = tempV.time!
-                                                    if tempTime >= sleepStart && tempTime <= sleepEnd{
-                                                        let y_data = [tempV.y, tempV.x, tempV.n, tempV.h]
-                                                        let C = 3.37*0.5*(1+coef_y*y_data[1] + coef_x * y_data[0])
-                                                        let D_up = (2.46+10.2+C) //sleep thres
-                                                        let awareness = D_up - y_data[3]
-                                                        if awareness > 0{
-                                                            goodDuration += 5
-                                                        }else{
-                                                            badDuration += 5
-                                                        }
-                                                    }
-                                                }
+                                    }
+                                    .onAppear{
+                                        for aware in awareness{
+                                            let awareDate = Calendar.current.dateComponents([.year, .month, .day],from: aware.date!)
+                                            let currentDate = Calendar.current.dateComponents([.year, .month, .day], from: date)
+                                            if awareDate == currentDate{
+                                                goodDuration = Int(aware.goodDuration)
+                                                badDuration = Int(aware.badDuration)
+                                                break
                                             }
                                         }
                                 }
@@ -510,8 +468,9 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                 .onAppear{
                     readSleep(from: lastSleep, to: Date.now)
                     lastSleep = Date.now
+                    updateGoodBadDuration(startDate: Date.now.addingTimeInterval(-1*60*60*24*14) , endDate:Date.now, entries: fullEntries, V0: fullV0, awareness: awareness)
                 }
-            }
+            
         }
     }
 }

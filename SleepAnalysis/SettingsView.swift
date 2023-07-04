@@ -9,10 +9,6 @@ import SwiftUI
 
 struct SettingsView: View {
     
-    //    @AppStorage("V0_x") var V0_x: Double = -0.8283
-    //    @AppStorage("V0_y") var V0_y: Double = 0.8413
-    //    @AppStorage("V0_n") var V0_n: Double = 0.6758
-    //    @AppStorage("V0_H") var V0_H: Double = 13.3336
     let now = Date.now
     let formatter: DateFormatter = {
         let formatter = DateFormatter()
