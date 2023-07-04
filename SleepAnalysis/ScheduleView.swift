@@ -63,6 +63,9 @@ struct ScheduleView: View {
     
     var body: some View {
         VStack {
+            ScheduleHeaderView()
+                .padding()
+                .background(.white)
             CalendarViewComponent(
                 calendar: calendar,
                 date: $selectedDate,
@@ -79,7 +82,7 @@ struct ScheduleView: View {
                                     : calendar.isDate(date, inSameDayAs: selectedDate) ? .blue
                                     : .clear
                                 )
-                                .cornerRadius(7)
+                                .cornerRadius(100)
                         }
                         
                         if (numberOfEventsInDate(date: date) >= 2) {
@@ -147,7 +150,7 @@ struct ScheduleView: View {
                             selectedDate = Date.now
                         } label: {
                             Text(monthFormatter.string(from: date))
-                                .foregroundColor(.blue)
+                                .foregroundColor(.black)
                                 .font(.title2)
                                 .padding(2)
                         }
@@ -184,7 +187,7 @@ struct ScheduleView: View {
             .background(Color.white)
             .cornerRadius(20, corners: [.bottomLeft, .bottomRight])
             
-        }.background(Color.gray.brightness(0.35))
+        }.background(Color.white)
     }
     
     func dateHasEvents(date: Date) -> Bool {
@@ -271,12 +274,15 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
             VStack {
                 
                 Section(header: title(month)) { }
+                    .padding(.horizontal)
+                    .padding(.bottom, 5.0)
+                    .foregroundColor(.black)
                 
                 VStack {
                     VStack{
                         LazyVGrid(columns: Array(repeating: GridItem(), count: daysInWeek)) {
                             ForEach(days.prefix(daysInWeek), id: \.self, content: header)
-                        }
+                        }.padding(.top, 10.0)
                         
                         Divider()
                         
@@ -292,12 +298,13 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                         
                         
                         Capsule()
-                            .fill(Color.secondary)
-                            .frame(width: 30, height: 3)
+                            .fill(Color.black)
+                            .frame(width: 56, height: 3)
                             .padding(.bottom, 20)
                         
                     }.background(Color.white)
-                        .cornerRadius(20)
+                        .cornerRadius(16)
+                        .padding()
                     
                     VStack{
                         
@@ -415,7 +422,7 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                                 }
                                             }
                                         }
-                                        .cornerRadius(20)
+                                        .cornerRadius(16)
                                     }
                                 }.padding([.bottom, .leading, .trailing], 5)
                                     .cornerRadius(20)
@@ -494,7 +501,7 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                             }
                         }
                     }.cornerRadius(20)
-                        .padding([.bottom, .leading, .trailing], 10)
+                        .padding([.bottom, .leading, .trailing])
                         .padding([.top], 3)
                 }.background(Color(red: 0.948, green: 0.953, blue: 0.962))
             }

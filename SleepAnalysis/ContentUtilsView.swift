@@ -116,22 +116,17 @@ struct SleepTimeView: View {
 
         VStack() {
             HStack{
-                VStack{
-                    HStack{
-                        Text("\(userId)님")
-                            .bold()
-                            .font(.title2)
-                        Spacer()
-                    }
-                    HStack{
-                        Text("이때 주무시는건 어때요?")
-                        Spacer()
-                    }
+                HStack{
+                    Text("수면 추천")
+                        .bold()
+                        .font(.title2)
+                    Spacer()
                 }
                 Spacer()
                 Button(action: {self.tabSelection = 3}, label: {
                     Image(systemName: "chevron.right")
                 })
+                .foregroundColor(.black)
             }
             
             if sleep_onset == Date.now || work_onset == Date.now || work_offset == Date.now || !isRegistered {
@@ -139,9 +134,9 @@ struct SleepTimeView: View {
                     Rectangle()
                         .foregroundColor(.white)
                         .cornerRadius(16.0)
-                        .frame(height: 300)
+                        .frame(height: 472)
                     VStack(alignment: .leading) {
-                        Text("\(userId)님에게 딱 맞는 수면 패턴을 추천해 드릴게요")
+                        Text("\(userId)님의 수면 데이터가 없어요")
                             .font(.custom("Small", size: 15))
                             .padding(.top, 5.0)
                         GifImage("notFound")
@@ -154,6 +149,21 @@ struct SleepTimeView: View {
                 }.padding(.horizontal)
             } else {
                 RecommendedSleep(from1: from1, to1: to1, from2: from2, to2: to2)
+                HStack {
+                    RecommendedCaption(from: from1, to: to1)
+                    Spacer()
+                }
+                if (to2 != "00:00"){
+                    HStack {
+                        RecommendedCaption(from: from2, to: to2)
+                        Spacer()
+                    }
+                }else{
+                    HStack {
+                        NoNapCaption()
+                        Spacer()
+                    }
+                }
             }
         }
     }
@@ -167,18 +177,27 @@ struct RecommendedSleep: View {
     var to2: String
     
     var body: some View {
+        
         ZStack {
-            Rectangle()
-                .foregroundColor(Color(red: 0.948, green: 0.953, blue: 0.962))
-                .frame(width: 310, height: 180)
-                .cornerRadius(16)
-                .padding(.vertical, 10)
-            VStack(alignment: .center, spacing: 10) {
-                RecommendedCaption(from: from1, to: to1)
-                if (to2 != "00:00"){
-                    RecommendedCaption(from: from2, to: to2)
-                }else{
-                    NoNapCaption()
+            VStack(alignment: .center, spacing: 20) {
+                //Clock
+                ZStack {
+                    Circle()
+                        .frame(width: 280, height: 280)
+                        .foregroundColor(Color(red: 0.949, green: 0.949, blue: 0.949))
+                        .alignmentGuide(.leading, computeValue: { d in -70.0})
+                    Path { path in
+                        path.move(to: CGPoint(x: 165, y: 140))
+                        path.addArc(center: .init(x: 165, y: 140), radius: 140, startAngle: Angle(degrees: timeToAngle(time: from2)), endAngle: Angle(degrees: timeToAngle(time: addTimeInString(time1: from2, time2: to2))), clockwise: false)
+                    }.fill(Color.yellow)
+                    Path { path in
+                        path.move(to: CGPoint(x: 165, y: 140))
+                        path.addArc(center: .init(x: 165, y: 140), radius: 140, startAngle: Angle(degrees: timeToAngle(time: from1)), endAngle: Angle(degrees: timeToAngle(time: addTimeInString(time1: from1, time2: to1))), clockwise: false)
+                    }.fill(Color.blue)
+                    Circle()
+                        .frame(width: 200, height: 200)
+                        .foregroundColor(.white)
+                        .alignmentGuide(.leading, computeValue: { d in -70.0})
                 }
             }
         }
@@ -188,17 +207,11 @@ struct RecommendedSleep: View {
 struct NoNapCaption: View {
     
     var body: some View {
-        ZStack {
-            Rectangle()
-                .foregroundColor(.white)
-                .frame(width: 278, height: 70)
-                .cornerRadius(16)
-            HStack(spacing: 15) {
-                Image("moon3")
-                Text("No Nap Needed")
-                    .font(.headline)
-            }.padding([.leading, .trailing],10)
-        }
+        HStack(spacing: 15) {
+            Image("moon3")
+            Text("No Nap Needed")
+                .font(.headline)
+        }.padding([.leading, .trailing],10)
     }
 }
 
@@ -208,27 +221,21 @@ struct RecommendedCaption: View {
     var to: String
     
     var body: some View {
-        ZStack {
-            Rectangle()
-                .foregroundColor(.white)
-                .frame(width: 278, height: 70)
-                .cornerRadius(16)
-            HStack(spacing: 15) {
-                Image("moon3")
-                HStack(alignment: .bottom, spacing: 3) {
-                    Text(specificTime(original:from).0)
-                        .font(.custom("Small", size: 15))
-                    Text(from)
-                        .font(.headline)
-                    Text("부터")
-                        .font(.custom("Small", size: 15))
-                    Text(timeInterval(original:to))
-                        .font(.headline)
-                    Text("이상")
-                        .font(.custom("Small", size: 15))
-                }
-            }.padding([.leading, .trailing],10)
-        }
+        HStack(spacing: 15) {
+            Image("moon3")
+            HStack(alignment: .bottom, spacing: 3) {
+                Text(specificTime(original:from).0)
+                    .font(.custom("Small", size: 15))
+                Text(from)
+                    .font(.headline)
+                Text("부터")
+                    .font(.custom("Small", size: 15))
+                Text(timeInterval(original:to))
+                    .font(.headline)
+                Text("이상")
+                    .font(.custom("Small", size: 15))
+            }
+        }.padding([.leading, .trailing],10)
     }
 }
 
@@ -237,7 +244,6 @@ struct GraphView: View {
     
     @Binding var AwarenessData: [LineData]
     @Binding var tabSelection : Int
-    @AppStorage("UserId") private var userId: String = "-"
     var body: some View {
         VStack(alignment: .leading) {
             VStack{
@@ -245,7 +251,7 @@ struct GraphView: View {
                     .bold()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .font(.title2)
-                Text("\(userId)님 각성도가 낮아요")
+                Text("각성도가 낮아요")
                     .padding([.bottom], 10)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
