@@ -134,7 +134,7 @@ struct SleepTimeView: View {
                     Rectangle()
                         .foregroundColor(.white)
                         .cornerRadius(16.0)
-                        .frame(height: 472)
+                        .frame(height: sleep_onset == Date.now || work_onset == Date.now || work_offset == Date.now || !isRegistered ? 331 : 472)
                     VStack(alignment: .leading) {
                         Text("\(userId)님의 수면 데이터가 없어요")
                             .font(.custom("Small", size: 15))
@@ -189,7 +189,7 @@ struct RecommendedSleep: View {
                     Path { path in
                         path.move(to: CGPoint(x: 165, y: 140))
                         path.addArc(center: .init(x: 165, y: 140), radius: 140, startAngle: Angle(degrees: timeToAngle(time: from2)), endAngle: Angle(degrees: timeToAngle(time: addTimeInString(time1: from2, time2: to2))), clockwise: false)
-                    }.fill(Color.yellow)
+                    }.fill(Color(red: 0.769, green: 0.85, blue: 0.942))
                     Path { path in
                         path.move(to: CGPoint(x: 165, y: 140))
                         path.addArc(center: .init(x: 165, y: 140), radius: 140, startAngle: Angle(degrees: timeToAngle(time: from1)), endAngle: Angle(degrees: timeToAngle(time: addTimeInString(time1: from1, time2: to1))), clockwise: false)
@@ -198,7 +198,142 @@ struct RecommendedSleep: View {
                         .frame(width: 200, height: 200)
                         .foregroundColor(.white)
                         .alignmentGuide(.leading, computeValue: { d in -70.0})
+                    //Picker
+                    Picker(centerX: 165, centerY: 140)
+                    Circle()
+                        .frame(width: 40, height: 40)
+                        .foregroundColor(.blue)
+                        .offset(x:120*cos(timeToAngle(time: from1)*Double.pi/180), y: 120*sin(timeToAngle(time: from1)*Double.pi/180))
+                    Circle()
+                        .frame(width: 40, height: 40)
+                        .foregroundColor(.blue)
+                        .offset(x:120*cos(timeToAngle(time: addTimeInString(time1: from1, time2: to1))*Double.pi/180), y: 120*sin(timeToAngle(time: addTimeInString(time1: from1, time2: to1))*Double.pi/180))
+                    Circle()
+                        .frame(width: 40, height: 40)
+                        .foregroundColor(Color(red: 0.769, green: 0.85, blue: 0.942))
+                        .offset(x:120*cos(timeToAngle(time: from2)*Double.pi/180), y: 120*sin(timeToAngle(time: from2)*Double.pi/180))
+                    Circle()
+                        .frame(width: 40, height: 40)
+                        .foregroundColor(Color(red: 0.769, green: 0.85, blue: 0.942))
+                        .offset(x:120*cos(timeToAngle(time: addTimeInString(time1: from2, time2: to2))*Double.pi/180), y: 120*sin(timeToAngle(time: addTimeInString(time1: from2, time2: to2))*Double.pi/180))
+                    
                 }
+            }
+        }
+    }
+}
+
+struct Picker: View {
+    
+    var centerX: CGFloat
+    var centerY: CGFloat
+    
+    var body: some View {
+        ZStack {
+            smallPicker(centerX: centerX, centerY: centerY, IsLower: true)
+            smallPicker(centerX: centerX, centerY: centerY, IsLower: false)
+            Circle()
+                .frame(width: 175, height: 175)
+                .foregroundColor(.white)
+                .alignmentGuide(.leading, computeValue: { d in -70.0})
+            largePicker(centerX: centerX, centerY: centerY)
+        }
+    }
+}
+
+struct largePicker: View {
+    
+    var centerX: CGFloat;
+    var centerY: CGFloat;
+    
+    var body: some View {
+        ZStack {
+            Path { path in
+                path.move(to: CGPoint(x: centerX, y: centerY))
+                path.addArc(center: .init(x: centerX, y: centerY), radius: 98, startAngle: Angle(degrees: -1.3), endAngle: Angle(degrees: 1.3), clockwise: false)
+            }.fill(Color(red: 0.798, green: 0.833, blue: 0.879))
+            Path { path in
+                path.move(to: CGPoint(x: centerX, y: centerY))
+                path.addArc(center: .init(x: centerX, y: centerY), radius: 98, startAngle: Angle(degrees: 88.7), endAngle: Angle(degrees: 91.3), clockwise: false)
+            }.fill(Color(red: 0.798, green: 0.833, blue: 0.879))
+            Path { path in
+                path.move(to: CGPoint(x: centerX, y: centerY))
+                path.addArc(center: .init(x: centerX, y: centerY), radius: 98, startAngle: Angle(degrees: 178.7), endAngle: Angle(degrees: 181.3), clockwise: false)
+            }.fill(Color(red: 0.798, green: 0.833, blue: 0.879))
+            Path { path in
+                path.move(to: CGPoint(x: centerX, y: centerY))
+                path.addArc(center: .init(x: centerX, y: centerY), radius: 98, startAngle: Angle(degrees: 268.7), endAngle: Angle(degrees: 271.3), clockwise: false)
+            }.fill(Color(red: 0.798, green: 0.833, blue: 0.879))
+            Circle()
+                .frame(width: 160, height: 160)
+                .foregroundColor(.white)
+                .alignmentGuide(.leading, computeValue: { d in -70.0})
+            Text("24").foregroundColor(Color(red:0.786, green: 0.821, blue: 0.863)).bold()
+                .offset(x: 0, y: -63)
+            Text("06")
+                .foregroundColor(Color(red:0.786, green: 0.821, blue: 0.863)).bold()
+                .offset(x: 63, y: 0)
+            Text("12").foregroundColor(Color(red:0.786, green: 0.821, blue: 0.863)).bold()
+                .offset(x: 0, y: 63)
+            Text("18").foregroundColor(Color(red:0.786, green: 0.821, blue: 0.863)).bold()
+                .offset(x: -63, y: 0)
+        }
+    }
+}
+
+struct smallPicker: View {
+    
+    var centerX: CGFloat;
+    var centerY: CGFloat;
+    var IsLower: Bool
+    
+    var body: some View {
+        ZStack {
+            Path { path in
+                path.move(to: CGPoint(x: centerX, y: centerY))
+                path.addArc(center: .init(x: centerX, y: centerY), radius: 98, startAngle: Angle(degrees: IsLower ? 13.7 : 193.7), endAngle: Angle(degrees: IsLower ? 16.3 : 196.3), clockwise: false)
+            }.fill(Color(red: 0.898, green: 0.918, blue: 0.935))
+            Path { path in
+                path.move(to: CGPoint(x: centerX, y: centerY))
+                path.addArc(center: .init(x: centerX, y: centerY), radius: 98, startAngle: Angle(degrees: IsLower ? 28.7 : 208.7), endAngle: Angle(degrees: IsLower ? 31.3 : 211.3), clockwise: false)
+            }.fill(Color(red: 0.898, green: 0.918, blue: 0.935))
+            Path { path in
+                path.move(to: CGPoint(x: centerX, y: centerY))
+                path.addArc(center: .init(x: centerX, y: centerY), radius: 98, startAngle: Angle(degrees: IsLower ? 43.7 : 223.7), endAngle: Angle(degrees: IsLower ? 46.3 : 226.3), clockwise: false)
+            }.fill(Color(red: 0.898, green: 0.918, blue: 0.935))
+            Path { path in
+                path.move(to: CGPoint(x: centerX, y: centerY))
+                path.addArc(center: .init(x: centerX, y: centerY), radius: 98, startAngle: Angle(degrees: IsLower ? 58.7 : 237.7), endAngle: Angle(degrees: IsLower ? 61.3 : 241.3), clockwise: false)
+            }.fill(Color(red: 0.898, green: 0.918, blue: 0.935))
+            Path { path in
+                path.move(to: CGPoint(x: centerX, y: centerY))
+                path.addArc(center: .init(x: centerX, y: centerY), radius: 98, startAngle: Angle(degrees: IsLower ? 73.7 : 253.7), endAngle: Angle(degrees: IsLower ? 76.3 : 256.3), clockwise: false)
+            }.fill(Color(red: 0.898, green: 0.918, blue: +150.935))
+            Path { path in
+                path.move(to: CGPoint(x: centerX, y: centerY))
+                path.addArc(center: .init(x: centerX, y: centerY), radius: 98, startAngle: Angle(degrees: IsLower ? 88.7 : 268.7), endAngle: Angle(degrees: IsLower ? 91.3 : 271.3), clockwise: false)
+            }.fill(Color(red: 0.898, green: 0.918, blue: 0.935))
+            Path { path in
+                path.move(to: CGPoint(x: centerX, y: centerY))
+                path.addArc(center: .init(x: centerX, y: centerY), radius: 98, startAngle: Angle(degrees: IsLower ? 103.7 : 283.7), endAngle: Angle(degrees: IsLower ? 106.3 : 286.3), clockwise: false)
+            }.fill(Color(red: 0.898, green: 0.918, blue: 0.935))
+            Path { path in
+                path.move(to: CGPoint(x: centerX, y: centerY))
+                path.addArc(center: .init(x: centerX, y: centerY), radius: 98, startAngle: Angle(degrees: IsLower ? 118.7 : 298.7), endAngle: Angle(degrees: IsLower ? 121.3 : 301.3), clockwise: false)
+            }.fill(Color(red: 0.898, green: 0.918, blue: 0.935))
+            Path { path in
+                path.move(to: CGPoint(x: centerX, y: centerY))
+                path.addArc(center: .init(x: centerX, y: centerY), radius: 98, startAngle: Angle(degrees: IsLower ? 133.7 : 313.7), endAngle: Angle(degrees: IsLower ? 136.3 : 316.3), clockwise: false)
+            }.fill(Color(red: 0.898, green: 0.918, blue: 0.935))
+            ZStack {
+                Path { path in
+                    path.move(to: CGPoint(x: centerX, y: centerY))
+                    path.addArc(center: .init(x: centerX, y: centerY), radius: 98, startAngle: Angle(degrees: IsLower ? 148.7 : 328.7), endAngle: Angle(degrees: IsLower ? 151.3 : 331.3), clockwise: false)
+                }.fill(Color(red: 0.898, green: 0.918, blue: 0.935))
+                Path { path in
+                    path.move(to: CGPoint(x: centerX, y: centerY))
+                    path.addArc(center: .init(x: centerX, y: centerY), radius: 98, startAngle: Angle(degrees: IsLower ? 163.7 : 343.7), endAngle: Angle(degrees: IsLower ? 166.3 : 346.3), clockwise: false)
+                }.fill(Color(red: 0.898, green: 0.918, blue: 0.935))
             }
         }
     }

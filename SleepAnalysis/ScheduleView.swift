@@ -282,7 +282,7 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                     
                     Section(header: title(month)) { }
                         .padding(.horizontal)
-                        .padding(.bottom, 5.0)
+                        .padding(.vertical, 5.0)
                         .foregroundColor(.black)
                     
                     VStack {
@@ -432,11 +432,9 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                             .cornerRadius(16)
                                         }
                                     }.padding([.bottom, .leading, .trailing], 5)
-                                        .cornerRadius(20)
+                                        .cornerRadius(14)
                                     }
-                                }.padding([.bottom, .leading, .trailing], 5)
-                                    .cornerRadius(20)
-                                    .onChange(of: date){ theDate in
+                                }.onChange(of: date){ theDate in
                                         for aware in awareness{
                                             let awareDate = Calendar.current.dateComponents([.year, .month, .day],from: aware.date!)
                                             let currentDate = Calendar.current.dateComponents([.year, .month, .day], from: theDate)
@@ -458,11 +456,9 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                             }
                                         }
                                 }
-                            }
                         }.cornerRadius(16)
-                            .frame(height: 532)
-                            .padding([.bottom, .leading, .trailing])
-                            .padding([.top], 3)
+                            .padding([.leading, .bottom, .trailing])
+                        }
                     }.background(Color(red: 0.948, green: 0.953, blue: 0.962))
                 }
                 .onAppear{
