@@ -141,33 +141,15 @@ struct SleepTimeView: View {
                             .padding(.top, 5.0)
                         GifImage("notFound")
                             .padding(.horizontal, 20)
-                        /*Image("sskoo")
-                            .padding(.vertical, 50.0)
-                            .alignmentGuide(.leading, computeValue: { d in -100.0})
-                         */
                     }
                 }.padding(.horizontal)
             } else {
                 RecommendedSleep(from1: from1, to1: to1, from2: from2, to2: to2)
-                HStack {
-                    RecommendedCaption(from: from1, to: to1)
-                    Spacer()
-                }
-                if (to2 != "00:00"){
-                    HStack {
-                        RecommendedCaption(from: from2, to: to2)
-                        Spacer()
-                    }
-                }else{
-                    HStack {
-                        NoNapCaption()
-                        Spacer()
-                    }
-                }
             }
         }
     }
 }
+
 
 struct RecommendedSleep: View {
     
@@ -175,48 +157,76 @@ struct RecommendedSleep: View {
     var to1: String
     var from2: String
     var to2: String
+    @State var isSliding: Bool = false
     
     var body: some View {
-        
-        ZStack {
-            VStack(alignment: .center, spacing: 20) {
-                //Clock
-                ZStack {
-                    Circle()
-                        .frame(width: 280, height: 280)
-                        .foregroundColor(Color(red: 0.949, green: 0.949, blue: 0.949))
-                        .alignmentGuide(.leading, computeValue: { d in -70.0})
-                    Path { path in
-                        path.move(to: CGPoint(x: 165, y: 140))
-                        path.addArc(center: .init(x: 165, y: 140), radius: 140, startAngle: Angle(degrees: timeToAngle(time: from2)), endAngle: Angle(degrees: timeToAngle(time: addTimeInString(time1: from2, time2: to2))), clockwise: false)
-                    }.fill(Color(red: 0.769, green: 0.85, blue: 0.942))
-                    Path { path in
-                        path.move(to: CGPoint(x: 165, y: 140))
-                        path.addArc(center: .init(x: 165, y: 140), radius: 140, startAngle: Angle(degrees: timeToAngle(time: from1)), endAngle: Angle(degrees: timeToAngle(time: addTimeInString(time1: from1, time2: to1))), clockwise: false)
-                    }.fill(Color.blue)
-                    Circle()
-                        .frame(width: 200, height: 200)
-                        .foregroundColor(.white)
-                        .alignmentGuide(.leading, computeValue: { d in -70.0})
-                    //Picker
-                    Picker(centerX: 165, centerY: 140)
-                    Circle()
-                        .frame(width: 40, height: 40)
-                        .foregroundColor(.blue)
-                        .offset(x:120*cos(timeToAngle(time: from1)*Double.pi/180), y: 120*sin(timeToAngle(time: from1)*Double.pi/180))
-                    Circle()
-                        .frame(width: 40, height: 40)
-                        .foregroundColor(.blue)
-                        .offset(x:120*cos(timeToAngle(time: addTimeInString(time1: from1, time2: to1))*Double.pi/180), y: 120*sin(timeToAngle(time: addTimeInString(time1: from1, time2: to1))*Double.pi/180))
-                    Circle()
-                        .frame(width: 40, height: 40)
-                        .foregroundColor(Color(red: 0.769, green: 0.85, blue: 0.942))
-                        .offset(x:120*cos(timeToAngle(time: from2)*Double.pi/180), y: 120*sin(timeToAngle(time: from2)*Double.pi/180))
-                    Circle()
-                        .frame(width: 40, height: 40)
-                        .foregroundColor(Color(red: 0.769, green: 0.85, blue: 0.942))
-                        .offset(x:120*cos(timeToAngle(time: addTimeInString(time1: from2, time2: to2))*Double.pi/180), y: 120*sin(timeToAngle(time: addTimeInString(time1: from2, time2: to2))*Double.pi/180))
-                    
+        VStack(alignment: .center) {
+            ZStack {
+                VStack(alignment: .center, spacing: 20) {
+                    //Clock
+                    ZStack {
+                        Circle()
+                            .frame(width: 280, height: 280)
+                            .foregroundColor(Color(red: 0.949, green: 0.949, blue: 0.949))
+                            .alignmentGuide(.leading, computeValue: { d in -70.0})
+                        Path { path in
+                            path.move(to: CGPoint(x: 165, y: 140))
+                            path.addArc(center: .init(x: 165, y: 140), radius: 140, startAngle: Angle(degrees: timeToAngle(time: from2)), endAngle: Angle(degrees: timeToAngle(time: addTimeInString(time1: from2, time2: to2))), clockwise: false)
+                        }.fill(isSliding ? Color.blue : Color(red: 0.769, green: 0.85, blue: 0.942))
+                        Path { path in
+                            path.move(to: CGPoint(x: 165, y: 140))
+                            path.addArc(center: .init(x: 165, y: 140), radius: 140, startAngle: Angle(degrees: timeToAngle(time: from1)), endAngle: Angle(degrees: timeToAngle(time: addTimeInString(time1: from1, time2: to1))), clockwise: false)
+                        }.fill(isSliding ? Color(red: 0.769, green: 0.85, blue: 0.942) : Color.blue)
+                        Circle()
+                            .frame(width: 200, height: 200)
+                            .foregroundColor(.white)
+                            .alignmentGuide(.leading, computeValue: { d in -70.0})
+                        //Picker
+                        Picker(centerX: 165, centerY: 140)
+                        Circle()
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(isSliding ? Color(red: 0.769, green: 0.85, blue: 0.942) : Color.blue)
+                            .offset(x:120*cos(timeToAngle(time: from1)*Double.pi/180), y: 120*sin(timeToAngle(time: from1)*Double.pi/180))
+                        Circle()
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(isSliding ? Color(red: 0.769, green: 0.85, blue: 0.942) : Color.blue)
+                            .offset(x:120*cos(timeToAngle(time: addTimeInString(time1: from1, time2: to1))*Double.pi/180), y: 120*sin(timeToAngle(time: addTimeInString(time1: from1, time2: to1))*Double.pi/180))
+                        Circle()
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(isSliding ? Color.blue : Color(red: 0.769, green: 0.85, blue: 0.942))
+                            .offset(x:120*cos(timeToAngle(time: from2)*Double.pi/180), y: 120*sin(timeToAngle(time: from2)*Double.pi/180))
+                        Circle()
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(isSliding ? Color.blue : Color(red: 0.769, green: 0.85, blue: 0.942))
+                            .offset(x:120*cos(timeToAngle(time: addTimeInString(time1: from2, time2: to2))*Double.pi/180), y: 120*sin(timeToAngle(time: addTimeInString(time1: from2, time2: to2))*Double.pi/180))
+                        
+                    }
+                }
+            }
+            //TimeList
+            ZStack {
+                Rectangle()
+                    .frame(width: 310, height: 94)
+                    .cornerRadius(8)
+                    .foregroundColor(Color(red: 0.969, green: 0.969, blue: 0.969))
+                HStack {
+                    if !isSliding {
+                        RecommendedCaption(from: isSliding ? from2 : from1, to: isSliding ? to2 : to1)
+                            .padding(.leading)
+                        Spacer().frame(width: 10)
+                        Button(action: {isSliding.toggle()}, label: {
+                            Image(systemName: "chevron.right")
+                        })
+                        .foregroundColor(.black)
+                    } else {
+                        Button(action: {isSliding.toggle()}, label: {
+                            Image(systemName: "chevron.left")
+                        })
+                        .foregroundColor(.black)
+                        Spacer().frame(width: 10)
+                        RecommendedCaption(from: isSliding ? from2 : from1, to: isSliding ? to2 : to1)
+                            .padding(.trailing)
+                    }
                 }
             }
         }
@@ -356,21 +366,18 @@ struct RecommendedCaption: View {
     var to: String
     
     var body: some View {
-        HStack(spacing: 15) {
-            Image("moon3")
-            HStack(alignment: .bottom, spacing: 3) {
-                Text(specificTime(original:from).0)
-                    .font(.custom("Small", size: 15))
-                Text(from)
-                    .font(.headline)
-                Text("부터")
-                    .font(.custom("Small", size: 15))
-                Text(timeInterval(original:to))
-                    .font(.headline)
-                Text("이상")
-                    .font(.custom("Small", size: 15))
+        HStack(spacing: 100) {
+            VStack(alignment: .center, spacing: 5) {
+                Text(from).font(.title3).fontWeight(.bold)
+                Text("7/1").font(.custom("tooSmall", size: 12))
+                Text("취침").font(.custom("tooSmall", size: 12)).fontWeight(.bold)
             }
-        }.padding([.leading, .trailing],10)
+            VStack(alignment: .center, spacing: 5) {
+                Text(addTimeInString(time1:from, time2:to)).font(.title3).fontWeight(.bold)
+                Text("7/2").font(.custom("tooSmall", size: 12))
+                Text("기상").font(.custom("tooSmall", size: 12)).fontWeight(.bold)
+            }
+        }
     }
 }
 
