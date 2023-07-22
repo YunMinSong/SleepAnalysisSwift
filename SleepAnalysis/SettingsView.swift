@@ -105,8 +105,8 @@ struct AddSleepView: View{
     @AppStorage("needUpdate") var needUpdate: Bool = false
     @FetchRequest(sortDescriptors: [NSSortDescriptor(key: "sleepStart", ascending: true)]) var entries: FetchedResults<Entry>
     
-    let oneweekbefore = Date.now.addingTimeInterval(-1.0*60*60*24*7)
-    let oneweekafter = Date.now.addingTimeInterval(60*60*24*7*1.0)
+    let twoweeksbefore = Date.now.addingTimeInterval(-1.0*60*60*24*14)
+//    let oneweekafter = Date.now.addingTimeInterval(60*60*24*7*1.0)
     
     var body: some View{
         ZStack{
@@ -132,7 +132,7 @@ struct AddSleepView: View{
                     DatePicker(
                         "",
                         selection: $startDate,
-//                        in: oneweekbefore...oneweekafter,
+                        in: twoweeksbefore...Date.now,
                         displayedComponents: [.date, .hourAndMinute]
                     )
                     Spacer()
@@ -144,7 +144,7 @@ struct AddSleepView: View{
                     DatePicker(
                         "",
                         selection: $endDate,
-//                        in: oneweekbefore...oneweekafter,
+                        in: startDate...Date.now,
                         displayedComponents: [.date, .hourAndMinute]
                     )
                     Spacer()

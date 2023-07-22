@@ -122,6 +122,44 @@ func readSleep(from startDateQ: Date?, to endDateQ: Date?) {
                         
                         //if it is not, then save g values and set g values to the next startDate
                         let entry = Entry(context: context)
+                        
+                        let dateComponent_gSleepStart = Calendar.current.dateComponents([.day, .hour, .minute, .second], from: gSleepStart)
+                        let dateComponent_gSleepEnd = Calendar.current.dateComponents([.day, .hour, .minute, .second], from: gSleepEnd)
+                        let endDay_gSleepStart = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: gSleepStart)!
+                        let startDay_gSleepEnd = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: gSleepEnd)!
+                        
+                        if dateComponent_gSleepStart.day != dateComponent_gSleepEnd.day{
+                            entry.sleepStart = gSleepStart
+                            entry.sleepEnd = endDay_gSleepStart
+                            
+                            if context.hasChanges{
+                                do {
+                                    try context.save()
+                                } catch let nserror as NSError{
+                                    // handle the Core Data error
+                                    print("Unresolved error \(nserror), \(nserror.userInfo)")
+                                    
+                                }
+                            }
+                            
+                            entry.sleepStart = startDay_gSleepEnd
+                            entry.sleepEnd = gSleepEnd
+                            
+                            if context.hasChanges{
+                                do {
+                                    try context.save()
+                                } catch let nserror as NSError{
+                                    // handle the Core Data error
+                                    print("Unresolved error \(nserror), \(nserror.userInfo)")
+                                    
+                                }
+                            }
+                            
+                            gSleepStart = startDate
+                            gSleepEnd = endDate
+                            
+                            continue
+                        }
                                                 
                         entry.sleepStart = gSleepStart
                         entry.sleepEnd = gSleepEnd

@@ -47,7 +47,6 @@ public struct CalendarDetailView: View{
                 DatePicker(
                     "",
                     selection: $sleepStart,
-                    in: startTime...endTime,
                     displayedComponents: [.hourAndMinute]
                 )
                 Spacer()
@@ -61,7 +60,6 @@ public struct CalendarDetailView: View{
                 DatePicker(
                     "",
                     selection: $sleepEnd,
-                    in: startTime...endTime,
                     displayedComponents: [.hourAndMinute]
                 )
                 Spacer()
