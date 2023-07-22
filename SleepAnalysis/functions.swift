@@ -33,23 +33,17 @@ func updateGoodBadDuration(startDate: Date, endDate: Date, entries: FetchedResul
             context.delete(aware)
         }
     }
-
-    var startDateC = Calendar.current.dateComponents([.year, .month, .day],from: startDate)
-    let startDate = Calendar.current.date(from: startDateC)!
     
-//    let days = Calendar.current.dateComponents([.day], from: startDate, to: endDate).day!
     var goodDuration = 0
     var badDuration = 0
     var checkTime: [EntryAwareness] = []
     for idx in entries.indices{
-        if(idx == 0){continue}
-        let EstartDate = Calendar.current.dateComponents([.year, .month, .day],from: entries[idx].sleepStart!)
+        
+        let endDateNight = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: entries[idx].sleepEnd!)
         let EendDate = Calendar.current.dateComponents([.year, .month, .day],from: entries[idx].sleepEnd!)
-        let EendDateYesterday = Calendar.current.dateComponents([.year, .month, .day],from: entries[idx-1].sleepEnd!)
-
-        if (EendDateYesterday != EstartDate){
-            let endOfDayYesterday = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: entries[idx-1].sleepEnd!)!
-            checkTime.append(EntryAwareness(sleepStart: entries[idx-1].sleepEnd!, sleepEnd: endOfDayYesterday))
+        
+        if(idx == entries.endIndex-1){
+            checkTime.append(EntryAwareness(sleepStart: entries[idx].sleepEnd!, sleepEnd: endDateNight!))
             goodDuration = 0
             badDuration = 0
             for sleepTime in checkTime{
@@ -73,7 +67,7 @@ func updateGoodBadDuration(startDate: Date, endDate: Date, entries: FetchedResul
             checkTime = []
             
             let entry = Awareness(context: context)
-            entry.date = Calendar.current.date(from:EendDateYesterday)
+            entry.date = Calendar.current.date(from:EendDate)
             entry.goodDuration = Int64(goodDuration)
             entry.badDuration = Int64(badDuration)
             
@@ -86,14 +80,13 @@ func updateGoodBadDuration(startDate: Date, endDate: Date, entries: FetchedResul
                     
                 }
             }
-            let endOfDayYesterday2 = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: entries[idx].sleepStart!.addingTimeInterval(-1*3600*24))!
-            checkTime.append(EntryAwareness(sleepStart: endOfDayYesterday2, sleepEnd: entries[idx].sleepStart!))
-            continue
+            break
         }
-        
-        
-        checkTime.append(EntryAwareness(sleepStart: entries[idx-1].sleepEnd!, sleepEnd: entries[idx].sleepStart!))
-        if (EstartDate != EendDate){
+        let startDateMorningNext = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: entries[idx+1].sleepStart!)
+        let EstartDateTomorrow = Calendar.current.dateComponents([.year, .month, .day],from: entries[idx+1].sleepStart!)
+
+        if (EstartDateTomorrow != EendDate){
+            checkTime.append(EntryAwareness(sleepStart: entries[idx].sleepEnd!, sleepEnd: endDateNight!))
             goodDuration = 0
             badDuration = 0
             for sleepTime in checkTime{
@@ -117,7 +110,7 @@ func updateGoodBadDuration(startDate: Date, endDate: Date, entries: FetchedResul
             checkTime = []
             
             let entry = Awareness(context: context)
-            entry.date = Calendar.current.date(from:EstartDate)
+            entry.date = Calendar.current.date(from:EendDate)
             entry.goodDuration = Int64(goodDuration)
             entry.badDuration = Int64(badDuration)
             
@@ -130,46 +123,9 @@ func updateGoodBadDuration(startDate: Date, endDate: Date, entries: FetchedResul
                     
                 }
             }
-        }
-
-    }
-    
-    checkTime.append(EntryAwareness(sleepStart: entries[entries.endIndex-1].sleepEnd!, sleepEnd: Date.now))
-    goodDuration = 0
-    badDuration = 0
-    for sleepTime in checkTime{
-        let sleepStart = sleepTime.sleepStart
-        let sleepEnd = sleepTime.sleepEnd
-        for tempV in V0{
-            let tempTime = tempV.time!
-            if tempTime >= sleepStart && tempTime <= sleepEnd{
-                let y_data = [tempV.y, tempV.x, tempV.n, tempV.h]
-                let C = 3.37*0.5*(1+coef_y*y_data[1] + coef_x * y_data[0])
-                let D_up = (2.46+10.2+C) //sleep thres
-                let awareness = D_up - y_data[3]
-                if awareness > 0{
-                    goodDuration += 5
-                }else{
-                    badDuration += 5
-                }
-            }
-        }
-    }
-    let EstartDate = Calendar.current.dateComponents([.year, .month, .day], from: entries[entries.endIndex-1].sleepEnd!)
-    checkTime = []
-    
-    let entry = Awareness(context: context)
-    entry.date = Calendar.current.date(from:EstartDate)
-    entry.goodDuration = Int64(goodDuration)
-    entry.badDuration = Int64(badDuration)
-    
-    if context.hasChanges{
-        do {
-            try context.save()
-        } catch let nserror as NSError{
-            // handle the Core Data error
-            print("Unresolved error \(nserror), \(nserror.userInfo)")
-            
+            checkTime.append(EntryAwareness(sleepStart: startDateMorningNext!, sleepEnd: entries[idx+1].sleepStart!))
+        }else{
+            checkTime.append(EntryAwareness(sleepStart: entries[idx].sleepEnd!, sleepEnd: entries[idx+1].sleepStart!))
         }
     }
     

@@ -435,6 +435,8 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                         .cornerRadius(14)
                                     }
                                 }.onChange(of: date){ theDate in
+                                        goodDuration = 0
+                                        badDuration = 0
                                         for aware in awareness{
                                             let awareDate = Calendar.current.dateComponents([.year, .month, .day],from: aware.date!)
                                             let currentDate = Calendar.current.dateComponents([.year, .month, .day], from: theDate)
@@ -446,6 +448,8 @@ public struct CalendarViewComponent<Day: View, Header: View, Title: View, Traili
                                         }
                                     }
                                     .onAppear{
+                                        goodDuration = 0
+                                        badDuration = 0
                                         for aware in awareness{
                                             let awareDate = Calendar.current.dateComponents([.year, .month, .day],from: aware.date!)
                                             let currentDate = Calendar.current.dateComponents([.year, .month, .day], from: date)

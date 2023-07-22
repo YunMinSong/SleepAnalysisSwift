@@ -53,16 +53,55 @@ func writeSleep(_ sleepAnalysis: HKCategoryValueSleepAnalysis, startDate: Date, 
     }
     
     let entry = Entry(context: context)
-    entry.sleepStart = startDate
-    entry.sleepEnd = endDate
     
-    if context.hasChanges{
-        do {
-            try context.save()
-        } catch let nserror as NSError{
-            // handle the Core Data error
-            print("Unresolved error \(nserror), \(nserror.userInfo)")
-            
+    let dateComponent_gSleepStart = Calendar.current.dateComponents([.day, .hour, .minute, .second], from: startDate)
+    let dateComponent_gSleepEnd = Calendar.current.dateComponents([.day, .hour, .minute, .second], from: endDate)
+    let endDay_gSleepStart = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: startDate)!
+    let startDay_gSleepEnd = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: endDate)!
+    
+    if dateComponent_gSleepStart.day != dateComponent_gSleepEnd.day{
+        
+        let entry2 = Entry(context: context)
+        entry2.sleepStart = startDate
+        entry2.sleepEnd = endDay_gSleepStart
+        
+//        if context.hasChanges{
+//            do {
+//                try context.save()
+//            } catch let nserror as NSError{
+//                // handle the Core Data error
+//                print("Unresolved error \(nserror), \(nserror.userInfo)")
+//
+//            }
+//        }
+        
+        entry.sleepStart = startDay_gSleepEnd
+        entry.sleepEnd = endDate
+        
+        if context.hasChanges{
+            do {
+                try context.save()
+            } catch let nserror as NSError{
+                // handle the Core Data error
+                print("Unresolved error \(nserror), \(nserror.userInfo)")
+                
+            }
+        }
+        
+    }
+    else{
+        
+        entry.sleepStart = startDate
+        entry.sleepEnd = endDate
+        
+        if context.hasChanges{
+            do {
+                try context.save()
+            } catch let nserror as NSError{
+                // handle the Core Data error
+                print("Unresolved error \(nserror), \(nserror.userInfo)")
+                
+            }
         }
     }
 }

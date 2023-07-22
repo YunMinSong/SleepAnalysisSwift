@@ -198,7 +198,7 @@ struct RecSettingView: View {
     @AppStorage("alarm") var alarm: Date = Date.now
     @AppStorage("needUpdate") var needUpdate:Bool = false
     let now = Date.now
-    let oneweekafter = Date.now.addingTimeInterval(60*60*24*7*1.0)
+    let dayAfterTomorrow = Date.now.addingTimeInterval(60*60*24*2*1.0)
     
     var body: some View {
         ZStack{
@@ -221,7 +221,7 @@ struct RecSettingView: View {
                     DatePicker(
                         "",
                         selection: $sleep_onset,
-//                        in: now...oneweekafter,
+                        in: now...dayAfterTomorrow,
                         displayedComponents: [.date, .hourAndMinute]
                     ).onChange(of: sleep_onset, perform: { _ in
                         needUpdate = true
@@ -240,7 +240,7 @@ struct RecSettingView: View {
                     DatePicker(
                         "",
                         selection: $work_onset,
-//                        in: now...oneweekafter,
+                        in: now...dayAfterTomorrow,
                         displayedComponents: [.date, .hourAndMinute]
                     ).onChange(of: work_onset, perform: { _ in
                         needUpdate = true
